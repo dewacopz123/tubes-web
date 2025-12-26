@@ -23,21 +23,37 @@ class LoginController extends Controller
 
     // callback dari Google
     public function callback()
-    {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+{
+    /** @var \Laravel\Socialite\Two\AbstractProvider $provider */
+    $provider = Socialite::driver('google');
 
-        $user = User::where('email', $googleUser->getEmail())->first();
+    $googleUser = $provider->stateless()->user();
 
-        if (!$user) {
-            $user = User::create([
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'password' => bcrypt(Str::random(16)),
-            ]);
-        }
+    $user = User::where('email', $googleUser->getEmail())->first();
 
-        Auth::login($user);
-
-        return redirect()->route('login.index');
+    if (!$user) {
+        $user = User::create([
+            'name' => $googleUser->getName(),
+            'email' => $googleUser->getEmail(),
+            'password' => bcrypt(Str::random(16)),
+        ]);
     }
+
+    Auth::login($user);
+
+    return redirect()->route('login.index');
+}
+
+public function login(Request $request)
+{
+    if (Auth::attempt($request->only('email', 'password'))) {
+        $request->session()->regenerate();
+        return redirect('/karyawan');
+    }
+
+    return back();
+}
+
+
+
 }

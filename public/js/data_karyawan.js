@@ -69,4 +69,130 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+    // =========================
+// CRUD DATA KARYAWAN (LOCAL)
+// =========================
+
+function getKaryawanData() {
+    return JSON.parse(localStorage.getItem("karyawans")) || [];
+}
+
+function saveKaryawanData(data) {
+    localStorage.setItem("karyawans", JSON.stringify(data));
+}
+
+function renderTable() {
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    const data = getKaryawanData();
+    data.forEach((k, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${k.id}</td>
+            <td>${k.nama}</td>
+            <td>${k.email}</td>
+            <td>${k.telepon}</td>
+            <td>${k.role}</td>
+            <td>${k.status}</td>
+        `;
+        tr.dataset.index = index;
+        tbody.appendChild(tr);
+    });
+}
+
+// =========================
+// TAMBAH & EDIT DATA
+// =========================
+document.addEventListener("submit", function (e) {
+    if (e.target && e.target.id === "formKaryawan") {
+        e.preventDefault();
+
+        const id = document.getElementById("idKaryawan").value;
+        const nama = document.getElementById("namaKaryawan").value;
+        const email = document.getElementById("emailKaryawan").value;
+        const telepon = document.getElementById("teleponKaryawan").value;
+        const role = document.getElementById("roleKaryawan").value;
+        const status = document.getElementById("statusKaryawan").value;
+
+        let data = getKaryawanData();
+        const index = data.findIndex(k => k.id === id);
+
+        if (index >= 0) {
+            // UPDATE
+            data[index] = { id, nama, email, telepon, role, status };
+            alert("Data karyawan berhasil diupdate");
+        } else {
+            // CREATE
+            data.push({ id, nama, email, telepon, role, status });
+            alert("Data karyawan berhasil ditambahkan");
+        }
+
+        saveKaryawanData(data);
+        renderTable();
+        document.querySelector(".modal")?.remove();
+    }
+});
+
+// =========================
+// PILIH BARIS UNTUK EDIT / DELETE
+// =========================
+let selectedIndex = null;
+
+document.getElementById("tableBody").addEventListener("click", function (e) {
+    const row = e.target.closest("tr");
+    if (!row) return;
+
+    selectedIndex = row.dataset.index;
+
+    document.querySelectorAll("#tableBody tr").forEach(tr => tr.classList.remove("active"));
+    row.classList.add("active");
+});
+
+// =========================
+// ISI DATA SAAT EDIT
+// =========================
+document.getElementById("btnEditKaryawan").addEventListener("click", function () {
+    if (selectedIndex === null) {
+        alert("Pilih data terlebih dahulu");
+        return;
+    }
+
+    setTimeout(() => {
+        const data = getKaryawanData()[selectedIndex];
+        if (!data) return;
+
+        document.getElementById("idKaryawan").value = data.id;
+        document.getElementById("namaKaryawan").value = data.nama;
+        document.getElementById("emailKaryawan").value = data.email;
+        document.getElementById("teleponKaryawan").value = data.telepon;
+        document.getElementById("roleKaryawan").value = data.role;
+        document.getElementById("statusKaryawan").value = data.status;
+    }, 300);
+});
+
+// =========================
+// HAPUS DATA
+// =========================
+document.getElementById("btnDeleteKaryawan").addEventListener("click", function () {
+    if (selectedIndex === null) {
+        alert("Pilih data terlebih dahulu");
+        return;
+    }
+
+    if (confirm("Yakin ingin menghapus data karyawan?")) {
+        let data = getKaryawanData();
+        data.splice(selectedIndex, 1);
+        saveKaryawanData(data);
+        renderTable();
+        selectedIndex = null;
+        alert("Data karyawan berhasil dihapus");
+    }
+});
+
+// =========================
+// LOAD AWAL
+// =========================
+renderTable();
+
 });

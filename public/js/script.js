@@ -10,14 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ✅ Cegah form submit dan lakukan redirect manual
   if (btn_signin) {
-    btn_signin.addEventListener("click", (e) => {
-      e.preventDefault(); // hentikan submit bawaan form
-      try {
-        // Arahkan langsung ke halaman Data Karyawan
-        window.location.href = "../../Views/DataKaryawan/data_karyawan.html";
-      } catch (err) {
-        console.error("Gagal berpindah ke halaman Data Karyawan:", err);
-      }
+    btn_signin.addEventListener('click', () => {
+      // ❌ TIDAK ADA preventDefault
+      // ❌ TIDAK ADA window.location.href
+      // ✔️ Form akan submit ke Laravel
     });
   }
 

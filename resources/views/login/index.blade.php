@@ -78,7 +78,11 @@
         <p class="switch-text">Already have an account? <a href="#" id="switch-to-login-bottom">Login</a></p>
       </form>
 
-      <form class="auth-form" id="login-form">
+      <form class="auth-form" id="login-form"
+          action="{{ route('login.process') }}"
+          method="POST">
+        @csrf
+
         <p><b>Login with</b></p>
         <div class="input-group-label">
           <label for="login-email">Email</label>
@@ -103,6 +107,7 @@
         </div>
 
         <button id="btn_signin" type="submit" class="btn-submit">SIGN IN</button>
+      
 
         <p class="switch-text">Don't have an account? <a href="#" id="switch-to-register-bottom">Register</a></p>
 
