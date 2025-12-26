@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -15,45 +12,35 @@ class LoginController extends Controller
         return view('login.index');
     }
 
-    // redirect ke Google
-    public function redirect()
+    public function login(Request $request)
     {
-        return Socialite::driver('google')->redirect();
-    }
+        $request->validate([
+            'kode_karyawan' => 'required',
+            'password' => 'required'
+        ]);
 
-    // callback dari Google
-    public function callback()
-{
-    /** @var \Laravel\Socialite\Two\AbstractProvider $provider */
-    $provider = Socialite::driver('google');
+        $credentials = [
+            'kode_karyawan' => $request->kode_karyawan,
+            'password' => $request->password,
+            'status' => 'Aktif'
+        ];
 
-    $googleUser = $provider->stateless()->user();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect('/dashboard');
+        }
 
-    $user = User::where('email', $googleUser->getEmail())->first();
-
-    if (!$user) {
-        $user = User::create([
-            'name' => $googleUser->getName(),
-            'email' => $googleUser->getEmail(),
-            'password' => bcrypt(Str::random(16)),
+        return back()->withErrors([
+            'kode_karyawan' => 'ID Karyawan atau Password salah'
         ]);
     }
 
-    Auth::login($user);
-
-    return redirect()->route('login.index');
-}
-
-public function login(Request $request)
-{
-    if (Auth::attempt($request->only('email', 'password'))) {
-        $request->session()->regenerate();
-        return redirect('/karyawan');
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
     }
-
-    return back();
 }
 
-
-
-}

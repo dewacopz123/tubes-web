@@ -38,9 +38,10 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'karyawans',
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -60,11 +61,12 @@ return [
     */
 
     'providers' => [
-    'users' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Karyawan::class,
+        'karyawans' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Karyawan::class,
+        ],
     ],
-],
+
 
 
     /*

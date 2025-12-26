@@ -1,127 +1,108 @@
 document.addEventListener("DOMContentLoaded", function () {
+
     const btnMasukKerja = document.getElementById("btnMasukKerja");
     const btnKeluarKerja = document.getElementById("btnKeluarKerja");
     const popupContainer = document.getElementById("popupContainer");
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-    // Hapus modal jika ada
+    // ================= MODAL =================
     function removeModal(id) {
         const m = document.getElementById(id);
         if (m) m.remove();
     }
 
-    // Buat modal dengan gaya seperti contoh
-    function createModal(title, message, id) {
+    function createModal(title, message, id, reload = false) {
         removeModal(id);
 
-        // Overlay gelap transparan
         const overlay = document.createElement("div");
         overlay.id = id;
         Object.assign(overlay.style, {
             position: "fixed",
-            top: "0",
-            left: "0",
+            top: 0,
+            left: 0,
             width: "100vw",
             height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.5)",
+            background: "rgba(0,0,0,0.5)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: "1000",
+            zIndex: 9999,
         });
 
-        // Kotak modal
         const modalBox = document.createElement("div");
         Object.assign(modalBox.style, {
-            backgroundColor: "#fff",
+            background: "#fff",
             borderRadius: "10px",
-            padding: "25px 30px",
+            padding: "25px",
             width: "320px",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
             textAlign: "center",
-            fontFamily: "Arial, sans-serif",
         });
 
-        // Judul
-        const modalTitle = document.createElement("h2");
-        modalTitle.textContent = title;
-        Object.assign(modalTitle.style, {
-            marginTop: "0",
-            marginBottom: "20px",
-            fontSize: "20px",
-            fontWeight: "bold",
-        });
+        modalBox.innerHTML = `
+            <h3>${title}</h3>
+            <p>${message}</p>
+            <button id="modalOk" style="
+                background:#00bcd4;
+                color:white;
+                border:none;
+                padding:10px 25px;
+                border-radius:20px;
+                cursor:pointer;
+                font-weight:bold;
+            ">OK</button>
+        `;
 
-        // Isi pesan
-        const modalMsg = document.createElement("p");
-        modalMsg.innerHTML = message;
-        Object.assign(modalMsg.style, {
-            fontSize: "15px",
-            marginBottom: "25px",
-            lineHeight: "1.4",
-        });
-
-        // Tombol kontainer
-        const buttonContainer = document.createElement("div");
-        Object.assign(buttonContainer.style, {
-            display: "flex",
-            justifyContent: "space-around",
-            gap: "10px",
-        });
-
-        // Tombol Tutup (merah)
-        const btnClose = document.createElement("button");
-        btnClose.textContent = "Tutup";
-        Object.assign(btnClose.style, {
-            backgroundColor: "#f44336",
-            color: "white",
-            border: "none",
-            borderRadius: "20px",
-            padding: "10px 25px",
-            cursor: "pointer",
-            fontWeight: "bold",
-        });
-        btnClose.addEventListener("click", () => overlay.remove());
-
-        // Tombol OK (biru)
-        const btnOk = document.createElement("button");
-        btnOk.textContent = "OK";
-        Object.assign(btnOk.style, {
-            backgroundColor: "#00bcd4",
-            color: "white",
-            border: "none",
-            borderRadius: "20px",
-            padding: "10px 25px",
-            cursor: "pointer",
-            fontWeight: "bold",
-        });
-        btnOk.addEventListener("click", () => overlay.remove());
-
-        buttonContainer.appendChild(btnOk);
-        buttonContainer.appendChild(btnClose);
-
-        // Susun elemen modal
-        modalBox.appendChild(modalTitle);
-        modalBox.appendChild(modalMsg);
-        modalBox.appendChild(buttonContainer);
         overlay.appendChild(modalBox);
         popupContainer.appendChild(overlay);
+
+        document.getElementById("modalOk").onclick = () => {
+            overlay.remove();
+            if (reload) location.reload();
+        };
     }
 
-    // Event: Masuk Kerja
-    if (btnMasukKerja) {
-        btnMasukKerja.addEventListener("click", () => {
-            const now = new Date();
-            const jam = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-            createModal("Masuk Kerja", `Anda telah masuk kerja pada pukul <b>${jam}</b>.`, "modal-masuk");
+    // ================= SEND ABSENSI =================
+    function sendAbsensi(url, title) {
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrf,
+                "Accept": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Gagal");
+            return res.json();
+        })
+        .then(() => {
+            const jam = new Date().toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
+            createModal(
+                title,
+                `Berhasil pada pukul <b>${jam}</b>.`,
+                "modal-absensi",
+                true
+            );
+        })
+        .catch(() => {
+            createModal(
+                "Gagal",
+                "Terjadi kesalahan saat menyimpan data.",
+                "modal-error"
+            );
         });
     }
 
-    // Event: Keluar Kerja
-    if (btnKeluarKerja) {
-        btnKeluarKerja.addEventListener("click", () => {
-            const now = new Date();
-            const jam = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-            createModal("Selesai Kerja", `Anda telah selesai kerja pada pukul <b>${jam}</b>.`, "modal-keluar");
-        });
-    }
+    // ================= EVENT =================
+    btnMasukKerja?.addEventListener("click", () => {
+        sendAbsensi("/absensi/masuk", "Masuk Kerja");
+    });
+
+    btnKeluarKerja?.addEventListener("click", () => {
+        sendAbsensi("/absensi/keluar", "Selesai Kerja");
+    });
+
 });

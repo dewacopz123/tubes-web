@@ -3,24 +3,26 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KaryawanController;
-
-Route::get('/', fn() => redirect()->route('login'));
+use App\Http\Controllers\AbsensiController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
+Route::post('/logout', [LoginController::class, 'logout']);
 
-Route::get('/auth/google', [LoginController::class, 'redirect'])->name('google.login');
-Route::get('/auth/google/callback', [LoginController::class, 'callback']);
+Route::get('/absensi', [AbsensiController::class, 'index']);
+Route::post('/absensi/masuk', [AbsensiController::class, 'masuk']);
+Route::post('/absensi/keluar', [AbsensiController::class, 'keluar']);
+
+
 
 Route::get('/karyawan', [KaryawanController::class, 'index']);
 
 // modal form (1 file)
-Route::get('/karyawan/form', fn () => view('karyawan.form'));
+Route::get('/karyawan/form', fn() => view('karyawan.form'));
 
 // CRUD JSON
 Route::post('/karyawan', [KaryawanController::class, 'store']);
 Route::get('/karyawan/{id}', [KaryawanController::class, 'show']);
 Route::put('/karyawan/{id}', [KaryawanController::class, 'update']);
 Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy']);
-
 

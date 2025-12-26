@@ -116,7 +116,7 @@
           <div class="social-buttons">
             <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
             <button class="social-btn apple"><i class="fab fa-apple"></i></button>
-            <a href="{{ route('google.login') }}" class="social-btn google">
+            <a href="..." class="social-btn google">
               <i class="fab fa-google"></i>
             </a>
           </div>

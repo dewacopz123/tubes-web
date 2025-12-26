@@ -655,3 +655,29 @@ h3.logo-text {
     padding: 12px;
     font-size: 15px;
 }
+
+.button-group-horizontal {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-full {
+    flex: 1;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.page-title {
+    margin-bottom: 16px;
+}
+
+.status-badge.active {
+    background: #28a745;
+    color: #fff;
+}
+
+.status-badge.done {
+    background: #6c757d;
+    color: #fff;
+}
