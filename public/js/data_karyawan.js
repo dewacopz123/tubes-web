@@ -1,198 +1,136 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const btnAddKaryawan = document.getElementById("btnAddKaryawan");
-    const btnEditKaryawan = document.getElementById("btnEditKaryawan");
-    const btnDeleteKaryawan = document.getElementById("btnDeleteKaryawan");
-    const popupContainer = document.getElementById("popupContainer");
+document.addEventListener("DOMContentLoaded", () => {
+    const popup = document.getElementById("popupContainer");
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-    function removeModal(id) {
-        const m = document.getElementById(id);
-        if (m) m.remove();
-    }
+    // ======================
+    // MODAL HANDLER
+    // ======================
+    function openModal(html) {
+        popup.innerHTML = html;
 
-    function createModal(html, id) {
-        removeModal(id);
-        const modal = document.createElement("div");
-        modal.id = id;
-        modal.className = "modal"; 
-        modal.innerHTML = html;
-        popupContainer.appendChild(modal);
-
-        const closeBtns = modal.querySelectorAll("[data-close]");
-        closeBtns.forEach(btn => btn.addEventListener("click", () => modal.remove()));
-
-        return modal;
-    }
-
-    if (btnAddKaryawan) {
-        btnAddKaryawan.addEventListener("click", async () => {
-            try {
-                const response = await fetch("../../Views/DataKaryawan/formAddEditKaryawan.html");
-                const html = await response.text();
-                const modal = createModal(html, "modal-add");
-
-                const title = modal.querySelector("h3");
-                const submitBtn = modal.querySelector(".btn-jobdesk");
-                if (title) title.textContent = "Tambah Data Karyawan";
-                if (submitBtn) submitBtn.textContent = "Simpan";
-
-            } catch (err) {
-                console.error("Gagal memuat form tambah karyawan:", err);
-            }
+        popup.querySelectorAll('[data-close]').forEach(btn => {
+            btn.onclick = () => popup.innerHTML = '';
         });
+
+        handleSubmit();
     }
 
-    if (btnEditKaryawan) {
-        btnEditKaryawan.addEventListener("click", async () => {
-            try {
-                const response = await fetch("../../Views/DataKaryawan/formAddEditKaryawan.html");
-                const html = await response.text();
-                const modal = createModal(html, "modal-edit");
+    // ======================
+    // TAMBAH DATA
+    // ======================
+    document.getElementById("btnAddKaryawan").onclick = async () => {
+        const html = await fetch('/karyawan/form').then(r => r.text());
+        openModal(html);
 
-                const title = modal.querySelector("h3");
-                const submitBtn = modal.querySelector(".btn-jobdesk");
-                if (title) title.textContent = "Edit Data Karyawan";
-                if (submitBtn) submitBtn.textContent = "Update";
+        modalTitle.innerText = "Tambah Data Karyawan";
+        btnSubmit.innerText = "Simpan";
+        mode.value = "create";
+        formKaryawan.reset();
+    };
 
-                const idInput = modal.querySelector("#idKaryawan");
-                if (idInput) idInput.disabled = true;
+    // ======================
+    // EDIT DATA
+    // ======================
+    document.querySelectorAll(".btnEdit").forEach(btn => {
+        btn.onclick = async () => {
+            const id = btn.dataset.id;
 
-            } catch (err) {
-                console.error("Gagal memuat form edit karyawan:", err);
-            }
-        });
-    }
+            const data = await fetch(`/karyawan/${id}`).then(r => r.json());
+            const formHtml = await fetch('/karyawan/form').then(r => r.text());
 
-    if (btnDeleteKaryawan) {
-        btnDeleteKaryawan.addEventListener("click", () => {
-            if (confirm("Yakin ingin menghapus data karyawan?")) {
-                alert("Fitur hapus akan diimplementasikan di versi berikutnya.");
-            }
-        });
-    }
-    // =========================
-// CRUD DATA KARYAWAN (LOCAL)
-// =========================
+            openModal(formHtml);
 
-function getKaryawanData() {
-    return JSON.parse(localStorage.getItem("karyawans")) || [];
-}
+            modalTitle.innerText = "Edit Data Karyawan";
+            btnSubmit.innerText = "Update";
+            mode.value = "edit";
+            karyawanId.value = id;
 
-function saveKaryawanData(data) {
-    localStorage.setItem("karyawans", JSON.stringify(data));
-}
-
-function renderTable() {
-    const tbody = document.getElementById("tableBody");
-    tbody.innerHTML = "";
-
-    const data = getKaryawanData();
-    data.forEach((k, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${k.id}</td>
-            <td>${k.nama}</td>
-            <td>${k.email}</td>
-            <td>${k.telepon}</td>
-            <td>${k.role}</td>
-            <td>${k.status}</td>
-        `;
-        tr.dataset.index = index;
-        tbody.appendChild(tr);
+            idKaryawan.value = data.id;
+            namaKaryawan.value = data.nama;
+            emailKaryawan.value = data.email;
+            teleponKaryawan.value = data.telepon;
+            roleKaryawan.value = data.role;
+            statusKaryawan.value = data.status;
+        };
     });
-}
 
-// =========================
-// TAMBAH & EDIT DATA
-// =========================
-document.addEventListener("submit", function (e) {
-    if (e.target && e.target.id === "formKaryawan") {
-        e.preventDefault();
 
-        const id = document.getElementById("idKaryawan").value;
-        const nama = document.getElementById("namaKaryawan").value;
-        const email = document.getElementById("emailKaryawan").value;
-        const telepon = document.getElementById("teleponKaryawan").value;
-        const role = document.getElementById("roleKaryawan").value;
-        const status = document.getElementById("statusKaryawan").value;
 
-        let data = getKaryawanData();
-        const index = data.findIndex(k => k.id === id);
+    // ======================
+    // DELETE DATA
+    // ======================
+    document.querySelectorAll(".btnDelete").forEach(btn => {
+        btn.onclick = async () => {
+            if (!confirm("Yakin hapus data?")) return;
 
-        if (index >= 0) {
-            // UPDATE
-            data[index] = { id, nama, email, telepon, role, status };
-            alert("Data karyawan berhasil diupdate");
-        } else {
-            // CREATE
-            data.push({ id, nama, email, telepon, role, status });
-            alert("Data karyawan berhasil ditambahkan");
-        }
+            await fetch(`/karyawan/${btn.dataset.id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                }
+            });
 
-        saveKaryawanData(data);
-        renderTable();
-        document.querySelector(".modal")?.remove();
-    }
-});
+            location.reload();
+        };
+    });
 
-// =========================
-// PILIH BARIS UNTUK EDIT / DELETE
-// =========================
-let selectedIndex = null;
 
-document.getElementById("tableBody").addEventListener("click", function (e) {
-    const row = e.target.closest("tr");
-    if (!row) return;
+    // ======================
+    // SUBMIT CREATE & EDIT
+    // ======================
+    function handleSubmit() {
+        formKaryawan.onsubmit = async e => {
+            e.preventDefault();
 
-    selectedIndex = row.dataset.index;
+            const payload = {
+                nama: namaKaryawan.value,
+                email: emailKaryawan.value,
+                telepon: teleponKaryawan.value,
+                role: roleKaryawan.value,
+                status: statusKaryawan.value
+            };
 
-    document.querySelectorAll("#tableBody tr").forEach(tr => tr.classList.remove("active"));
-    row.classList.add("active");
-});
+            const url = mode.value === "create"
+                ? "/karyawan"
+                : `/karyawan/${karyawanId.value}`;
 
-// =========================
-// ISI DATA SAAT EDIT
-// =========================
-document.getElementById("btnEditKaryawan").addEventListener("click", function () {
-    if (selectedIndex === null) {
-        alert("Pilih data terlebih dahulu");
-        return;
-    }
+            const method = mode.value === "create" ? "POST" : "PUT";
 
-    setTimeout(() => {
-        const data = getKaryawanData()[selectedIndex];
-        if (!data) return;
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrf
+                },
+                body: JSON.stringify(payload)
+            });
 
-        document.getElementById("idKaryawan").value = data.id;
-        document.getElementById("namaKaryawan").value = data.nama;
-        document.getElementById("emailKaryawan").value = data.email;
-        document.getElementById("teleponKaryawan").value = data.telepon;
-        document.getElementById("roleKaryawan").value = data.role;
-        document.getElementById("statusKaryawan").value = data.status;
-    }, 300);
-});
-
-// =========================
-// HAPUS DATA
-// =========================
-document.getElementById("btnDeleteKaryawan").addEventListener("click", function () {
-    if (selectedIndex === null) {
-        alert("Pilih data terlebih dahulu");
-        return;
+            if (res.ok) {
+                alert(`Data berhasil ${mode.value === "create" ? "disimpan" : "diupdate"}`);
+                location.reload();
+            }
+        };
     }
 
-    if (confirm("Yakin ingin menghapus data karyawan?")) {
-        let data = getKaryawanData();
-        data.splice(selectedIndex, 1);
-        saveKaryawanData(data);
-        renderTable();
-        selectedIndex = null;
-        alert("Data karyawan berhasil dihapus");
-    }
-});
+    const filterNama = document.getElementById("filterNama");
+    const filterRole = document.getElementById("filterRole");
 
-// =========================
-// LOAD AWAL
-// =========================
-renderTable();
+    function filterTable() {
+        const nama = filterNama.value.toLowerCase();
+        const role = filterRole.value.toLowerCase();
+
+        document.querySelectorAll("tbody tr").forEach(row => {
+            const rowNama = row.dataset.nama || "";
+            const rowRole = row.dataset.role || "";
+
+            const cocokNama = !nama || rowNama === nama;
+            const cocokRole = !role || rowRole === role;
+
+            row.style.display = cocokNama && cocokRole ? "" : "none";
+        });
+    }
+
+    filterNama.addEventListener("change", filterTable);
+    filterRole.addEventListener("change", filterTable);
 
 });
