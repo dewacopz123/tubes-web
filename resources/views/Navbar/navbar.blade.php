@@ -15,7 +15,7 @@
     </div>
     <nav class="sidebar-nav">
       <ul>
-        <li><a href="{{ url('/dahboard') }}"><img src="../../asset/icon/dashboard.png"><span>Dashboard</span></a></li>
+        <li><a href="{{ url('/dashboard') }}"><img src="../../asset/icon/dashboard.png"><span>Dashboard</span></a></li>
         <li><a href="{{ url('/absensi') }}"><img src="../../asset/icon/absensi.png"><span>Absensi</span></a></li>
         <li><a href="{{ url('/karyawan') }}"><img src="../../asset/icon/data_karyawan.png"><span>Data Karyawan</span></a></li>
         <li><a href="{{ url('/jobdesk') }}"><img src="../../asset/icon/data_jobdesk.png"><span>Data Jobdesk</span></a></li>
