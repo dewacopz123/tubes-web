@@ -13,54 +13,51 @@ class KaryawanController extends Controller
         return view('karyawan.index', compact('karyawans'));
     }
 
-    public function create()
-    {
-        return view('karyawan.create');
-    }
-
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama' => 'required',
-            'email' => 'required|email|unique:karyawans',
+            'email' => 'required|email|unique:karyawans,email',
             'telepon' => 'required',
             'role' => 'required',
             'status' => 'required'
         ]);
 
-        Karyawan::create($request->all());
+        // Tambahkan default password
+        $validated['password'] = bcrypt('123456');
 
-        return response()->json(['success' => true]);
+        // Simpan ke database
+        $karyawan = Karyawan::create($validated);
+
+        return response()->json(['success' => true, 'id' => $karyawan->id]);
     }
+
 
     public function show($id)
     {
-        return response()->json(
-            Karyawan::findOrFail($id)
-        );
+        return response()->json(Karyawan::findOrFail($id));
     }
-
 
     public function update(Request $request, $id)
     {
         $karyawan = Karyawan::findOrFail($id);
 
-        $karyawan->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'telepon' => $request->telepon,
-            'role' => $request->role,
-            'status' => $request->status
+        $validated = $request->validate([
+            'nama' => 'required',
+            'email' => 'required|email|unique:karyawans,email,' . $karyawan->id,
+            'telepon' => 'required',
+            'role' => 'required',
+            'status' => 'required'
         ]);
+
+        $karyawan->update($validated);
 
         return response()->json(['success' => true]);
     }
 
-
     public function destroy($id)
     {
         Karyawan::findOrFail($id)->delete();
-
         return response()->json(['success' => true]);
     }
 }

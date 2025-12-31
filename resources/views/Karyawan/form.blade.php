@@ -8,11 +8,6 @@
             <input type="hidden" id="karyawanId">
 
             <div class="form-group">
-                <label for="idKaryawan">ID Karyawan</label>
-                <input type="text" id="idKaryawan" class="form-control" required />
-            </div>
-
-            <div class="form-group">
                 <label for="namaKaryawan">Nama</label>
                 <input type="text" id="namaKaryawan" class="form-control" required />
             </div>
