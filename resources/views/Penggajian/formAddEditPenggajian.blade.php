@@ -1,34 +1,36 @@
 <div class="modal-form-overlay">
     <div class="modal-form">
-        <h3>{{ isset($penggajian) ? 'Edit Penggajian' : 'Tambah Penggajian' }}</h3>
+
+        <h3 id="modalTitle">Tambah Penggajian</h3>
 
         <form id="formPenggajian">
             @csrf
-            <input type="hidden" id="penggajian_id" value="{{ $penggajian->id ?? '' }}">
+
+            <input type="hidden" id="mode" value="create">
+            <input type="hidden" id="penggajian_id">
 
             <div class="form-group">
                 <label>Nama Karyawan</label>
-                <select id="karyawan_id" class="form-control" name="karyawan_id">
+                <select id="karyawan_id" class="form-control">
                     <option value="">Pilih Karyawan</option>
                     @foreach($karyawans as $k)
-                        <option value="{{ $k->id }}"
-                            {{ isset($penggajian) && $penggajian->karyawan_id == $k->id ? 'selected' : '' }}>
-                            {{ $k->nama }}
-                        </option>
+                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group">
                 <label>Tanggal</label>
-                <input type="date" id="tanggal" name="tanggal" class="form-control"
-                    value="{{ $penggajian->tanggal ?? '' }}">
+                <input
+        type="date"
+        id="tanggal"
+        class="form-control"
+    >
             </div>
 
             <div class="form-group">
                 <label>Gaji Pokok</label>
-                <input type="number" id="gaji_pokok" name="gaji_pokok" class="form-control"
-                    value="{{ $penggajian->gaji_pokok ?? '' }}">
+                <input type="number" id="gaji_pokok" class="form-control">
             </div>
 
             <div class="button-group">
@@ -36,5 +38,6 @@
                 <button type="button" class="btn-danger" data-close>Batal</button>
             </div>
         </form>
+
     </div>
 </div>

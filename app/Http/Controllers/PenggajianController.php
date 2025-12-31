@@ -2,86 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penggajian;
+use App\Models\Karyawan;
 use Illuminate\Http\Request;
-use App\Repositories\PenggajianRepositoryInterface;
-use App\Repositories\KaryawanRepositoryInterface;
+use Carbon\Carbon;
 
 class PenggajianController extends Controller
 {
-    protected $penggajianRepo;
-    protected $karyawanRepo;
-
-    public function __construct(
-        PenggajianRepositoryInterface $penggajianRepo,
-        KaryawanRepositoryInterface $karyawanRepo
-    ) {
-        $this->penggajianRepo = $penggajianRepo;
-        $this->karyawanRepo  = $karyawanRepo;
-    }
-
     public function index()
     {
-        return view('Penggajian.penggajian', [
-            'penggajians' => $this->penggajianRepo->getAll(),
-            'karyawans'   => $this->karyawanRepo->all()
+        return view('penggajian.penggajian', [
+            'penggajians' => Penggajian::with('karyawan')->get(),
+            'karyawans' => Karyawan::all()
         ]);
     }
 
     public function create()
-    {
-        $karyawans = $this->karyawanRepo->all();
-        return view('Penggajian.modal_form', compact('karyawans'));
-    }
+{
+    return view('penggajian.formaddeditpenggajian', [
+        'karyawans' => Karyawan::all()
+    ]);
+}
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'karyawan_id' => 'required|exists:karyawans,id',
-            'tanggal'     => 'required|date',
-            'gaji_pokok'  => 'required|numeric|min:0'
-        ]);
+{
+    $tanggal = $request->tanggal;
 
-        // Auto-generate kode penggajian
-        $validated['kode_penggajian'] = 'PG-' . time();
-
-        $penggajian = $this->penggajianRepo->store($validated);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data penggajian berhasil ditambahkan',
-            'data' => $penggajian->load('karyawan')
-        ]);
+    if (str_contains($tanggal, '/')) {
+        $tanggal = Carbon::createFromFormat('d/m/Y', $tanggal)
+            ->format('Y-m-d');
     }
 
-    public function edit($id)
+    Penggajian::create([
+        'kode_penggajian' => 'PG-' . time(),
+        'karyawan_id' => $request->karyawan_id,
+        'tanggal' => $tanggal,
+        'gaji_pokok' => $request->gaji_pokok
+    ]);
+
+    return response()->json(['success' => true]);
+}
+
+    public function show($id)
     {
-        $penggajian = $this->penggajianRepo->find($id);
-        $karyawans = $this->karyawanRepo->all();
-        return view('Penggajian.modal_form', compact('penggajian', 'karyawans'));
+        return Penggajian::findOrFail($id);
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'karyawan_id' => 'required|exists:karyawans,id',
-            'tanggal'     => 'required|date',
-            'gaji_pokok'  => 'required|numeric|min:0'
+        $penggajian = Penggajian::findOrFail($id);
+
+        $penggajian->update([
+            'karyawan_id' => $request->karyawan_id,
+            'tanggal' => $request->tanggal,
+            'gaji_pokok' => $request->gaji_pokok
         ]);
 
-        $penggajian = $this->penggajianRepo->update($id, $validated);
-        $updated = $this->penggajianRepo->find($id);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data penggajian berhasil diperbarui',
-            'data' => $updated->load('karyawan')
-        ]);
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)
     {
-        $this->penggajianRepo->delete($id);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data penggajian berhasil dihapus'
-        ]);
+        Penggajian::findOrFail($id)->delete();
+        return response()->json(['success' => true]);
     }
 }
