@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,33 +14,36 @@
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
 
-{{-- Navbar --}}
-@include('navbar.navbar')
+    {{-- Navbar --}}
+    @include('navbar.navbar')
 
-<div class="main-wrapper">
+    <div class="main-wrapper">
 
-    <main class="page-content">
+        <main class="page-content">
 
-        <h1 class="page-title">Absensi</h1>
+            <h1 class="page-title">Absensi</h1>
 
-        {{-- BUTTON ABSENSI --}}
-        <div class="card-content">
+            {{-- BUTTON ABSENSI --}}
+            <div class="card-content">
+                <label for="selectKaryawan">Pilih Karyawan:</label>
+                <select id="selectKaryawan" class="form-control">
+                    @foreach($karyawans as $k)
+                    <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="button-group-horizontal">
                 <button class="btn btn-primary btn-full" id="btnMasukKerja">
                     <i class="fas fa-sign-in-alt"></i> Masuk Kerja
                 </button>
-
                 <button class="btn btn-danger btn-full" id="btnKeluarKerja">
                     <i class="fas fa-sign-out-alt"></i> Selesai Kerja
                 </button>
             </div>
-        </div>
-
-        {{-- TABLE ABSENSI --}}
-        <div class="card-content">
-            <h3>Data Absensi</h3>
 
             <table class="table-absensi">
                 <thead>
@@ -47,47 +51,40 @@
                         <th>ID</th>
                         <th>Nama</th>
                         <th>Email</th>
-                        <th>Tanggal & Waktu</th>
+                        <th>Tanggal</th>
+                        <th>Jam Masuk</th>
+                        <th>Jam Keluar</th>
                         <th>Status</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    {{-- CONTOH DATA --}}
+                    @foreach($absensis as $a)
                     <tr>
-                        <td>001</td>
-                        <td>John Doe</td>
-                        <td>john@example.com</td>
-                        <td>2023-10-20 08:30</td>
-                        <td>
-                            <span class="status-badge active">Masuk</span>
-                        </td>
+                        <td>{{ $a->id }}</td>
+                        <td>{{ $a->karyawan->nama }}</td>
+                        <td>{{ $a->karyawan->email }}</td>
+                        <td>{{ $a->tanggal }}</td>
+                        <td>{{ $a->jam_masuk ?? '-' }}</td>
+                        <td>{{ $a->jam_keluar ?? '-' }}</td>
+                        <td>{{ $a->status }}</td>
                     </tr>
-
-                    <tr>
-                        <td>002</td>
-                        <td>Jane Smith</td>
-                        <td>jane@example.com</td>
-                        <td>2023-10-20 17:00</td>
-                        <td>
-                            <span class="status-badge done">Selesai</span>
-                        </td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
-        </div>
 
-    </main>
 
-    {{-- Popup --}}
-    <div id="popupContainer"></div>
+        </main>
 
-</div>
+        {{-- Popup --}}
+        <div id="popupContainer"></div>
 
-{{-- JS --}}
-<script src="{{ asset('js/load_navbar.js') }}"></script>
-<script src="{{ asset('js/absensi.js') }}"></script>
-<script src="{{ asset('js/navbar.js') }}"></script>
+    </div>
+
+    {{-- JS --}}
+    <script src="{{ asset('js/load_navbar.js') }}"></script>
+    <script src="{{ asset('js/absensi.js') }}"></script>
+    <script src="{{ asset('js/navbar.js') }}"></script>
 
 </body>
+
 </html>
