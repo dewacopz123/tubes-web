@@ -12,12 +12,12 @@ class Karyawan extends Authenticatable
     protected $table = 'karyawans';
 
     protected $fillable = [
-        'kode_karyawan',
         'nama',
         'email',
-        'password',
+        'telepon', // ✅ tambahkan telepon
         'role',
-        'status'
+        'status',
+        'password' // harus ada karena kita buat default
     ];
 
     protected $hidden = ['password'];
@@ -37,6 +37,4 @@ class Karyawan extends Authenticatable
     {
         return $this->hasMany(Penggajian::class);
     }
-
 }
-

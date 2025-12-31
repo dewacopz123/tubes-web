@@ -34,7 +34,7 @@
                     <select id="filterNama" class="searchCategory">
                         <option value="">Semua</option>
                         @foreach($karyawans as $k)
-                            <option value="{{ $k->nama }}">{{ $k->nama }}</option>
+                        <option value="{{ $k->nama }}">{{ $k->nama }}</option>
                         @endforeach
                     </select>
 
@@ -60,6 +60,7 @@
                 <table class="table-absensi">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Telepon</th>
@@ -70,36 +71,37 @@
                     </thead>
                     <tbody>
                         @forelse($karyawans as $k)
-                            <tr>
-                            <tr data-nama="{{ strtolower($k->nama) }}" data-role="{{ strtolower($k->role) }}">
-                                <td>{{ $k->nama }}</td>
-                                <td>{{ $k->email }}</td>
-                                <td>{{ $k->telepon }}</td>
-                                <td>{{ $k->role }}</td>
-                                <td>
-                                    <span class="badge
+                        <tr>
+                        <tr data-nama="{{ strtolower($k->nama) }}" data-role="{{ strtolower($k->role) }}">
+                            <td>{{ $k->id }}</td>
+                            <td>{{ $k->nama }}</td>
+                            <td>{{ $k->email }}</td>
+                            <td>{{ $k->telepon }}</td>
+                            <td>{{ $k->role }}</td>
+                            <td>
+                                <span class="badge
                                                         {{ $k->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
-                                        {{ $k->status }}
-                                    </span>
-                                </td>
+                                    {{ $k->status }}
+                                </span>
+                            </td>
 
-                                <td class="aksi-icon">
-                                    <button class="btnEdit icon-btn edit" data-id="{{ $k->id }}" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
+                            <td class="aksi-icon">
+                                <button class="btnEdit icon-btn edit" data-id="{{ $k->id }}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
 
-                                    <button class="btnDelete icon-btn delete" data-id="{{ $k->id }}" title="Hapus">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
+                                <button class="btnDelete icon-btn delete" data-id="{{ $k->id }}" title="Hapus">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
 
-                            </tr>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="6" style="text-align:center">
-                                    Data karyawan belum tersedia
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="6" style="text-align:center">
+                                Data karyawan belum tersedia
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>

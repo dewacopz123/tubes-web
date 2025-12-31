@@ -22,11 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const html = await fetch('/karyawan/form').then(r => r.text());
         openModal(html);
 
-        modalTitle.innerText = "Tambah Data Karyawan";
-        btnSubmit.innerText = "Simpan";
-        mode.value = "create";
-        formKaryawan.reset();
+        document.getElementById("modalTitle").innerText = "Tambah Data Karyawan";
+        document.getElementById("btnSubmit").innerText = "Simpan";
+        document.getElementById("mode").value = "create";
+        document.getElementById("formKaryawan").reset();
     };
+
 
     // ======================
     // EDIT DATA
@@ -40,19 +41,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             openModal(formHtml);
 
-            modalTitle.innerText = "Edit Data Karyawan";
-            btnSubmit.innerText = "Update";
-            mode.value = "edit";
-            karyawanId.value = id;
+            document.getElementById("modalTitle").innerText = "Edit Data Karyawan";
+            document.getElementById("btnSubmit").innerText = "Update";
+            document.getElementById("mode").value = "edit";
+            document.getElementById("karyawanId").value = id;
 
-            idKaryawan.value = data.id;
-            namaKaryawan.value = data.nama;
-            emailKaryawan.value = data.email;
-            teleponKaryawan.value = data.telepon;
-            roleKaryawan.value = data.role;
-            statusKaryawan.value = data.status;
+            document.getElementById("namaKaryawan").value = data.nama;
+            document.getElementById("emailKaryawan").value = data.email;
+            document.getElementById("teleponKaryawan").value = data.telepon;
+            document.getElementById("roleKaryawan").value = data.role;
+            document.getElementById("statusKaryawan").value = data.status;
         };
     });
+
 
 
 
@@ -79,38 +80,90 @@ document.addEventListener("DOMContentLoaded", () => {
     // SUBMIT CREATE & EDIT
     // ======================
     function handleSubmit() {
-        formKaryawan.onsubmit = async e => {
+        const form = document.getElementById("formKaryawan");
+
+        const modalTitle = document.getElementById("modalTitle");
+        const btnSubmit = document.getElementById("btnSubmit");
+        const mode = document.getElementById("mode");
+        const karyawanId = document.getElementById("karyawanId");
+
+        const namaKaryawan = document.getElementById("namaKaryawan");
+        const emailKaryawan = document.getElementById("emailKaryawan");
+        const teleponKaryawan = document.getElementById("teleponKaryawan");
+        const roleKaryawan = document.getElementById("roleKaryawan");
+        const statusKaryawan = document.getElementById("statusKaryawan");
+
+        form.onsubmit = async function (e) {
             e.preventDefault();
 
-            const payload = {
-                nama: namaKaryawan.value,
-                email: emailKaryawan.value,
-                telepon: teleponKaryawan.value,
-                role: roleKaryawan.value,
-                status: statusKaryawan.value
-            };
+            // =========================
+            // CREATE (FormData)
+            // =========================
+            if (mode.value === "create") {
+                const formData = new FormData();
+                formData.append("nama", namaKaryawan.value);
+                formData.append("email", emailKaryawan.value);
+                formData.append("telepon", teleponKaryawan.value); // harus ada
+                formData.append("role", roleKaryawan.value);
+                formData.append("status", statusKaryawan.value);
 
-            const url = mode.value === "create"
-                ? "/karyawan"
-                : `/karyawan/${karyawanId.value}`;
+                const res = await fetch("/karyawan", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrf
+                    },
+                    body: formData
+                });
 
-            const method = mode.value === "create" ? "POST" : "PUT";
+                if (!res.ok) {
+                    const err = await res.text();
+                    console.error(err);
+                    alert("Gagal menyimpan data");
+                    return;
+                }
 
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrf
-                },
-                body: JSON.stringify(payload)
-            });
+                alert("Data berhasil disimpan");
+                location.reload();
+                return;
+            }
 
-            if (res.ok) {
-                alert(`Data berhasil ${mode.value === "create" ? "disimpan" : "diupdate"}`);
+
+            // =========================
+            // EDIT (JSON – BIARKAN)
+            // =========================
+            if (mode.value === "edit") {
+
+                const payload = {
+                    nama: namaKaryawan.value,
+                    email: emailKaryawan.value,
+                    telepon: teleponKaryawan.value,
+                    role: roleKaryawan.value,
+                    status: statusKaryawan.value
+                };
+
+                const res = await fetch(`/karyawan/${karyawanId.value}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrf
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const err = await res.text();
+                    console.error(err);
+                    alert("Gagal mengupdate data");
+                    return;
+                }
+
+                alert("Data berhasil diupdate");
                 location.reload();
             }
         };
+
     }
+
 
     const filterNama = document.getElementById("filterNama");
     const filterRole = document.getElementById("filterRole");
