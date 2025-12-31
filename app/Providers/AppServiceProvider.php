@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\KaryawanRepository;
 use App\Repositories\KaryawanRepositoryInterface;
+use App\Repositories\PenggajianRepositoryInterface;
+use App\Repositories\PenggajianRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +17,12 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
         KaryawanRepositoryInterface::class,
-        KaryawanRepository::class
+        KaryawanRepository::class,
+        );
+
+        $this->app->bind(
+        PenggajianRepositoryInterface::class,
+        PenggajianRepository::class
     );
     }
 

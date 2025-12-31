@@ -9,8 +9,6 @@ class Penggajian extends Model
 {
     use HasFactory;
 
-    protected $table = 'penggajians';
-
     protected $fillable = [
         'karyawan_id',
         'tanggal',
@@ -22,3 +20,4 @@ class Penggajian extends Model
         return $this->belongsTo(Karyawan::class);
     }
 }
+

@@ -1,65 +1,114 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Etos Kerja - Data Penggajian</title>
-    <link rel="stylesheet" href="../../asset/css/menu_style.css">
-    <link rel="stylesheet" href="../../asset/css/formAddEdit.css">
+
+    {{-- CSRF --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- CSS --}}
+    <link rel="stylesheet" href="{{ asset('css/menu_style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/formAddEdit.css') }}">
+
+    {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
-    <!-- navbar placeholder -->
-    <div id="navbar-placeholder" data-src="../Navbar/navbar.html"></div>
 
-    <div id="main-wrapper" class="main-wrapper">
+    {{-- NAVBAR --}}
+    @include('Navbar.navbar')
+
+    <div class="main-wrapper">
         <main class="page-content">
+
             <h2>Data Penggajian</h2>
 
+            {{-- FILTER --}}
             <div class="card-content">
                 <div>
-                    <label for="searchNama" class="">Nama Karyawan</label>
-                    <select class="searchCategory" id="searchNama">
-                        <option value="">Choose</option>
+                    <label>Nama Karyawan</label>
+                    <select id="filterNama" class="searchCategory">
+                        <option value="">Semua</option>
+                        @foreach($karyawans as $k)
+                            <option value="{{ strtolower($k->nama) }}">{{ $k->nama }}</option>
+                        @endforeach
                     </select>
-                    <label for="searchTanggal" class="">Tanggal</label>
-                    <input type="date" class="searchCategory" id="searchTanggal" />
+
+                    <label>Tanggal</label>
+                    <input type="date" id="filterTanggal" class="searchCategory">
                 </div>
             </div>
 
-            <button id="btnAddPenggajian" class="btn-primary">Tambah</button>
-            <button id="btnEditPenggajian" class="btn-warning">Edit</button>
-            <button id="btnDeletePenggajian" class="btn-danger">Hapus</button>
+            {{-- BUTTON TAMBAH --}}
+            <button id="btnAddPenggajian" class="btn btn-primary btn-long">
+                <i class="fas fa-plus"></i> Tambah Data Penggajian
+            </button>
 
-            <!-- Tempat popup muncul -->
-            <div id="popupContainer"></div>
-
+            {{-- TABLE --}}
             <div class="card-content">
                 <h3>Tabel Data Penggajian</h3>
+
                 <table class="table-absensi">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Kode</th>
                             <th>Nama Karyawan</th>
                             <th>Tanggal</th>
                             <th>Gaji Pokok</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
-                        <tr>
-                            <td>PG001</td>
-                            <td>John Doe</td>
-                            <td>2025-10-25</td>
-                            <td>5.000.000</td>
-                        </tr>
+                    <tbody>
+                        @forelse($penggajians as $pg)
+                            <tr
+                                data-nama="{{ strtolower($pg->karyawan->nama) }}"
+                                data-tanggal="{{ $pg->tanggal }}"
+                            >
+                                <td>{{ $pg->kode_penggajian }}</td>
+                                <td>{{ $pg->karyawan->nama }}</td>
+                                <td>{{ $pg->tanggal }}</td>
+                                <td>{{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
+
+                                <td class="aksi-icon">
+                                    <button class="btnEdit icon-btn edit"
+                                        data-id="{{ $pg->id }}"
+                                        title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <button class="btnDelete icon-btn delete"
+                                        data-id="{{ $pg->id }}"
+                                        title="Hapus">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="text-align:center">
+                                    Data penggajian belum tersedia
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
+
+            {{-- MODAL CONTAINER --}}
+            <div id="popupContainer"></div>
+
         </main>
     </div>
 
-    <script src="../../asset/js/load_navbar.js"></script>
-    <script src="../../asset/js/penggajihan.js"></script>
+    {{-- JS --}}
+    <script src="{{ asset('js/load_navbar.js') }}"></script>
+    <script src="{{ asset('js/navbar.js') }}"></script>
+    <script src="{{ asset('js/penggajian.js') }}"></script>
+
 </body>
+
 </html>
