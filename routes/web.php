@@ -4,16 +4,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\JobdeskController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 Route::post('/logout', [LoginController::class, 'logout']);
 
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+
 Route::get('/absensi', [AbsensiController::class, 'index']);
 Route::post('/absensi/masuk', [AbsensiController::class, 'masuk']);
 Route::post('/absensi/keluar', [AbsensiController::class, 'keluar']);
 
-
+Route::get('/jobdesk', [JobdeskController::class, 'index']);
+Route::post('/jobdesk', [JobdeskController::class, 'store']);
+Route::get('/jobdesk/form', [JobdeskController::class, 'form']);
+Route::get('/jobdesk/{id}', [JobdeskController::class, 'show']);      // ambil data edit
+Route::put('/jobdesk/{id}', [JobdeskController::class, 'update']);    // update
+Route::delete('/jobdesk/{id}', [JobdeskController::class, 'destroy']); // hapus
 
 Route::get('/karyawan', [KaryawanController::class, 'index']);
 

@@ -28,5 +28,15 @@ class Karyawan extends Authenticatable
         return $this->hasMany(Absensi::class);
     }
 
+    public function jobdesks()
+    {
+        return $this->hasMany(Jobdesk::class);
+    }
+
+    public function penggajians()
+    {
+        return $this->hasMany(Penggajian::class);
+    }
+
 }
 
