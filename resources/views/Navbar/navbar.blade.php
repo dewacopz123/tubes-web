@@ -19,7 +19,7 @@
         <li><a href="{{ url('/absensi') }}"><img src="../../asset/icon/absensi.png"><span>Absensi</span></a></li>
         <li><a href="{{ url('/karyawan') }}"><img src="../../asset/icon/data_karyawan.png"><span>Data Karyawan</span></a></li>
         <li><a href="{{ url('/jobdesk') }}"><img src="../../asset/icon/data_jobdesk.png"><span>Data Jobdesk</span></a></li>
-        <li><a href="{{ url('/pengajian') }}"><img src="../../asset/icon/penggajihan.png"><span>Penggajian</span></a></li>
+        <li><a href="{{ url('/penggajian') }}"><img src="../../asset/icon/penggajihan.png"><span>Penggajian</span></a></li>
         <li class="menu-divider">ACCOUNT PAGES</li>
         <li><a href="{{ url('/profile') }}"><img src="../../asset/icon/profile.png"><span>Profile</span></a>
         </li>
