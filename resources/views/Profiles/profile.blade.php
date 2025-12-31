@@ -2,80 +2,84 @@
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Etos Kerja - Edit Profile</title>
-  <link rel="stylesheet" href="../../asset/css/menu_style.css">
-  <link rel="stylesheet" href="../../asset/css/formAddEdit.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Etos Kerja - Profile</title>
 
+    {{-- CSS --}}
+    <link rel="stylesheet" href="{{ asset('css/menu_style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/formAddEdit.css') }}">
 </head>
 
 <body>
 
-  <div id="navbar-placeholder" data-src="../Navbar/navbar.html"></div>
+    {{-- NAVBAR --}}
+    @include('Navbar.navbar')
 
-  <div id="main-wrapper" class="main-wrapper">
+    <div class="main-wrapper">
+        <main class="profile">
+            <section class="container">
 
-    <main class="profile">
-      <section class="container">
-        <div class="header">
-          <h2 class="title">Edit Profile</h2>
-          <img src="../../asset/img/akbar.png" alt="User Photo" class="photo" id="profilePhoto" >
+                <div class="header">
+                    <h2 class="title">Edit Profile</h2>
+                    <img
+                        src="{{ asset('img/default-user.png') }}"
+                        alt="User Photo"
+                        class="photo"
+                        id="profilePhoto">
+                </div>
 
-        </div>
+                <form class="form">
 
-        <form class="form">
-          <div class="group">
-            <label for="id">ID</label>
-            <input type="text" id="id" placeholder="USR-00123">
-          </div>
+                    <div class="group">
+                        <label>ID</label>
+                        <input type="text" value="KRY-001" disabled>
+                    </div>
 
-          <div class="row">
-            <div class="group">
-              <label for="name">Nama</label>
-              <input type="text" id="name" placeholder="Muhammad Akbar Alfarizi">
-            </div>
-            <div class="group">
-              <label for="email">Email</label>
-              <input type="email" id="email" placeholder="akbaralfarizi@email.com">
-            </div>
-          </div>
+                    <div class="row">
+                        <div class="group">
+                            <label>Nama</label>
+                            <input type="text" value="Nama Karyawan">
+                        </div>
 
-          <div class="row">
-            <div class="group">
-              <label for="phone">Telepon</label>
-              <input type="text" id="phone" placeholder="+62 812-3456-7890">
-            </div>
-            <div class="group">
-              <label for="role">Role</label>
-              <input type="text" id="role" value="Karyawan" disabled>
-            </div>
-          </div>
+                        <div class="group">
+                            <label>Email</label>
+                            <input type="email" value="karyawan@email.com">
+                        </div>
+                    </div>
 
-          <div class="row">
-            <div class="group">
-              <label for="status">Status</label>
-              <input type="text" id="status" value="Aktif" disabled>
-            </div>
-            <div class="group">
+                    <div class="row">
+                        <div class="group">
+                            <label>Telepon</label>
+                            <input type="text" value="+62 812-3456-7890">
+                        </div>
 
-            </div>
-          </div>
+                        <div class="group">
+                            <label>Role</label>
+                            <input type="text" value="Karyawan" disabled>
+                        </div>
+                    </div>
 
-          <div>
-            <button type="button" class="btn-danger">Cancel</button>
-            <button type="submit" class="btn-jobdesk">Save</button>
-          </div>
-        </form>
-      </section>
-    </main>
-  </div>
+                    <div class="row">
+                        <div class="group">
+                            <label>Status</label>
+                            <input type="text" value="Aktif" disabled>
+                        </div>
+                        <div class="group"></div>
+                    </div>
 
-   
-  <script src="../../asset/js/load_navbar.js"></script>
-  <script src="../../asset/js/profile.js"></script>
-  <script src="../../asset/js/navbar.js"></script>
+                    <div class="button-group">
+                        <button type="button" class="btn-danger">Cancel</button>
+                        <button type="button" class="btn-jobdesk">Save</button>
+                    </div>
+
+                </form>
+            </section>
+        </main>
+    </div>
+
+    {{-- JS --}}
+    <script src="{{ asset('js/navbar.js') }}"></script>
 
 </body>
-
 </html>
