@@ -681,3 +681,7 @@ h3.logo-text {
     background: #6c757d;
     color: #fff;
 }
+
+.icon-btn i {
+    pointer-events: none;
+}
