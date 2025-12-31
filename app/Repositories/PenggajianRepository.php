@@ -13,7 +13,7 @@ class PenggajianRepository implements PenggajianRepositoryInterface
 
     public function find($id)
     {
-        return Penggajian::findOrFail($id);
+        return Penggajian::with('karyawan')->findOrFail($id);
     }
 
     public function store(array $data)
@@ -23,7 +23,9 @@ class PenggajianRepository implements PenggajianRepositoryInterface
 
     public function update($id, array $data)
     {
-        return Penggajian::where('id', $id)->update($data);
+        $penggajian = Penggajian::findOrFail($id);
+        $penggajian->update($data);
+        return $penggajian;
     }
 
     public function delete($id)

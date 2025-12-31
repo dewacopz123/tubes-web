@@ -19,11 +19,6 @@ class PenggajianController extends Controller
         $this->karyawanRepo  = $karyawanRepo;
     }
 
-    /**
-     * =====================
-     * TAMPILKAN DATA
-     * =====================
-     */
     public function index()
     {
         return view('Penggajian.penggajian', [
@@ -32,11 +27,12 @@ class PenggajianController extends Controller
         ]);
     }
 
-    /**
-     * =====================
-     * SIMPAN DATA BARU
-     * =====================
-     */
+    public function create()
+    {
+        $karyawans = $this->karyawanRepo->all();
+        return view('Penggajian.modal_form', compact('karyawans'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -45,31 +41,24 @@ class PenggajianController extends Controller
             'gaji_pokok'  => 'required|numeric|min:0'
         ]);
 
-        $this->penggajianRepo->store($validated);
+        // Auto-generate kode penggajian
+        $validated['kode_penggajian'] = 'PG-' . time();
 
+        $penggajian = $this->penggajianRepo->store($validated);
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Data penggajian berhasil ditambahkan'
+            'status' => 'success',
+            'message' => 'Data penggajian berhasil ditambahkan',
+            'data' => $penggajian->load('karyawan')
         ]);
     }
 
-    /**
-     * =====================
-     * AMBIL DATA UNTUK EDIT
-     * =====================
-     */
     public function edit($id)
     {
-        return response()->json(
-            $this->penggajianRepo->find($id)
-        );
+        $penggajian = $this->penggajianRepo->find($id);
+        $karyawans = $this->karyawanRepo->all();
+        return view('Penggajian.modal_form', compact('penggajian', 'karyawans'));
     }
 
-    /**
-     * =====================
-     * UPDATE DATA
-     * =====================
-     */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -78,25 +67,20 @@ class PenggajianController extends Controller
             'gaji_pokok'  => 'required|numeric|min:0'
         ]);
 
-        $this->penggajianRepo->update($id, $validated);
-
+        $penggajian = $this->penggajianRepo->update($id, $validated);
+        $updated = $this->penggajianRepo->find($id);
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Data penggajian berhasil diperbarui'
+            'status' => 'success',
+            'message' => 'Data penggajian berhasil diperbarui',
+            'data' => $updated->load('karyawan')
         ]);
     }
 
-    /**
-     * =====================
-     * HAPUS DATA
-     * =====================
-     */
     public function destroy($id)
     {
         $this->penggajianRepo->delete($id);
-
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data penggajian berhasil dihapus'
         ]);
     }
