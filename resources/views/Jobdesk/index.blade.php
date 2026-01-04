@@ -34,9 +34,9 @@
                     </select>
                 </div>
             </div>
-
+            @if(Auth::user()->role === 'admin')
             <button id="btnAddJobdesk" class="btn-primary btn-long">Tambah Jobdesk</button>
-
+            @endif
             <div id="popupContainer"></div>
 
             <div class="card-content">
@@ -48,7 +48,9 @@
                             <th>Nama Jobdesk</th>
                             <th>Tugas Utama</th>
                             <th>Nama Karyawan</th>
+                            @if(Auth::user()->role === 'admin')
                             <th>Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -58,6 +60,7 @@
                             <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
                             <td>{{ $jobdesk->tugas_utama }}</td>
                             <td class="col-karyawan">{{ $jobdesk->karyawan->nama }}</td>
+                            @if(Auth::user()->role === 'admin')
                             <td class="action-cell">
                                 <button type="button" class="btn-edit icon-btn edit">
                                     <i class="fas fa-edit"></i>
@@ -66,6 +69,7 @@
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </td>
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>

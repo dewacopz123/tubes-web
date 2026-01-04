@@ -83,7 +83,7 @@
                             <td>{{ $k->role }}</td>
                             <td>
                                 <span class="badge
-                                                        {{ $k->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
+                                    {{ $k->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
                                     {{ $k->status }}
                                 </span>
                             </td>

@@ -22,12 +22,22 @@
 
 {{-- KHUSUS KARYAWAN --}}
 @auth
-@if(auth()->user()->role === 'karyawan')
+
 <div class="card-content">
-    <p><b>Nama:</b> {{ auth()->user()->nama }}</p>
-    <p><b>Email:</b> {{ auth()->user()->email }}</p>
+    <p>
+        <b>Nama:</b> {{ auth()->user()->nama }}
+    </p>
+
+    <p>
+        <b>Status:</b>
+        <span class="badge 
+            {{ auth()->user()->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
+            {{ auth()->user()->status }}
+        </span>
+    </p>
 </div>
 
+@if(auth()->user()->role === 'karyawan')
 <div class="button-group-horizontal">
     <button class="btn btn-primary btn-full" id="btnMasukKerja">
         <i class="fas fa-sign-in-alt"></i> Masuk Kerja
@@ -62,7 +72,15 @@
     <td>{{ $a->tanggal }}</td>
     <td>{{ $a->jam_masuk ?? '-' }}</td>
     <td>{{ $a->jam_keluar ?? '-' }}</td>
-    <td>{{ $a->status }}</td>
+    <td>
+        @if($a->status === 'Masuk')
+            <span class="badge badge-success">Masuk</span>
+        @elseif($a->status === 'Keluar')
+            <span class="badge badge-danger">Keluar</span>
+        @else
+            <span class="badge badge-secondary">{{ $a->status }}</span>
+        @endif
+    </td>
 </tr>
 @endforeach
 </tbody>

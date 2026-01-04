@@ -44,9 +44,11 @@
             </div>
 
             {{-- BUTTON TAMBAH --}}
+            @if(Auth::user()->role === 'admin')
             <button id="btnAddPenggajian" class="btn btn-primary btn-long">
                 <i class="fas fa-plus"></i> Tambah Data Penggajian
             </button>
+            @endif
 
             {{-- TABLE --}}
             <div class="card-content">
@@ -59,7 +61,9 @@
                             <th>Nama Karyawan</th>
                             <th>Tanggal</th>
                             <th>Gaji Pokok</th>
+                            @if(Auth::user()->role === 'admin')
                             <th>Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -72,7 +76,7 @@
                                 <td>{{ $pg->karyawan->nama }}</td>
                                 <td>{{ $pg->tanggal }}</td>
                                 <td>{{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
-
+                                @if(Auth::user()->role === 'admin')
                                 <td class="aksi-icon">
                                     <button class="btnEdit icon-btn edit"
                                         data-id="{{ $pg->id }}"
@@ -86,6 +90,7 @@
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>

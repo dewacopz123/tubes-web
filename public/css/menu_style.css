@@ -717,3 +717,24 @@ h3.logo-text {
 .success { border-left: 5px solid #28a745; }
 .danger { border-left: 5px solid #dc3545; }
 .warning { border-left: 5px solid #ffc107; }
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.badge-success {
+    background-color: #28a745; /* hijau */
+}
+
+.badge-danger {
+    background-color: #dc3545; /* merah */
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+}
+
