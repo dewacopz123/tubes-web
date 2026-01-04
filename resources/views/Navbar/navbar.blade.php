@@ -34,13 +34,21 @@
       <button class="btn-docs">DOCUMENTATION</button>
     </div>
   </div>
+  @php
+    use App\Models\Karyawan;
+
+    $karyawan = Karyawan::where('email', Auth::user()->email)->first();
+@endphp
 
   <header class="top-navbar">
     <button id="sidebar-toggle" class="toggle-btn"><i class="fas fa-bars"></i></button>
     <div class="navbar-right">
       <div class="user-profile">
         <img src="../../asset/img/profile.jpg" alt="User" class="profile-img">
-        <span>Mustafiq, Admin</span>
+        <span>
+    {{ $karyawan->nama ?? 'Nama Karyawan' }},
+    {{ ucfirst($karyawan->role ?? Auth::user()->role ?? 'User') }}
+</span>
       </div>
     </div>
   </header>

@@ -1,4 +1,57 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    /* ===================== FILTER JOBDESK & KARYAWAN ===================== */
+    const selectJobdesk = document.getElementById("searchJobdeskName");
+    const selectKaryawan = document.getElementById("searchKaryawanName");
+    const table = document.getElementById("jobdeskTable");
+    if (table) {
+        const rows = table.querySelectorAll("tbody tr");
+
+        const jobdeskSet = new Set();
+        const karyawanSet = new Set();
+
+        rows.forEach(row => {
+            const jobdeskCell = row.querySelector(".col-jobdesk");
+            const karyawanCell = row.querySelector(".col-karyawan");
+
+            if (jobdeskCell) jobdeskSet.add(jobdeskCell.textContent.trim());
+            if (karyawanCell) karyawanSet.add(karyawanCell.textContent.trim());
+        });
+
+        jobdeskSet.forEach(name => {
+            const opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            selectJobdesk.appendChild(opt);
+        });
+
+        karyawanSet.forEach(name => {
+            const opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            selectKaryawan.appendChild(opt);
+        });
+
+        function filterTable() {
+            const jobdeskVal = selectJobdesk.value;
+            const karyawanVal = selectKaryawan.value;
+
+            rows.forEach(row => {
+                const jobdeskText = row.querySelector(".col-jobdesk")?.textContent.trim();
+                const karyawanText = row.querySelector(".col-karyawan")?.textContent.trim();
+
+                const matchJobdesk = !jobdeskVal || jobdeskText === jobdeskVal;
+                const matchKaryawan = !karyawanVal || karyawanText === karyawanVal;
+
+                row.style.display = (matchJobdesk && matchKaryawan) ? "" : "none";
+            });
+        }
+
+        selectJobdesk.addEventListener("change", filterTable);
+        selectKaryawan.addEventListener("change", filterTable);
+    }
+
+    /* ===================== CRUD JOBDESK ===================== */
     const popupContainer = document.getElementById("popupContainer");
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -11,33 +64,32 @@ document.addEventListener("DOMContentLoaded", function () {
         removeModal(id);
         const modal = document.createElement("div");
         modal.id = id;
-        modal.className = "modal"; 
+        modal.className = "modal";
         modal.innerHTML = html;
         popupContainer.appendChild(modal);
 
-        // close modal
         modal.querySelectorAll("[data-close]").forEach(btn => {
             btn.addEventListener("click", () => modal.remove());
         });
 
-        // bind submit form
         const form = modal.querySelector("#formJobdesk");
         if (form) {
             form.addEventListener("submit", async function (e) {
                 e.preventDefault();
-                const id = form.querySelector("#jobdesk_id").value;
+
+                const jobdeskId = form.querySelector("#jobdesk_id").value;
                 const formData = new FormData(form);
-                const url = id ? `/jobdesk/${id}` : "/jobdesk";
-                if (id) formData.append("_method", "PUT");
+                const url = jobdeskId ? `/jobdesk/${jobdeskId}` : "/jobdesk";
+
+                if (jobdeskId) formData.append("_method", "PUT");
 
                 try {
                     const res = await fetch(url, {
                         method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken
-                        },
+                        headers: { "X-CSRF-TOKEN": csrfToken },
                         body: formData
                     });
+
                     const data = await res.json();
                     alert(data.message);
                     location.reload();
@@ -51,7 +103,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return modal;
     }
 
-    // ===== Add Jobdesk =====
     const btnAddJobdesk = document.getElementById("btnAddJobdesk");
     if (btnAddJobdesk) {
         btnAddJobdesk.addEventListener("click", async () => {
@@ -61,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ===== Edit Jobdesk =====
     document.addEventListener("click", async function (e) {
         const editBtn = e.target.closest(".btn-edit");
         if (editBtn) {
@@ -82,7 +132,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // ===== Delete Jobdesk =====
     document.addEventListener("click", async function (e) {
         const deleteBtn = e.target.closest(".btn-delete");
         if (deleteBtn) {
@@ -95,6 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: "DELETE",
                 headers: { "X-CSRF-TOKEN": csrfToken }
             });
+
             const data = await res.json();
             alert(data.message);
             location.reload();
