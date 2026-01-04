@@ -26,24 +26,17 @@ class JobdeskController extends Controller
             'karyawan_id' => 'required|exists:karyawans,id'
         ]);
 
-        Jobdesk::create($request->all());
+        Jobdesk::create($request->all()); // kode otomatis dibuat oleh model
+
         return response()->json(['message' => 'Jobdesk berhasil ditambahkan']);
     }
 
-    // Show
-    // Ambil data jobdesk (EDIT)
-    public function show($id)
-    {
-        return Jobdesk::findOrFail($id);
-    }
-
-    // Update jobdesk
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_jobdesk' => 'required',
-            'tugas_utama' => 'required',
-            'karyawan_id' => 'required'
+            'nama_jobdesk' => 'required|string',
+            'tugas_utama' => 'required|string',
+            'karyawan_id' => 'required|exists:karyawans,id'
         ]);
 
         $jobdesk = Jobdesk::findOrFail($id);
@@ -51,6 +44,12 @@ class JobdeskController extends Controller
 
         return response()->json(['message' => 'Jobdesk berhasil diupdate']);
     }
+
+    public function show($id)
+    {
+        return Jobdesk::findOrFail($id);
+    }
+
 
     // Hapus jobdesk
     public function destroy($id)

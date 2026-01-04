@@ -45,6 +45,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Kode Jobdesk</th>
                             <th>Nama Jobdesk</th>
                             <th>Tugas Utama</th>
                             <th>Nama Karyawan</th>
@@ -57,6 +58,7 @@
                         @foreach ($jobdesks as $jobdesk)
                         <tr data-id="{{ $jobdesk->id }}">
                             <td>{{ $jobdesk->id }}</td>
+                            <td>{{ $jobdesk->kode_jobdesk }}</td>
                             <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
                             <td>{{ $jobdesk->tugas_utama }}</td>
                             <td class="col-karyawan">{{ $jobdesk->karyawan->nama }}</td>

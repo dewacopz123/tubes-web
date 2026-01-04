@@ -1,34 +1,31 @@
 <div class="modal-form-overlay">
     <div class="modal-form">
-        <h3>Tambah Jobdesk</h3>
-
+        <span class="modal-close" data-close>&times;</span>
+        <h3 id="modalTitle">Jobdesk</h3>
         <form id="formJobdesk">
-            @csrf
+            <input type="hidden" id="jobdesk_id" name="jobdesk_id" value="">
 
-            <!-- 🔑 ID JOBDESK (UNTUK EDIT) -->
-            <input type="hidden" id="jobdesk_id">
-
-            <div class="form-group">
-                <label>Nama Jobdesk</label>
-                <input name="nama_jobdesk" class="form-control" required>
+            <div class="group">
+                <label for="nama_jobdesk">Nama Jobdesk</label>
+                <input type="text" name="nama_jobdesk" id="nama_jobdesk" required>
             </div>
 
-            <div class="form-group">
-                <label>Tugas Utama</label>
-                <input name="tugas_utama" class="form-control" required>
+            <div class="group">
+                <label for="tugas_utama">Tugas Utama</label>
+                <input type="text" name="tugas_utama" id="tugas_utama" required>
             </div>
 
-            <div class="form-group">
-                <label>Karyawan</label>
-                <select name="karyawan_id" class="form-control" required>
-                    @foreach($karyawans as $k)
+            <div class="group">
+                <label for="karyawan_id">Karyawan</label>
+                <select name="karyawan_id" id="karyawan_id" required>
+                    <option value="">Pilih Karyawan</option>
+                    @foreach ($karyawans as $k)
                         <option value="{{ $k->id }}">{{ $k->nama }}</option>
                     @endforeach
                 </select>
             </div>
 
             <button type="submit" class="btn-jobdesk">Simpan</button>
-            <button type="button" class="btn-danger" data-close>Batal</button>
         </form>
     </div>
 </div>

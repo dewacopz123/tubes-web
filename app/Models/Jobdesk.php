@@ -10,14 +10,26 @@ class Jobdesk extends Model
     use HasFactory;
 
     protected $fillable = [
+        'kode_jobdesk',
         'nama_jobdesk',
         'tugas_utama',
         'karyawan_id'
     ];
+
+    // generate kode otomatis sebelum insert
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $latest = Jobdesk::latest('id')->first();
+            $number = $latest ? $latest->id + 1 : 1;
+            $model->kode_jobdesk = 'JD' . str_pad($number, 3, '0', STR_PAD_LEFT);
+        });
+    }
 
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);
     }
 }
-

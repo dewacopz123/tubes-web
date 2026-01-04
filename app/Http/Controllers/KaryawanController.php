@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class KaryawanController extends Controller
 {
@@ -15,53 +14,59 @@ class KaryawanController extends Controller
         return view('karyawan.index', compact('karyawans'));
     }
 
-    public function store(Request $request)
+    // 🔥 TAMBAHKAN INI
+    public function form()
     {
-        $validated = $request->validate([
-            'nama'   => 'required|string',
-            'email'  => 'required|email|unique:karyawans,email',
-            'role'   => 'required|in:admin,karyawan',
-            'status' => 'required|in:Aktif,Nonaktif',
-        ]);
-
-        // AUTO kode karyawan (AMAN & UNIQUE)
-        $validated['kode_karyawan'] = 'KRY-' . strtoupper(Str::random(6));
-
-        // DEFAULT PASSWORD (SUDAH BCRYPT)
-        $validated['password'] = Hash::make('123456');
-
-        $karyawan = Karyawan::create($validated);
-
-        return response()->json([
-            'success' => true,
-            'id' => $karyawan->id
-        ]);
+        return view('karyawan.form');
     }
 
     public function show($id)
     {
-        return response()->json(Karyawan::findOrFail($id));
+        return response()->json(
+            Karyawan::findOrFail($id)
+        );
     }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'nama' => 'required',
+            'email' => 'required|email|unique:karyawans,email',
+            'telepon' => 'nullable',
+            'role' => 'required|in:admin,karyawan',
+            'status' => 'required|in:Aktif,Nonaktif',
+        ]);
+
+        // 🔥 WAJIB ADA
+        $data['kode_karyawan'] = 'KRY-' . strtoupper(Str::random(6));
+        $data['password'] = Hash::make('123456');
+
+        Karyawan::create($data);
+
+        return response()->json(['success' => true]);
+    }
+
 
     public function update(Request $request, $id)
     {
         $karyawan = Karyawan::findOrFail($id);
 
-        $validated = $request->validate([
-            'nama'   => 'required|string',
-            'email'  => 'required|email|unique:karyawans,email,' . $karyawan->id,
-            'role'   => 'required|in:admin,karyawan',
+        $data = $request->validate([
+            'nama' => 'required',
+            'email' => 'required|email|unique:karyawans,email,' . $id,
+            'telepon' => 'nullable',
+            'role' => 'required|in:admin,karyawan',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        $karyawan->update($validated);
+        $karyawan->update($data);
 
         return response()->json(['success' => true]);
     }
 
     public function destroy($id)
     {
-        Karyawan::findOrFail($id)->delete();
+        Karyawan::destroy($id);
         return response()->json(['success' => true]);
     }
 }

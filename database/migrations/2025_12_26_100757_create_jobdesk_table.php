@@ -5,29 +5,22 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('penggajians', function (Blueprint $table) {
+        Schema::create('jobdesks', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_penggajian')->unique();
+            $table->string('kode_jobdesk')->unique(); // Kode unik
+            $table->string('nama_jobdesk');
+            $table->string('tugas_utama');
             $table->foreignId('karyawan_id')
-                ->constrained('karyawans')
-                ->cascadeOnDelete();
-            $table->date('tanggal');
-            $table->integer('gaji_pokok');
+                  ->constrained('karyawans')
+                  ->cascadeOnDelete();
             $table->timestamps();
         });
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('jobdesk');
+        Schema::dropIfExists('jobdesks');
     }
 };

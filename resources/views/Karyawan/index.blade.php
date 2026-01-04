@@ -74,12 +74,11 @@
                     </thead>
                     <tbody>
                         @forelse($karyawans as $k)
-                        <tr>
                         <tr data-nama="{{ strtolower($k->nama) }}" data-role="{{ strtolower($k->role) }}">
                             <td>{{ $k->id }}</td>
                             <td>{{ $k->nama }}</td>
                             <td>{{ $k->email }}</td>
-                            <td>{{ $k->telepon }}</td>
+                            <td>{{ $k->telepon ?? '-' }}</td>
                             <td>{{ $k->role }}</td>
                             <td>
                                 <span class="badge
@@ -101,12 +100,14 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" style="text-align:center">
+                            <td colspan="7" style="text-align:center">
                                 Data karyawan belum tersedia
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
+
+
                 </table>
             </div>
 

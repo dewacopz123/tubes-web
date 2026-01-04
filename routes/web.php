@@ -31,21 +31,21 @@ Route::get('/jobdesk/{id}', [JobdeskController::class, 'show']);      // ambil d
 Route::put('/jobdesk/{id}', [JobdeskController::class, 'update']);    // update
 Route::delete('/jobdesk/{id}', [JobdeskController::class, 'destroy']); // hapus
 
-Route::get('/penggajian', [PenggajianController::class, 'index']);
-Route::get('/penggajian/create', [PenggajianController::class, 'create']);
-Route::post('/penggajian', [PenggajianController::class, 'store']);
-Route::get('/penggajian/{id}', [PenggajianController::class, 'show']);
-Route::put('/penggajian/{id}', [PenggajianController::class, 'update']);
-Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/penggajian', [PenggajianController::class,'index']);
+    Route::get('/penggajian/create', [PenggajianController::class,'create']);
+    Route::post('/penggajian', [PenggajianController::class,'store']);  
+    Route::get('/penggajian/{id}', [PenggajianController::class,'show']); 
+    Route::put('/penggajian/{id}', [PenggajianController::class,'update']); 
+    Route::delete('/penggajian/{id}', [PenggajianController::class,'destroy']); 
+});
+
 
 Route::get('/karyawan', [KaryawanController::class, 'index']);
-
-// modal form (1 file)
-Route::get('/karyawan/form', fn() => view('karyawan.form'));
-
-// CRUD JSON
-Route::post('/karyawan', [KaryawanController::class, 'store']);
+Route::get('/karyawan/form', [KaryawanController::class, 'form']);
 Route::get('/karyawan/{id}', [KaryawanController::class, 'show']);
+Route::post('/karyawan', [KaryawanController::class, 'store']);
 Route::put('/karyawan/{id}', [KaryawanController::class, 'update']);
 Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy']);
 

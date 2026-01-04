@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('kode_karyawan')->unique();
             $table->string('nama');
             $table->string('email')->unique();
+            $table->string('telepon')->nullable(); // bisa kosong
             $table->string('password');
             $table->enum('role', ['admin', 'karyawan'])->default('karyawan');
             $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');

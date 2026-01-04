@@ -15,6 +15,7 @@ class Karyawan extends Authenticatable
         'kode_karyawan',
         'nama',
         'email',
+        'telepon',
         'password',
         'role',
         'status'

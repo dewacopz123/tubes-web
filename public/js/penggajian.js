@@ -59,42 +59,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ================= SUBMIT =================
     function handleSubmit() {
-        const form = document.getElementById("formPenggajian");
-        if (!form) return;
+    const form = document.getElementById("formPenggajian");
+    if (!form) return;
 
-        form.onsubmit = async (e) => {
-            e.preventDefault();
+    form.onsubmit = async (e) => {
+        e.preventDefault();
 
-            const mode = document.getElementById("mode").value;
-            const id = document.getElementById("penggajian_id").value;
+        const mode = document.getElementById("mode").value;
+        const id = document.getElementById("penggajian_id").value;
 
-            const data = new FormData();
-            data.append("karyawan_id", document.getElementById("karyawan_id").value);
-            data.append("tanggal", document.getElementById("tanggal").value);
-            data.append("gaji_pokok", document.getElementById("gaji_pokok").value);
+        const data = new FormData();
+        data.append("karyawan_id", document.getElementById("karyawan_id").value);
+        data.append("tanggal", document.getElementById("tanggal").value);
+        data.append("gaji_pokok", document.getElementById("gaji_pokok").value);
 
-            let url = "/penggajian";
+        let url = "/penggajian";
 
-            if (mode === "edit") {
-                url += "/" + id;
-                data.append("_method", "PUT");
-            }
+        if (mode === "edit") {
+            url += "/" + id;
+            data.append("_method", "PUT");
+        }
 
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { "X-CSRF-TOKEN": csrf },
-                body: data
-            });
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "x-csrf-token": csrf,
+                "Accept": "application/json" // penting biar Laravel return JSON
+            },
+            body: data
+        });
 
-            if (!res.ok) {
-                alert("Gagal menyimpan data");
-                return;
-            }
+        const result = await res.json(); // parse JSON
 
-            alert("Data penggajian berhasil disimpan");
-            location.reload();
-        };
-    }
+        if (!res.ok || !result.success) {
+            alert("Gagal menyimpan data: " + (result.message || "unknown error"));
+            return;
+        }
+
+        alert("Data penggajian berhasil disimpan");
+        location.reload();
+    };
+}
+
 
     // ================= FILTER (INI YANG DITAMBAHKAN) =================
     const filterNama = document.getElementById("filterNama");

@@ -19,16 +19,17 @@
 
             <div class="form-group">
                 <label for="teleponKaryawan">Telepon</label>
-                <input type="text" id="teleponKaryawan" class="form-control" required />
+                <input type="text" id="teleponKaryawan" class="form-control" />
             </div>
 
             <div class="form-group">
                 <label for="roleKaryawan">Role</label>
                 <select id="roleKaryawan" class="form-control" required>
                     <option value="">Pilih Role</option>
-                    <option value="Karyawan">Karyawan</option>
-                    <option value="Manager">Manager</option>
+                    <option value="karyawan">Karyawan</option>
+                    <option value="admin">Admin</option>
                 </select>
+
             </div>
 
             <div class="form-group">
