@@ -88,9 +88,10 @@
                     </div>
 
                     <div class="button-group">
-                        <a href="{{ url()->previous() }}" class="btn-danger">Cancel</a>
-                        <button type="submit" class="btn-jobdesk">Save</button>
+                        <button type="button" id="btnEdit" class="btn-primary">Edit</button>
+                        <button type="submit" id="btnSave" class="btn-jobdesk" style="display:none;">Save</button>
                     </div>
+
 
                 </form>
 
@@ -107,6 +108,24 @@
 
     {{-- JS --}}
     <script src="{{ asset('js/navbar.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".form");
+    const btnEdit = document.getElementById("btnEdit");
+    const btnSave = document.getElementById("btnSave");
+
+    // Semua input disabled saat awal
+    const inputs = form.querySelectorAll("input[name]");
+    inputs.forEach(input => input.disabled = true);
+
+    btnEdit.addEventListener("click", function () {
+        inputs.forEach(input => input.disabled = false);
+
+        btnEdit.style.display = "none";
+        btnSave.style.display = "inline-block";
+    });
+});
+</script>
 
 </body>
 </html>
