@@ -48,10 +48,11 @@
             </div>
 
             {{-- BUTTON --}}
+            @if(Auth::user()->role === 'admin')
             <button id="btnAddKaryawan" class="btn btn-primary btn-long">
                 <i class="fas fa-plus"></i> Tambah Data Karyawan
             </button>
-
+            @endif
 
             {{-- TABLE --}}
             <div class="card-content">
@@ -66,7 +67,9 @@
                             <th>Telepon</th>
                             <th>Role</th>
                             <th>Status</th>
+                            @if(Auth::user()->role === 'admin')
                             <th>Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -84,7 +87,7 @@
                                     {{ $k->status }}
                                 </span>
                             </td>
-
+                            @if(Auth::user()->role === 'admin')
                             <td class="aksi-icon">
                                 <button class="btnEdit icon-btn edit" data-id="{{ $k->id }}" title="Edit">
                                     <i class="fas fa-edit"></i>
@@ -94,7 +97,7 @@
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </td>
-
+                            @endif
                         </tr>
                         @empty
                         <tr>

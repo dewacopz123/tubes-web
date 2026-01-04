@@ -12,16 +12,20 @@ class Karyawan extends Authenticatable
     protected $table = 'karyawans';
 
     protected $fillable = [
+        'kode_karyawan',
         'nama',
         'email',
-        'telepon', // ✅ tambahkan telepon
+        'password',
         'role',
-        'status',
-        'password' // harus ada karena kita buat default
+        'status'
     ];
 
     protected $hidden = ['password'];
 
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
 
     public function absensis()
     {

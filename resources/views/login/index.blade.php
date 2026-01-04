@@ -32,7 +32,10 @@
 
     <div class="card" id="main-card">
 
-      <form class="auth-form" id="register-form">
+      <form class="auth-form" id="register-form"
+      action="{{ route('register.process') }}"
+      method="POST">
+      @csrf
 
         <div class="social-login-section top-social" id="social-login-register">
           <p>Register with</p>
@@ -45,32 +48,24 @@
         </div>
 
         <div class="input-group-label">
-          <label for="reg-name">Name</label>
+          <label>Name</label>
           <div class="input-field-wrapper">
-            <input type="text" id="reg-name" placeholder="Your full name" required>
+            <input type="text" name="nama" placeholder="Your full name" required>
           </div>
         </div>
 
         <div class="input-group-label">
-          <label for="reg-email">Email</label>
+          <label>Email</label>
           <div class="input-field-wrapper">
-            <input type="email" id="reg-email" placeholder="Your email address" required>
+          <input type="email" name="email" placeholder="Your email address" required>
           </div>
         </div>
 
         <div class="input-group-label">
-          <label for="reg-password">Password</label>
+          <label>Password</label>
           <div class="input-field-wrapper">
-            <input type="password" id="reg-password" placeholder="Your password" required>
+          <input type="password" name="password" placeholder="Your password" required>
           </div>
-        </div>
-
-        <div class="remember-me">
-          <label class="switch-toggle">
-            <input type="checkbox" checked>
-            <span class="slider round"></span>
-          </label>
-          <label for="remember-me-reg" class="remember-text">Remember me</label>
         </div>
 
         <button type="submit" class="btn-submit">SIGN UP</button>
@@ -78,23 +73,21 @@
         <p class="switch-text">Already have an account? <a href="#" id="switch-to-login-bottom">Login</a></p>
       </form>
 
-      <form class="auth-form" id="login-form"
-          action="{{ route('login.process') }}"
-          method="POST">
+      <form class="auth-form" id="login-form" action="{{ route('login.process') }}" method="POST">
         @csrf
 
         <p><b>Login with</b></p>
         <div class="input-group-label">
-          <label for="login-email">Email</label>
+          <label>Email</label>
           <div class="input-field-wrapper">
-            <input type="email" id="login-email" placeholder="Your email address" required>
+          <input type="email" name="email" placeholder="Your email address" required>
           </div>
         </div>
 
         <div class="input-group-label">
-          <label for="login-password">Password</label>
+          <label>Password</label>
           <div class="input-field-wrapper">
-            <input type="password" id="login-password" placeholder="Your password" required>
+          <input type="password" name="password" placeholder="Your password" required>
           </div>
         </div>
 
@@ -107,7 +100,7 @@
         </div>
 
         <button id="btn_signin" type="submit" class="btn-submit">SIGN IN</button>
-      
+
 
         <p class="switch-text">Don't have an account? <a href="#" id="switch-to-register-bottom">Register</a></p>
 

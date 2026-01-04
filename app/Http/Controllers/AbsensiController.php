@@ -2,53 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Absensi;
-use App\Models\Karyawan;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-        $karyawans = Karyawan::all();
-        $absensis = Absensi::with('karyawan')->orderBy('tanggal', 'desc')->get();
-        return view('absensi.index', compact('karyawans', 'absensis'));
+        // JIKA ADMIN → LIHAT SEMUA
+        if (Auth::user()->role === 'admin') {
+            $absensis = Absensi::with('karyawan')
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        }
+        // JIKA KARYAWAN → HANYA DATA DIRI SENDIRI
+        else {
+            $absensis = Absensi::with('karyawan')
+                ->where('karyawan_id', Auth::id())
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        }
+
+        return view('absensi.index', compact('absensis'));
     }
 
-    public function masuk(Request $request)
+    public function masuk()
     {
-        try {
-            $karyawan_id = $request->karyawan_id; // bisa admin pilih siapa
-            Absensi::create([
-                'karyawan_id' => $karyawan_id,
-                'tanggal' => now()->toDateString(),
-                'jam_masuk' => now()->toTimeString(),
-                'status' => 'Masuk'
-            ]);
+        $karyawan_id = Auth::id();
+        $tanggal = Carbon::today();
 
-            return response()->json(['message' => 'Masuk kerja berhasil']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data'], 500);
+        $cek = Absensi::where('karyawan_id', $karyawan_id)
+            ->where('tanggal', $tanggal)
+            ->first();
+
+        if ($cek) {
+            return response()->json(['message' => 'Sudah absen hari ini'], 400);
         }
+
+        Absensi::create([
+            'karyawan_id' => $karyawan_id,
+            'tanggal' => $tanggal,
+            'jam_masuk' => now()->format('H:i:s'),
+            'status' => 'Masuk'
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
-    public function keluar(Request $request)
+    public function keluar()
     {
-        try {
-            $karyawan_id = $request->karyawan_id;
-            Absensi::where('karyawan_id', $karyawan_id)
-                ->whereDate('tanggal', now())
-                ->update([
-                    'jam_keluar' => now()->toTimeString(),
-                    'status' => 'Selesai'
-                ]);
+        $karyawan_id = Auth::id();
+        $tanggal = Carbon::today();
 
-            return response()->json(['message' => 'Selesai kerja berhasil']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['message' => 'Terjadi kesalahan saat menyimpan data'], 500);
+        $absensi = Absensi::where('karyawan_id', $karyawan_id)
+            ->where('tanggal', $tanggal)
+            ->first();
+
+        if (!$absensi) {
+            return response()->json(['message' => 'Belum absen masuk'], 400);
         }
+
+        if ($absensi->jam_keluar) {
+            return response()->json(['message' => 'Sudah absen keluar'], 400);
+        }
+
+        $absensi->update([
+            'jam_keluar' => now()->format('H:i:s'),
+            'status' => 'Selesai'
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }

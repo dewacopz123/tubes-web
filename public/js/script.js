@@ -6,16 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const switchToRegisterLink = document.getElementById('switch-to-register');
   const switchToLoginbottomLink = document.getElementById('switch-to-login-bottom');
   const switchToRegisterbottomLink = document.getElementById('switch-to-register-bottom');
-  const btn_signin = document.getElementById('btn_signin');
-
-  // ✅ Cegah form submit dan lakukan redirect manual
-  if (btn_signin) {
-    btn_signin.addEventListener('click', () => {
-      // ❌ TIDAK ADA preventDefault
-      // ❌ TIDAK ADA window.location.href
-      // ✔️ Form akan submit ke Laravel
-    });
-  }
 
   // Tinggi Card 
   const REGISTER_HEIGHT = '570px';

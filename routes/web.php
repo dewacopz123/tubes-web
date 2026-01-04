@@ -8,16 +8,21 @@ use App\Http\Controllers\JobdeskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PenggajianController;
 
+Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
-Route::post('/logout', [LoginController::class, 'logout']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/register', [LoginController::class, 'register'])->name('register.process');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
-Route::get('/absensi', [AbsensiController::class, 'index']);
-Route::post('/absensi/masuk', [AbsensiController::class, 'masuk']);
-Route::post('/absensi/keluar', [AbsensiController::class, 'keluar']);
+Route::middleware('auth')->group(function () {
+    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::post('/absensi/masuk', [AbsensiController::class, 'masuk']);
+    Route::post('/absensi/keluar', [AbsensiController::class, 'keluar']);
+
+});
 
 Route::get('/jobdesk', [JobdeskController::class, 'index']);
 Route::post('/jobdesk', [JobdeskController::class, 'store']);
@@ -44,3 +49,14 @@ Route::get('/karyawan/{id}', [KaryawanController::class, 'show']);
 Route::put('/karyawan/{id}', [KaryawanController::class, 'update']);
 Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy']);
 
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    });
+});
+
+Route::middleware(['auth', 'role:karyawan'])->group(function () {
+    Route::get('/karyawan/dashboard', function () {
+        return view('karyawan.dashboard');
+    });
+});

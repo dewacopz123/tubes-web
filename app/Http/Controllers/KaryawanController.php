@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class KaryawanController extends Controller
 {
@@ -16,22 +18,25 @@ class KaryawanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email|unique:karyawans,email',
-            'telepon' => 'required',
-            'role' => 'required',
-            'status' => 'required'
+            'nama'   => 'required|string',
+            'email'  => 'required|email|unique:karyawans,email',
+            'role'   => 'required|in:admin,karyawan',
+            'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        // Tambahkan default password
-        $validated['password'] = bcrypt('123456');
+        // AUTO kode karyawan (AMAN & UNIQUE)
+        $validated['kode_karyawan'] = 'KRY-' . strtoupper(Str::random(6));
 
-        // Simpan ke database
+        // DEFAULT PASSWORD (SUDAH BCRYPT)
+        $validated['password'] = Hash::make('123456');
+
         $karyawan = Karyawan::create($validated);
 
-        return response()->json(['success' => true, 'id' => $karyawan->id]);
+        return response()->json([
+            'success' => true,
+            'id' => $karyawan->id
+        ]);
     }
-
 
     public function show($id)
     {
@@ -43,11 +48,10 @@ class KaryawanController extends Controller
         $karyawan = Karyawan::findOrFail($id);
 
         $validated = $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email|unique:karyawans,email,' . $karyawan->id,
-            'telepon' => 'required',
-            'role' => 'required',
-            'status' => 'required'
+            'nama'   => 'required|string',
+            'email'  => 'required|email|unique:karyawans,email,' . $karyawan->id,
+            'role'   => 'required|in:admin,karyawan',
+            'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
         $karyawan->update($validated);

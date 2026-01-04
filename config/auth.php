@@ -38,9 +38,10 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'karyawans',
+            'provider' => 'users', // ✅ GANTI INI
         ],
     ],
+
 
 
     /*
@@ -61,11 +62,12 @@ return [
     */
 
     'providers' => [
-        'karyawans' => [
+        'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\Karyawan::class,
         ],
     ],
+
 
 
 

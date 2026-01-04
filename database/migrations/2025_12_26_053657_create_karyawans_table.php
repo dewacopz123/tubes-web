@@ -12,14 +12,14 @@ return new class extends Migration {
     {
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_karyawan')->unique();
             $table->string('nama');
             $table->string('email')->unique();
-            $table->string('telepon');
-            $table->string('role');
-            $table->string('status');
+            $table->string('password');
+            $table->enum('role', ['admin', 'karyawan'])->default('karyawan');
+            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
             $table->timestamps();
         });
-
     }
 
     /**

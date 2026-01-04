@@ -23,7 +23,7 @@
         <li class="menu-divider">ACCOUNT PAGES</li>
         <li><a href="{{ url('/profile') }}"><img src="../../asset/icon/profile.png"><span>Profile</span></a>
         </li>
-        <li><a href="../../Views/login/index.html"><img src="../../asset/icon/logout.png"><span>Log Out</span></a></li>
+        <li><a href="{{ url('/login') }}"><img src="../../asset/icon/logout.png"><span>Log Out</span></a></li>
       </ul>
     </nav>
 
