@@ -18,30 +18,37 @@ class PenggajianController extends Controller
     }
 
     public function create()
-{
-    return view('penggajian.formaddeditpenggajian', [
-        'karyawans' => Karyawan::all()
-    ]);
-}
-
-    public function store(Request $request)
-{
-    $tanggal = $request->tanggal;
-
-    if (str_contains($tanggal, '/')) {
-        $tanggal = Carbon::createFromFormat('d/m/Y', $tanggal)
-            ->format('Y-m-d');
+    {
+        return view('penggajian.formaddeditpenggajian', [
+            'karyawans' => Karyawan::all()
+        ]);
     }
 
-    Penggajian::create([
-        'kode_penggajian' => 'PG-' . time(),
-        'karyawan_id' => $request->karyawan_id,
-        'tanggal' => $tanggal,
-        'gaji_pokok' => $request->gaji_pokok
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'karyawan_id' => 'required|exists:karyawans,id',
+            'tanggal' => 'required|date',
+            'gaji_pokok' => 'required|numeric'
+        ]);
 
-    return response()->json(['success' => true]);
-}
+        $tanggal = $request->tanggal;
+
+        if (str_contains($tanggal, '/')) {
+            $tanggal = Carbon::createFromFormat('d/m/Y', $tanggal)
+                ->format('Y-m-d');
+        }
+
+        Penggajian::create([
+            'kode_penggajian' => 'PG-' . time(),
+            'karyawan_id' => $request->karyawan_id,
+            'tanggal' => $tanggal,
+            'gaji_pokok' => $request->gaji_pokok
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
 
     public function show($id)
     {

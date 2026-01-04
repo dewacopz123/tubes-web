@@ -44,69 +44,74 @@
             </div>
 
             {{-- BUTTON TAMBAH --}}
-            @if(Auth::user()->role === 'admin')
-            <button id="btnAddPenggajian" class="btn btn-primary btn-long">
-                <i class="fas fa-plus"></i> Tambah Data Penggajian
-            </button>
+        @auth
+            @if(auth()->user()->role === 'admin')
+                <button id="btnAddPenggajian" class="btn btn-primary btn-long">
+                    <i class="fas fa-plus"></i> Tambah Data Penggajian
+                </button>
             @endif
+        @endauth
 
-            {{-- TABLE --}}
-            <div class="card-content">
-                <h3>Tabel Data Penggajian</h3>
+        {{-- TABLE --}}
+        <div class="card-content">
+            <h3>Tabel Data Penggajian</h3>
 
-                <table class="table-absensi">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama Karyawan</th>
-                            <th>Tanggal</th>
-                            <th>Gaji Pokok</th>
-                            @if(Auth::user()->role === 'admin')
+            <table class="table-absensi">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Karyawan</th>
+                        <th>Tanggal</th>
+                        <th>Gaji Pokok</th>
+                        @if(auth()->check() && auth()->user()->role === 'admin')
                             <th>Aksi</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($penggajians as $pg)
-                            <tr
-                                data-nama="{{ strtolower($pg->karyawan->nama) }}"
-                                data-tanggal="{{ $pg->tanggal }}"
-                            >
-                                <td>{{ $pg->kode_penggajian }}</td>
-                                <td>{{ $pg->karyawan->nama }}</td>
-                                <td>{{ $pg->tanggal }}</td>
-                                <td>{{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
-                                @if(Auth::user()->role === 'admin')
+                        @endif
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($penggajians as $pg)
+                        <tr
+                            data-nama="{{ strtolower($pg->karyawan->nama) }}"
+                            data-tanggal="{{ $pg->tanggal }}"
+                        >
+                            <td>{{ $pg->kode_penggajian }}</td>
+                            <td>{{ optional($pg->karyawan)->nama ?? '-' }}</td>
+                            <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>
+                            <td>Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
+
+                            @if(auth()->check() && auth()->user()->role === 'admin')
                                 <td class="aksi-icon">
-                                    <button class="btnEdit icon-btn edit"
+                                    <button
+                                        class="btnEdit icon-btn edit"
                                         data-id="{{ $pg->id }}"
                                         title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
 
-                                    <button class="btnDelete icon-btn delete"
+                                    <button
+                                        class="btnDelete icon-btn delete"
                                         data-id="{{ $pg->id }}"
                                         title="Hapus">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
-                                @endif
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" style="text-align:center">
-                                    Data penggajian belum tersedia
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align:center">
+                                Data penggajian belum tersedia
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-            {{-- MODAL CONTAINER --}}
-            <div id="popupContainer"></div>
+        {{-- MODAL --}}
+        <div id="popupContainer"></div>
 
-        </main>
+    </main>
     </div>
 
     {{-- JS --}}

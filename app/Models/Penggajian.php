@@ -10,6 +10,7 @@ class Penggajian extends Model
     use HasFactory;
 
     protected $fillable = [
+        'kode_penggajian',
         'karyawan_id',
         'tanggal',
         'gaji_pokok'
@@ -20,4 +21,5 @@ class Penggajian extends Model
         return $this->belongsTo(Karyawan::class);
     }
 }
+
 
