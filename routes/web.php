@@ -7,6 +7,7 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\JobdeskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PenggajianController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -59,4 +60,9 @@ Route::middleware(['auth', 'role:karyawan'])->group(function () {
     Route::get('/karyawan/dashboard', function () {
         return view('karyawan.dashboard');
     });
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });

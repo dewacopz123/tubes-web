@@ -29,51 +29,78 @@
                         id="profilePhoto">
                 </div>
 
-                <form class="form">
+                {{-- FORM PROFILE --}}
+                <form class="form" method="POST" action="{{ route('profile.update') }}">
+                    @csrf
 
                     <div class="group">
                         <label>ID</label>
-                        <input type="text" value="KRY-001" disabled>
+                        <input type="text" value="{{ $karyawan->id }}" disabled>
                     </div>
 
                     <div class="row">
                         <div class="group">
                             <label>Nama</label>
-                            <input type="text" value="Nama Karyawan">
+                            <input
+                                type="text"
+                                name="nama"
+                                value="{{ old('nama', $karyawan->nama) }}"
+                                required>
                         </div>
 
                         <div class="group">
                             <label>Email</label>
-                            <input type="email" value="karyawan@email.com">
+                            <input
+                                type="email"
+                                name="email"
+                                value="{{ old('email', $karyawan->email) }}"
+                                required>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="group">
                             <label>Telepon</label>
-                            <input type="text" value="+62 812-3456-7890">
+                            <input
+                                type="text"
+                                name="telepon"
+                                value="{{ old('telepon', $karyawan->telepon) }}">
                         </div>
 
                         <div class="group">
                             <label>Role</label>
-                            <input type="text" value="Karyawan" disabled>
+                            <input
+                                type="text"
+                                value="{{ $karyawan->role }}"
+                                disabled>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="group">
                             <label>Status</label>
-                            <input type="text" value="Aktif" disabled>
+                            <input
+                                type="text"
+                                value="{{ $karyawan->status }}"
+                                disabled>
                         </div>
                         <div class="group"></div>
                     </div>
 
                     <div class="button-group">
-                        <button type="button" class="btn-danger">Cancel</button>
-                        <button type="button" class="btn-jobdesk">Save</button>
+                        <a href="{{ url()->previous() }}" class="btn-danger">Cancel</a>
+                        <button type="submit" class="btn-jobdesk">Save</button>
                     </div>
 
                 </form>
+
+                {{-- SUCCESS MESSAGE --}}
+                @if(session('success'))
+                    <script>
+                        alert("{{ session('success') }}");
+                    </script>
+                @endif
+
             </section>
         </main>
     </div>
