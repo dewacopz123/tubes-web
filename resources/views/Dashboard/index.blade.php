@@ -51,7 +51,19 @@
             </div>
 
         </div>
-        <h3>Status Jobdesk Karyawan</h3>
+        <div class="jobdesk-header">
+            <h3>Status Jobdesk Karyawan</h3>
+
+            @if(Auth::user()->role === 'admin')
+                <button
+                    type="button"
+                    class="btn btn-export-pill"
+                    onclick="window.location.href='/export/laporan'">
+                    <i class="fas fa-file-excel"></i> Export Laporan Excel
+                </button>
+            @endif
+        </div>
+
 
         <table class="jobdesk-table">
             <thead>

@@ -738,3 +738,30 @@ h3.logo-text {
     background-color: #6c757d;
 }
 
+.jobdesk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 10px;
+}
+
+/* Biar judul gak turun */
+.jobdesk-header h3 {
+    margin: 0;
+}
+
+/* Pakai style export pill sebelumnya */
+.btn-export-pill {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 22px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-export-pill:hover {
+    background-color: #cfcfcf;
+}
+

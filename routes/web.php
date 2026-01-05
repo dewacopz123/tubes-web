@@ -8,6 +8,7 @@ use App\Http\Controllers\JobdeskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ExportController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -66,3 +67,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+Route::get('/export/laporan', [ExportController::class, 'laporan']);
+Route::get('/export/penggajian', [ExportController::class, 'penggajian']);
