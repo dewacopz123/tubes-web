@@ -14,7 +14,7 @@ class PenggajianSheetExport implements FromCollection, WithHeadings, WithTitle
         return Penggajian::with('karyawan')->get()->map(function ($p) {
             return [
                 $p->kode_penggajian,
-                $p->karyawan->nama ?? '-',
+                optional($p->karyawan)->nama ?? '-',
                 $p->tanggal,
                 $p->gaji_pokok
             ];

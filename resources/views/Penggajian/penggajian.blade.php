@@ -81,7 +81,7 @@
                     </thead>
                     <tbody>
                         @forelse($penggajians as $pg)
-                            <tr data-nama="{{ strtolower($pg->karyawan->nama) }}" data-tanggal="{{ $pg->tanggal }}">
+                            <tr data-nama="{{ strtolower(optional($pg->karyawan)->nama ?? '') }}" data-tanggal="{{ $pg->tanggal }}">
                                 <td>{{ $pg->kode_penggajian }}</td>
                                 <td>{{ optional($pg->karyawan)->nama ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>

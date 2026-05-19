@@ -26,7 +26,11 @@ class JobdeskController extends Controller
             'karyawan_id' => 'required|exists:karyawans,id'
         ]);
 
-        Jobdesk::create($request->all()); // kode otomatis dibuat oleh model
+        Jobdesk::create($request->only([
+            'nama_jobdesk',
+            'tugas_utama',
+            'karyawan_id',
+        ]));
 
         return response()->json(['message' => 'Jobdesk berhasil ditambahkan']);
     }
@@ -40,7 +44,11 @@ class JobdeskController extends Controller
         ]);
 
         $jobdesk = Jobdesk::findOrFail($id);
-        $jobdesk->update($request->all());
+        $jobdesk->update($request->only([
+            'nama_jobdesk',
+            'tugas_utama',
+            'karyawan_id',
+        ]));
 
         return response()->json(['message' => 'Jobdesk berhasil diupdate']);
     }

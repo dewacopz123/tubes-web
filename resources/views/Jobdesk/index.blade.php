@@ -61,7 +61,7 @@
                             <td>{{ $jobdesk->kode_jobdesk }}</td>
                             <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
                             <td>{{ $jobdesk->tugas_utama }}</td>
-                            <td class="col-karyawan">{{ $jobdesk->karyawan->nama }}</td>
+                            <td class="col-karyawan">{{ optional($jobdesk->karyawan)->nama ?? '-' }}</td>
                             @if(Auth::user()->role === 'admin')
                             <td class="action-cell">
                                 <button type="button" class="btn-edit icon-btn edit">

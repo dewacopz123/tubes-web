@@ -90,7 +90,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         body: formData
                     });
 
-                    const data = await res.json();
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) {
+                        alert(data.message || "Gagal menyimpan jobdesk");
+                        return;
+                    }
                     alert(data.message);
                     location.reload();
                 } catch (err) {
@@ -123,6 +127,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const modal = createModal(html, "modal-edit");
 
             const resData = await fetch(`/jobdesk/${id}`);
+            if (!resData.ok) {
+                alert("Gagal mengambil data jobdesk");
+                return;
+            }
             const data = await resData.json();
 
             modal.querySelector("#jobdesk_id").value = id;
@@ -145,7 +153,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: { "X-CSRF-TOKEN": csrfToken }
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                alert(data.message || "Gagal menghapus jobdesk");
+                return;
+            }
             alert(data.message);
             location.reload();
         }

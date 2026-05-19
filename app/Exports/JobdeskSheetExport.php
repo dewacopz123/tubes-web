@@ -13,7 +13,7 @@ class JobdeskSheetExport implements FromCollection, WithHeadings, WithTitle
     {
         return Jobdesk::with('karyawan')->get()->map(function ($j) {
             return [
-                $j->karyawan->nama ?? '-',
+                optional($j->karyawan)->nama ?? '-',
                 $j->nama_jobdesk ??'-',
                 $j->tugas_utama ??'-'
             ];

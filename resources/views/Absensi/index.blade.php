@@ -67,8 +67,8 @@
 @foreach($absensis as $a)
 <tr>
     <td>{{ $a->id }}</td>
-    <td>{{ $a->karyawan->nama }}</td>
-    <td>{{ $a->karyawan->email }}</td>
+    <td>{{ optional($a->karyawan)->nama ?? '-' }}</td>
+    <td>{{ optional($a->karyawan)->email ?? '-' }}</td>
     <td>{{ $a->tanggal }}</td>
     <td>{{ $a->jam_masuk ?? '-' }}</td>
     <td>{{ $a->jam_keluar ?? '-' }}</td>

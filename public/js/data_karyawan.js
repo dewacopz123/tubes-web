@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // ======================
     // TAMBAH DATA
     // ======================
-    document.getElementById("btnAddKaryawan").onclick = async () => {
+    const btnAddKaryawan = document.getElementById("btnAddKaryawan");
+    if (btnAddKaryawan) btnAddKaryawan.onclick = async () => {
         const html = await fetch('/karyawan/form').then(r => r.text());
         openModal(html);
 
@@ -36,7 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.onclick = async () => {
             const id = btn.dataset.id;
 
-            const data = await fetch(`/karyawan/${id}`).then(r => r.json());
+            const dataRes = await fetch(`/karyawan/${id}`, { headers: { "Accept": "application/json" } });
+            if (!dataRes.ok) {
+                alert("Gagal mengambil data karyawan");
+                return;
+            }
+
+            const data = await dataRes.json();
             const formHtml = await fetch('/karyawan/form').then(r => r.text());
 
             openModal(formHtml);
@@ -64,12 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.onclick = async () => {
             if (!confirm("Yakin hapus data?")) return;
 
-            await fetch(`/karyawan/${btn.dataset.id}`, {
+            const res = await fetch(`/karyawan/${btn.dataset.id}`, {
                 method: "DELETE",
                 headers: {
-                    "X-CSRF-TOKEN": csrf
+                    "X-CSRF-TOKEN": csrf,
+                    "Accept": "application/json"
                 }
             });
+
+            if (!res.ok) {
+                alert("Gagal menghapus data");
+                return;
+            }
 
             location.reload();
         };
@@ -110,7 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const res = await fetch("/karyawan", {
                     method: "POST",
                     headers: {
-                        "X-CSRF-TOKEN": csrf
+                        "X-CSRF-TOKEN": csrf,
+                        "Accept": "application/json"
                     },
                     body: formData
                 });
@@ -145,7 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrf
+                        "X-CSRF-TOKEN": csrf,
+                        "Accept": "application/json"
                     },
                     body: JSON.stringify(payload)
                 });

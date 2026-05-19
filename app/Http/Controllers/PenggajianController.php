@@ -57,6 +57,12 @@ class PenggajianController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'karyawan_id' => 'required|exists:karyawans,id',
+            'tanggal' => 'required|date',
+            'gaji_pokok' => 'required|numeric'
+        ]);
+
         $penggajian = Penggajian::findOrFail($id);
 
         $penggajian->update([

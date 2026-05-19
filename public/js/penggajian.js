@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function openModal(html) {
         popup.innerHTML = html;
 
-        popup.querySelector('[data-close]').onclick = () => popup.innerHTML = '';
+        popup.querySelectorAll('[data-close]').forEach(btn => {
+            btn.onclick = () => popup.innerHTML = '';
+        });
         handleSubmit();
     }
 
@@ -28,7 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.onclick = async () => {
             const id = btn.dataset.id;
 
-            const data = await fetch(`/penggajian/${id}`).then(r => r.json());
+            const dataRes = await fetch(`/penggajian/${id}`, { headers: { "Accept": "application/json" } });
+            if (!dataRes.ok) {
+                alert("Gagal mengambil data penggajian");
+                return;
+            }
+
+            const data = await dataRes.json();
             const html = await fetch('/penggajian/create').then(r => r.text());
 
             openModal(html);
@@ -48,10 +56,18 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.onclick = async () => {
             if (!confirm("Hapus data penggajian?")) return;
 
-            await fetch(`/penggajian/${btn.dataset.id}`, {
+            const res = await fetch(`/penggajian/${btn.dataset.id}`, {
                 method: "DELETE",
-                headers: { "X-CSRF-TOKEN": csrf }
+                headers: {
+                    "X-CSRF-TOKEN": csrf,
+                    "Accept": "application/json"
+                }
             });
+
+            if (!res.ok) {
+                alert("Gagal menghapus data penggajian");
+                return;
+            }
 
             location.reload();
         };

@@ -13,7 +13,7 @@ class AbsensiSheetExport implements FromCollection, WithHeadings, WithTitle
     {
         return Absensi::with('karyawan')->get()->map(function ($a) {
             return [
-                $a->karyawan->nama ?? '-',
+                optional($a->karyawan)->nama ?? '-',
                 $a->tanggal,
                 $a->jam_masuk,
                 $a->jam_keluar,

@@ -66,7 +66,7 @@ class KaryawanController extends Controller
 
     public function destroy($id)
     {
-        Karyawan::destroy($id);
+        Karyawan::findOrFail($id)->delete();
         return response()->json(['success' => true]);
     }
 }

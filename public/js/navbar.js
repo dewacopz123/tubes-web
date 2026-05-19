@@ -1,5 +1,5 @@
 function initNavbarTitle() {
-  const sekLogo = document.getElementById("sek_logo");
+  const sekLogo = document.getElementById("sek_logo") || document.querySelector(".logo-text");
   if (!sekLogo) return; // navbar belum dimuat
 
   // Ambil judul tersimpan di localStorage
