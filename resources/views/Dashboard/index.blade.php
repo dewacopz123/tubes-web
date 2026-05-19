@@ -54,7 +54,7 @@
         <div class="jobdesk-header">
             <h3>Status Jobdesk Karyawan</h3>
 
-            @if(Auth::user()->role === 'admin')
+            @if(auth()->check() && auth()->user()->role === 'admin')
                 <button
                     type="button"
                     class="btn btn-export-pill"
@@ -75,8 +75,8 @@
             </thead>
             <tbody>
                 @foreach($karyawans as $karyawan)
-                @if($karyawan->jobdesks->count())
-                @foreach($karyawan->jobdesks as $jobdesk)
+                @if($karyawan->jobdesks && $karyawan->jobdesks->count())
+                @foreach($karyawan->jobdesks ?? [] as $jobdesk)
                 <tr>
                     <td>{{ $karyawan->nama }}</td>
                     <td><span class="badge {{ strtolower($karyawan->status) }}">
