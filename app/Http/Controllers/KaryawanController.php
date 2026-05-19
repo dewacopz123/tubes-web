@@ -11,13 +11,13 @@ class KaryawanController extends Controller
     public function index()
     {
         $karyawans = Karyawan::all();
-        return view('karyawan.index', compact('karyawans'));
+        return view('Karyawan.index', compact('karyawans'));
     }
 
     // 🔥 TAMBAHKAN INI
     public function form()
     {
-        return view('karyawan.form');
+        return view('Karyawan.form');
     }
 
     public function show($id)

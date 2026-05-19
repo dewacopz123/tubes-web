@@ -12,7 +12,7 @@ class ProfileController extends Controller
     {
         $karyawan = Karyawan::findOrFail(Auth::id());
 
-        return view('profiles.profile', compact('karyawan'));
+        return view('Profiles.profile', compact('karyawan'));
     }
 
     public function update(Request $request)

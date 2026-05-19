@@ -24,7 +24,7 @@ class AbsensiController extends Controller
                 ->get();
         }
 
-        return view('absensi.index', compact('absensis'));
+        return view('Absensi.index', compact('absensis'));
     }
 
     public function masuk()

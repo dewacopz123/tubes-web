@@ -27,7 +27,7 @@ class DashboardController extends Controller
             ? Karyawan::with('jobdesks')->get()
             : Karyawan::all();
 
-        return view('dashboard.index', [
+        return view('Dashboard.index', [
             'totalKaryawan' => Karyawan::count(),
             'karyawanAktif' => Karyawan::where('status', 'Aktif')->count(),
             'karyawanNonaktif' => Karyawan::where('status', 'Nonaktif')->count(),

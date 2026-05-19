@@ -11,7 +11,7 @@ class PenggajianController extends Controller
 {
     public function index()
     {
-        return view('penggajian.penggajian', [
+        return view('Penggajian.penggajian', [
             'penggajians' => Penggajian::with('karyawan')->get(),
             'karyawans' => Karyawan::all()
         ]);
@@ -19,7 +19,7 @@ class PenggajianController extends Controller
 
     public function create()
     {
-        return view('penggajian.formaddeditpenggajian', [
+        return view('Penggajian.formAddEditPenggajian', [
             'karyawans' => Karyawan::all()
         ]);
     }

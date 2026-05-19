@@ -62,7 +62,7 @@ class JobdeskController extends Controller
     public function form()
     {
         $karyawans = Karyawan::all();
-        return view('jobdesk.formAddEdit', compact('karyawans'));
+        return view('Jobdesk.formAddEdit', compact('karyawans'));
     }
 
 }
