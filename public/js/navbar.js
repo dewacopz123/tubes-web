@@ -1,24 +1,30 @@
 function initNavbarTitle() {
-  const sekLogo = document.getElementById("sek_logo") || document.querySelector(".logo-text");
-  if (!sekLogo) return; // navbar belum dimuat
+  const sekLogo =
+    document.getElementById("sek_logo") ||
+    document.querySelector(".logo-text");
 
-  // Ambil judul tersimpan di localStorage
+  if (!sekLogo) return;
+
   const savedTitle = localStorage.getItem("sekTitle");
   sekLogo.textContent = savedTitle ? savedTitle : "SEK DASHBOARD";
 
-  // Tambahkan event listener ke semua menu
   const menuLinks = document.querySelectorAll(".sidebar-nav ul li a");
-  menuLinks.forEach(link => {
+
+  menuLinks.forEach((link) => {
     link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const menuName = this.querySelector("span").textContent.trim();
+      const span = this.querySelector("span");
+      if (!span) return;
+
+      const menuName = span.textContent.trim();
       const href = this.getAttribute("href");
 
-      // Simpan ke localStorage
-      localStorage.setItem("sekTitle", `SEK ${menuName.toUpperCase()}`);
+      localStorage.setItem(
+        "sekTitle",
+        `SEK ${menuName.toUpperCase()}`
+      );
 
-      // Pindah halaman dengan sedikit delay agar tersimpan
       if (href && href !== "#") {
+        e.preventDefault();
         setTimeout(() => {
           window.location.href = href;
         }, 100);
@@ -27,19 +33,56 @@ function initNavbarTitle() {
   });
 }
 
-// Jalankan setelah DOM siap
+/* ================= SIDEBAR TOGGLE ================= */
+function initSidebarToggle() {
+  const sidebar = document.querySelector(".sidebar");
+  const content = document.querySelector(".content");
+  const toggleBtn = document.getElementById("sidebarToggle");
+
+  if (!sidebar || !toggleBtn) return;
+
+  // restore state
+  const saved = localStorage.getItem("sidebarState");
+
+  if (saved === "collapsed") {
+    sidebar.classList.add("collapsed");
+    if (content) content.classList.add("expanded");
+  }
+
+  toggleBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("collapsed");
+
+    if (content) {
+      content.classList.toggle("expanded");
+    }
+
+    const state = sidebar.classList.contains("collapsed")
+      ? "collapsed"
+      : "expanded";
+
+    localStorage.setItem("sidebarState", state);
+  });
+}
+
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function () {
-  // Kasus normal (navbar sudah ada)
+  // Navbar title init
   if (document.getElementById("sek_logo")) {
     initNavbarTitle();
   } else {
-    // Navbar dimuat lewat load_navbar.js → tunggu selesai
     const observer = new MutationObserver(() => {
       if (document.getElementById("sek_logo")) {
         initNavbarTitle();
         observer.disconnect();
       }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
   }
+
+  // Sidebar toggle init
+  initSidebarToggle();
 });
