@@ -10,7 +10,7 @@ use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ExportController;
 
-Route::get('/', [LoginController::class, 'index'])->name('login');
+Route::get('/', [LoginController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
