@@ -36,8 +36,7 @@ function initNavbarTitle() {
 /* ================= SIDEBAR TOGGLE ================= */
 function initSidebarToggle() {
   const sidebar = document.querySelector(".sidebar");
-  const content = document.querySelector(".content");
-  const toggleBtn = document.getElementById("sidebarToggle");
+  const toggleBtn = document.getElementById("sidebar-toggle");
 
   if (!sidebar || !toggleBtn) return;
 
@@ -46,15 +45,10 @@ function initSidebarToggle() {
 
   if (saved === "collapsed") {
     sidebar.classList.add("collapsed");
-    if (content) content.classList.add("expanded");
   }
 
   toggleBtn.addEventListener("click", function () {
     sidebar.classList.toggle("collapsed");
-
-    if (content) {
-      content.classList.toggle("expanded");
-    }
 
     const state = sidebar.classList.contains("collapsed")
       ? "collapsed"
