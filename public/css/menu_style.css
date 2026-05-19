@@ -429,44 +429,43 @@ h3.logo-text {
     background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    overflow-x: auto;
     width: 100%;
+    overflow-x: auto; /* penting untuk mobile */
+    -webkit-overflow-scrolling: touch;
 }
 
+/* TABLE */
 .table-absensi table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 720px;
+    min-width: 720px; /* biar tidak rusak di desktop */
     font-size: 0.95rem;
-    text-align: center; 
-     border-collapse: collapse;
-     border-spacing: 0;
+    text-align: center;
 }
 
-
-
+/* HEADER */
 .table-absensi thead {
     color: #BDBDBD;
     position: sticky;
     top: 0;
+    background: #fff; /* wajib biar sticky tidak transparan */
     z-index: 2;
 }
 
 .table-absensi thead th {
-    padding: 12px clamp(12px, 3.5vw, 70px);
-    text-align: center;
+    padding: 12px 24px;
     font-weight: 600;
     white-space: nowrap;
-    vertical-align: middle;
 }
 
+/* BODY */
 .table-absensi tbody td {
-    padding: 12px clamp(12px, 2.5vw, 20px);
-    text-align: center;
-    vertical-align: middle;
+    padding: 12px 18px;
     color: #333;
+    vertical-align: middle;
 }
 
+/* STRIPING */
 .table-absensi tbody tr:nth-child(even) {
     background: #fbfcfd;
 }
@@ -475,6 +474,7 @@ h3.logo-text {
     background: rgba(0, 171, 182, 0.06);
 }
 
+/* STATUS */
 .table-absensi .status {
     display: inline-block;
     padding: 6px 10px;
@@ -483,51 +483,50 @@ h3.logo-text {
     font-weight: 700;
 }
 
-.table-absensi .status.present {
-    background: #e6fffb;
-    color: #007f74;
-}
+.status.present { background: #e6fffb; color: #007f74; }
+.status.absent { background: #fff1f2; color: #c53030; }
+.status.late { background: #fff7ed; color: #b45309; }
 
-.table-absensi .status.absent {
-    background: #fff1f2;
-    color: #c53030;
-}
-
-.table-absensi .status.late {
-    background: #fff7ed;
-    color: #b45309;
-}
-
+/* ACTIONS */
 .table-absensi .actions {
     display: flex;
     gap: 8px;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: center;
 }
 
+/* BUTTON */
 .table-absensi .action-btn {
     background: transparent;
     border: none;
     padding: 6px;
     cursor: pointer;
-    color: var(--dark-color);
     border-radius: 6px;
 }
 
 .table-absensi .action-btn:hover {
     background: rgba(0, 0, 0, 0.04);
-    color: var(--sidebar-active-color);
 }
 
-@media (max-width: 520px) {
+/* 📱 MOBILE */
+@media (max-width: 768px) {
     .table-absensi table {
         min-width: 600px;
+        font-size: 0.85rem;
     }
 
-    .table-absensi thead th,
+    .table-absensi thead th {
+        padding: 10px 12px;
+    }
+
     .table-absensi tbody td {
         padding: 10px 12px;
-        font-size: 0.88rem;
+    }
+}
+
+/* 📱 SMALL PHONE */
+@media (max-width: 480px) {
+    .table-absensi table {
+        min-width: 520px;
     }
 }
 
