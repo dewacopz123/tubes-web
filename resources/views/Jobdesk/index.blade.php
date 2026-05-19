@@ -7,8 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sistem Etos Kerja - Jobdesk</title>
     {{-- CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/menu_style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/formAddEdit.css') }}">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
+    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260520">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -81,9 +81,9 @@
         </main>
     </div>
 
-    <script src="{{ asset('js/load_navbar.js') }}"></script>
-    <script src="{{ asset('js/navbar.js') }}"></script>
-    <script src="{{ asset('js/jobdesk.js') }}"></script>
+    <script src="/js/load_navbar.js?v=20260520"></script>
+    <script src="/js/navbar.js?v=20260520"></script>
+    <script src="/js/jobdesk.js?v=20260520"></script>
 
 </body>
 

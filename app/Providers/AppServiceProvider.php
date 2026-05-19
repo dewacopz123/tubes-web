@@ -7,6 +7,7 @@ use App\Repositories\KaryawanRepository;
 use App\Repositories\KaryawanRepositoryInterface;
 use App\Repositories\PenggajianRepositoryInterface;
 use App\Repositories\PenggajianRepository;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
