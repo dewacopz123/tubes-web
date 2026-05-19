@@ -23,7 +23,7 @@
                 <div class="header">
                     <h2 class="title">Edit Profile</h2>
                     <img
-                        src="{{ asset('img/default-user.png') }}"
+                        src="{{ asset('asset/Icon/profile.png') }}"
                         alt="User Photo"
                         class="photo"
                         id="profilePhoto">

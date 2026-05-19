@@ -16,7 +16,7 @@
 
 <body>
 
-    @include('navbar.navbar')
+    @include('Navbar.navbar')
 
     <div class="dashboard-container">
 

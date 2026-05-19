@@ -13,7 +13,7 @@
 
 <body>
 
-@include('navbar.navbar')
+@include('Navbar.navbar')
 
 <div class="main-wrapper">
 <main class="page-content">

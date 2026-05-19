@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    @include('navbar.navbar')
+    @include('Navbar.navbar')
 
     <div id="main-wrapper" class="main-wrapper">
 
@@ -82,7 +82,6 @@
     </div>
 
     <script src="{{ asset('js/load_navbar.js') }}"></script>
-    <script src="{{ asset('asset/js/absensi.js') }}"></script>
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/jobdesk.js') }}"></script>
 

@@ -16,25 +16,25 @@
 
     <nav class="sidebar-nav">
         <ul>
-            <li><a href="{{ url('/dashboard') }}"><img src="{{ asset('asset/icon/dashboard.png') }}"><span>Dashboard</span></a></li>
-            <li><a href="{{ url('/absensi') }}"><img src="{{ asset('asset/icon/absensi.png') }}"><span>Absensi</span></a></li>
-            <li><a href="{{ url('/karyawan') }}"><img src="{{ asset('asset/icon/data_karyawan.png') }}"><span>Data Karyawan</span></a></li>
-            <li><a href="{{ url('/jobdesk') }}"><img src="{{ asset('asset/icon/data_jobdesk.png') }}"><span>Data Jobdesk</span></a></li>
-            <li><a href="{{ url('/penggajian') }}"><img src="{{ asset('asset/icon/penggajihan.png') }}"><span>Penggajian</span></a></li>
+            <li><a href="{{ url('/dashboard') }}"><img src="{{ asset('asset/Icon/dashboard.png') }}"><span>Dashboard</span></a></li>
+            <li><a href="{{ url('/absensi') }}"><img src="{{ asset('asset/Icon/absensi.png') }}"><span>Absensi</span></a></li>
+            <li><a href="{{ url('/karyawan') }}"><img src="{{ asset('asset/Icon/data_karyawan.png') }}"><span>Data Karyawan</span></a></li>
+            <li><a href="{{ url('/jobdesk') }}"><img src="{{ asset('asset/Icon/data_jobdesk.png') }}"><span>Data Jobdesk</span></a></li>
+            <li><a href="{{ url('/penggajian') }}"><img src="{{ asset('asset/Icon/penggajihan.png') }}"><span>Penggajian</span></a></li>
 
             <li class="menu-divider">ACCOUNT PAGES</li>
 
-            <li><a href="{{ url('/profile') }}"><img src="{{ asset('asset/icon/profile.png') }}"><span>Profile</span></a></li>
-            <li><a href="{{ url('/login') }}"><img src="{{ asset('asset/icon/logout.png') }}"><span>Log Out</span></a></li>
+            <li><a href="{{ url('/profile') }}"><img src="{{ asset('asset/Icon/profile.png') }}"><span>Profile</span></a></li>
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="logout-link">
+                        <img src="{{ asset('asset/Icon/logout.png') }}"><span>Log Out</span>
+                    </button>
+                </form>
+            </li>
         </ul>
     </nav>
-
-    <div class="sidebar-info-box">
-        <i class="fas fa-question-circle"></i>
-        <h4>Need Help?</h4>
-        <p>Please check our docs</p>
-        <button class="btn-docs">DOCUMENTATION</button>
-    </div>
 </div>
 
 <header class="top-navbar">
@@ -44,8 +44,7 @@
 
     <div class="navbar-right">
         <div class="user-profile">
-            <img src="{{ asset('asset/img/profile.jpg') }}" class="profile-img">
-
+            <img src="{{ asset('asset/Icon/profile.png') }}" class="profile-img">
             <span>
                 {{ $karyawan->nama ?? 'Nama Karyawan' }},
                 {{ ucfirst($karyawan->role ?? auth()->user()->role ?? 'User') }}
@@ -54,4 +53,4 @@
     </div>
 </header>
 
-<script src="{{ asset('asset/js/absensi.js') }}"></script>
+<script src="{{ asset('js/navbar.js') }}"></script>

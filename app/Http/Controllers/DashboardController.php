@@ -6,34 +6,38 @@ use App\Models\Karyawan;
 use App\Models\Absensi;
 use App\Models\Jobdesk;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $today = Carbon::today();
+        $hasAbsensisTable = Schema::hasTable('absensis');
+        $hasJobdesksTable = Schema::hasTable('jobdesks');
 
-        $hadirHariIni = Absensi::whereDate('tanggal', $today)
-            ->whereIn('status', ['Masuk', 'Selesai'])
-            ->distinct('karyawan_id')
-            ->count('karyawan_id');
+        $hadirHariIni = $hasAbsensisTable
+            ? Absensi::whereDate('tanggal', $today)
+                ->whereIn('status', ['Masuk', 'Selesai'])
+                ->distinct('karyawan_id')
+                ->count('karyawan_id')
+            : 0;
 
-        $karyawans = Karyawan::with('jobdesks')->get();
+        $karyawans = $hasJobdesksTable
+            ? Karyawan::with('jobdesks')->get()
+            : Karyawan::all();
 
         return view('dashboard.index', [
-            // KARYAWAN
             'totalKaryawan' => Karyawan::count(),
-            'karyawanAktif' => Karyawan::where('status', 'aktif')->count(),
-            'karyawanNonaktif' => Karyawan::where('status', 'nonaktif')->count(),
-
-            // ✅ HADIR
+            'karyawanAktif' => Karyawan::where('status', 'Aktif')->count(),
+            'karyawanNonaktif' => Karyawan::where('status', 'Nonaktif')->count(),
             'hadirHariIni' => $hadirHariIni,
-
-            // JOBDESK
-            'karyawanPunyaJobdesk' => Jobdesk::distinct('karyawan_id')->count('karyawan_id'),
-            'karyawanTanpaJobdesk' => Karyawan::doesntHave('jobdesks')->count(),
-
-            // DETAIL
+            'karyawanPunyaJobdesk' => $hasJobdesksTable
+                ? Jobdesk::distinct('karyawan_id')->count('karyawan_id')
+                : 0,
+            'karyawanTanpaJobdesk' => $hasJobdesksTable
+                ? Karyawan::doesntHave('jobdesks')->count()
+                : Karyawan::count(),
             'karyawans' => $karyawans
         ]);
     }
