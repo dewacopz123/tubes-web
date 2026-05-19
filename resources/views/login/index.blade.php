@@ -7,10 +7,10 @@
   <title>Sistem Etos Kerja</title>
 
   <!-- favicon -->
-  <link rel="icon" type="image/jpg" href="/asset/img/logo2.jpg?v=20260520">
+  <link rel="icon" type="image/jpg" href="/asset/img/logo2.jpg?v=20260521">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/css/style.css?v=20260520">
+  <link rel="stylesheet" href="/css/style.css?v=20260521">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -19,7 +19,7 @@
 <body>
   <header class="main-header">
     <div class="logo">
-      <img src="/asset/img/logo2.jpg?v=20260520" alt="DASHBOARD SEK" class="header-logo">
+      <img src="/asset/img/logo2.jpg?v=20260521" alt="DASHBOARD SEK" class="header-logo">
       DASHBOARD SEK
     </div>
     <nav class="main-nav"></nav>
@@ -122,7 +122,7 @@
     </div>
   </div>
 
-  <script src="/js/script.js?v=20260520"></script>
+  <script src="/js/script.js?v=20260521"></script>
 
 </body>
 

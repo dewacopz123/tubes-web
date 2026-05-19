@@ -10,8 +10,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- CSS --}}
-    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
-    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260520">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -21,6 +21,10 @@
 
     {{-- NAVBAR --}}
     @include('Navbar.navbar')
+
+    @php
+        $isAdmin = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'admin';
+    @endphp
 
     <div class="main-wrapper">
         <main class="page-content">
@@ -48,7 +52,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
                     {{-- KIRI: Tambah Penggajian --}}
-                    @if(auth()->user()->role === 'admin')
+                    @if($isAdmin)
                         <button id="btnAddPenggajian" class="btn btn-primary btn-long">
                             <i class="fas fa-plus"></i> Tambah Data Penggajian
                         </button>
@@ -74,7 +78,7 @@
                             <th>Nama Karyawan</th>
                             <th>Tanggal</th>
                             <th>Gaji Pokok</th>
-                            @if(auth()->check() && auth()->user()->role === 'admin')
+                            @if($isAdmin)
                                 <th>Aksi</th>
                             @endif
                         </tr>
@@ -87,7 +91,7 @@
                                 <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>
                                 <td>Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
 
-                                @if(auth()->check() && auth()->user()->role === 'admin')
+                                @if($isAdmin)
                                     <td class="aksi-icon">
                                         <button class="btnEdit icon-btn edit" data-id="{{ $pg->id }}" title="Edit">
                                             <i class="fas fa-edit"></i>
@@ -117,9 +121,9 @@
     </div>
 
     {{-- JS --}}
-    <script src="/js/load_navbar.js?v=20260520"></script>
-    <script src="/js/navbar.js?v=20260520"></script>
-    <script src="/js/penggajian.js?v=20260520"></script>
+    <script src="/js/load_navbar.js?v=20260521"></script>
+    <script src="/js/navbar.js?v=20260521"></script>
+    <script src="/js/penggajian.js?v=20260521"></script>
 
 </body>
 

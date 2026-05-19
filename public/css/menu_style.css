@@ -640,10 +640,12 @@ h3.logo-text {
     background-color: #dc3545; /* merah */
 }
 
-.aksi-icon {
+.aksi-icon,
+.action-cell {
     display: flex;
     gap: 10px;
     justify-content: center;
+    align-items: center;
 }
 
 .icon-btn {

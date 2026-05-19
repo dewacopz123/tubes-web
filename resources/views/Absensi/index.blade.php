@@ -6,14 +6,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sistem Etos Kerja - Absensi</title>
 
-    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
-    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260520">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
 
 @include('Navbar.navbar')
+
+@php
+    $isKaryawan = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'karyawan';
+@endphp
 
 <div class="main-wrapper">
 <main class="page-content">
@@ -37,7 +41,7 @@
     </p>
 </div>
 
-@if(auth()->user()->role === 'karyawan')
+@if($isKaryawan)
 <div class="button-group-horizontal">
     <button class="btn btn-primary btn-full" id="btnMasukKerja">
         <i class="fas fa-sign-in-alt"></i> Masuk Kerja
@@ -89,8 +93,8 @@
 </main>
 </div>
 
-<script src="/js/absensi.js?v=20260520"></script>
-<script src="/js/navbar.js?v=20260520"></script>
+<script src="/js/absensi.js?v=20260521"></script>
+<script src="/js/navbar.js?v=20260521"></script>
 
 </body>
 </html>

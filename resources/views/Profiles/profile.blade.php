@@ -7,8 +7,8 @@
     <title>Sistem Etos Kerja - Profile</title>
 
     {{-- CSS --}}
-    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
-    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260520">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
                 <div class="header">
                     <h2 class="title">Edit Profile</h2>
                     <img
-                        src="/asset/Icon/profile.png?v=20260520"
+                        src="/asset/Icon/profile.png?v=20260521"
                         alt="User Photo"
                         class="photo"
                         id="profilePhoto">
@@ -107,7 +107,7 @@
     </div>
 
     {{-- JS --}}
-    <script src="/js/navbar.js?v=20260520"></script>
+    <script src="/js/navbar.js?v=20260521"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector(".form");

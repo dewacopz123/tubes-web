@@ -7,8 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sistem Etos Kerja - Jobdesk</title>
     {{-- CSS --}}
-    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
-    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260520">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -16,6 +16,10 @@
 
 <body>
     @include('Navbar.navbar')
+
+    @php
+        $isAdmin = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'admin';
+    @endphp
 
     <div id="main-wrapper" class="main-wrapper">
 
@@ -34,7 +38,7 @@
                     </select>
                 </div>
             </div>
-            @if(Auth::user()->role === 'admin')
+            @if($isAdmin)
             <button id="btnAddJobdesk" class="btn-primary btn-long">Tambah Jobdesk</button>
             @endif
             <div id="popupContainer"></div>
@@ -49,7 +53,7 @@
                             <th>Nama Jobdesk</th>
                             <th>Tugas Utama</th>
                             <th>Nama Karyawan</th>
-                            @if(Auth::user()->role === 'admin')
+                            @if($isAdmin)
                             <th>Aksi</th>
                             @endif
                         </tr>
@@ -62,8 +66,8 @@
                             <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
                             <td>{{ $jobdesk->tugas_utama }}</td>
                             <td class="col-karyawan">{{ optional($jobdesk->karyawan)->nama ?? '-' }}</td>
-                            @if(Auth::user()->role === 'admin')
-                            <td class="action-cell">
+                            @if($isAdmin)
+                            <td class="aksi-icon action-cell">
                                 <button type="button" class="btn-edit icon-btn edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -81,9 +85,9 @@
         </main>
     </div>
 
-    <script src="/js/load_navbar.js?v=20260520"></script>
-    <script src="/js/navbar.js?v=20260520"></script>
-    <script src="/js/jobdesk.js?v=20260520"></script>
+    <script src="/js/load_navbar.js?v=20260521"></script>
+    <script src="/js/navbar.js?v=20260521"></script>
+    <script src="/js/jobdesk.js?v=20260521"></script>
 
 </body>
 

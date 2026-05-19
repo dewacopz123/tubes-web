@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Etos Kerja - Dashboard</title>
 
-    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
-    <link rel="stylesheet" href="/css/dashboard.css?v=20260520">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260521">
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -101,7 +101,7 @@
         window.karyawanTanpaJobdesk = { $karyawanTanpaJobdesk };
     </script>
 
-    <script src="/js/dashboard.js?v=20260520"></script>
+    <script src="/js/dashboard.js?v=20260521"></script>
 
 </body>
 

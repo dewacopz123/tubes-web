@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
 
-    <link rel="stylesheet" href="/css/menu_style.css?v=20260520">
-    <link rel="stylesheet" href="/css/dashboard.css?v=20260520">
+    <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260521">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
     @include('Navbar.navbar')
+
+    @php
+        $isAdmin = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'admin';
+    @endphp
 
     <div class="dashboard-container">
         <h2>Dashboard Sistem Etos Kerja</h2>
@@ -46,7 +50,7 @@
         <div class="jobdesk-header">
             <h3>Status Jobdesk Karyawan</h3>
 
-            @if(auth()->check() && auth()->user()->role === 'admin')
+            @if($isAdmin)
                 <button type="button"
                         class="btn btn-export-pill"
                         onclick="window.location.href='/export/laporan'">
@@ -98,6 +102,6 @@
         </table>
     </div>
 
-    <script src="/js/dashboard.js?v=20260520"></script>
+    <script src="/js/dashboard.js?v=20260521"></script>
 </body>
 </html>
