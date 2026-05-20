@@ -1,12 +1,11 @@
 .dashboard-container {
     position: relative;
     margin-top: 90px;        /* tinggi navbar */
-    margin-left: 260px;      /* posisi sidebar */
-    width: calc(100% - 260px); /* FULL SISA LAYAR */
     padding: 30px;
     background: #f4f6f9;
     min-height: calc(100vh - 90px);
     box-sizing: border-box;
+    width: 100%;
 }
 
 

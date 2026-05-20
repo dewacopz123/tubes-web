@@ -18,9 +18,10 @@
 
     @include('Navbar.navbar')
 
-    <div class="dashboard-container">
+    <div class="main-wrapper">
+        <div class="dashboard-container">
 
-        <h2>Dashboard Sistem Etos Kerja</h2>
+            <h2>Dashboard Sistem Etos Kerja</h2>
 
         <!-- JAM REALTIME -->
         <div class="clock-box">
@@ -91,7 +92,7 @@
 
         </div>
 
-
+        </div>
     </div>
     <script>
         window.hadirHariIni = { $hadirHariIni };
