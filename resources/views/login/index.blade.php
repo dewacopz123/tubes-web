@@ -23,48 +23,49 @@
       DASHBOARD SEK
     </div>
     <nav class="main-nav"></nav>
-    <button class="free-download">Free Download</button>
   </header>
 
-  <div class="container" id="form-container">
+  @php $active = session('active', 'register'); @endphp
+  <div class="container {{ $active }}-state" id="form-container">
     <h1 class="welcome-text" id="main-welcome-text">Welcome!</h1>
     <p class="tagline">Use these awesome forms to login or create new account in your project for free.</p>
 
     <div class="card" id="main-card">
 
-      <form class="auth-form" id="register-form"
-      action="{{ route('register.process') }}"
-      method="POST">
-      @csrf
+      <form class="auth-form" id="register-form" action="{{ route('register.process') }}" method="POST">
+        @csrf
 
         <div class="social-login-section top-social" id="social-login-register">
-          <p>Register with</p>
-          <div class="social-buttons">
-            <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
-            <button class="social-btn apple"><i class="fab fa-apple"></i></button>
-            <button class="social-btn google"><i class="fab fa-google"></i></button>
-          </div>
-          <p class="divider">OR</p>
+          <p>Sign Up</p>
         </div>
 
         <div class="input-group-label">
           <label>Name</label>
           <div class="input-field-wrapper">
-            <input type="text" name="nama" placeholder="Your full name" required>
+            <input type="text" name="nama" placeholder="Your full name" value="{{ old('nama') }}" required>
+            @error('nama')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
           </div>
         </div>
 
         <div class="input-group-label">
           <label>Email</label>
           <div class="input-field-wrapper">
-          <input type="email" name="email" placeholder="Your email address" required>
+            <input type="email" name="email" placeholder="Your email address" value="{{ old('email') }}" required>
+            @error('email')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
           </div>
         </div>
 
         <div class="input-group-label">
           <label>Password</label>
           <div class="input-field-wrapper">
-          <input type="password" name="password" placeholder="Your password" required>
+            <input type="password" name="password" placeholder="Your password" required>
+            @error('password')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
           </div>
         </div>
 
@@ -76,18 +77,24 @@
       <form class="auth-form" id="login-form" action="{{ route('login.process') }}" method="POST">
         @csrf
 
-        <p><b>Login with</b></p>
+        <p><b>Sign In</b></p>
         <div class="input-group-label">
           <label>Email</label>
           <div class="input-field-wrapper">
-          <input type="email" name="email" placeholder="Your email address" required>
+            <input type="email" name="email" placeholder="Your email address" value="{{ old('email') }}" required>
+            @error('email')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
           </div>
         </div>
 
         <div class="input-group-label">
           <label>Password</label>
           <div class="input-field-wrapper">
-          <input type="password" name="password" placeholder="Your password" required>
+            <input type="password" name="password" placeholder="Your password" required>
+            @error('password')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
           </div>
         </div>
 
@@ -105,14 +112,6 @@
         <p class="switch-text">Don't have an account? <a href="#" id="switch-to-register-bottom">Register</a></p>
 
         <div class="social-login-section bottom-social" id="social-login-login">
-          <p class="divider">OR</p>
-          <div class="social-buttons">
-            <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
-            <button class="social-btn apple"><i class="fab fa-apple"></i></button>
-            <a href="..." class="social-btn google">
-              <i class="fab fa-google"></i>
-            </a>
-          </div>
         </div>
       </form>
     </div>

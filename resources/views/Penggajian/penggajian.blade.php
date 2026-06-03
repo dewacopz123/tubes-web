@@ -71,6 +71,7 @@
             <div class="card-content">
                 <h3>Tabel Data Penggajian</h3>
 
+                <div class="table-responsive">
                 <table class="table-absensi">
                     <thead>
                         <tr>
@@ -112,6 +113,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
 
             {{-- MODAL --}}

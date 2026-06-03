@@ -65,6 +65,12 @@
     }
 }
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 600px) {
     .dashboard-container {
         margin-left: 0;

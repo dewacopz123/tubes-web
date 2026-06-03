@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Karyawan;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 
 class LoginController extends Controller
@@ -38,24 +39,35 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password salah'
-        ])->withInput();
+            'email' => 'email incorrect',
+            'password' => 'Password incorrect'
+        ])->withInput()->with('active', 'login');
     }
 
-     public function register(Request $request)
+    public function register(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'nama' => ['required','string','max:255','regex:/^[A-Za-z\s]+$/'],
             'email' => 'required|email|unique:karyawans,email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|max:8',
+        ],[
+            'nama.regex' => 'Name cannot using numbers or special characters',
+            'password.max' => 'Password cannot be more than 8 characters',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('active', 'register');
+        }
 
         $karyawan = Karyawan::create([
             'kode_karyawan' => 'KRY-' . strtoupper(Str::random(6)),
             'nama' => $request->nama,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // 🔐 BCRYPT
-            'role' => 'karyawan',                          // AUTO
+            'password' => Hash::make($request->password),
+            'role' => 'karyawan',
             'status' => 'Aktif',
         ]);
 

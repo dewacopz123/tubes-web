@@ -7,41 +7,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const switchToLoginbottomLink = document.getElementById('switch-to-login-bottom');
   const switchToRegisterbottomLink = document.getElementById('switch-to-register-bottom');
 
-  // Tinggi Card 
-  const REGISTER_HEIGHT = '570px';
-  const LOGIN_HEIGHT = '450px';
+  const registerForm = document.getElementById('register-form');
+  const loginForm = document.getElementById('login-form');
 
-    formContainer.classList.add('register-state');
-    mainCard.style.height = REGISTER_HEIGHT;
-    mainWelcomeText.textContent = 'Welcome!';
+  function updateCardHeight() {
+    const activeForm = formContainer.classList.contains('register-state') ? registerForm : loginForm;
+    const height = activeForm.scrollHeight + 60; // include card padding
+    mainCard.style.height = `${height}px`;
+  }
+
+  function setWelcomeText() {
+    const isRegister = formContainer.classList.contains('register-state');
+    mainWelcomeText.textContent = isRegister ? 'Welcome!' : 'Welcome Back!';
+  }
+
+  function initializeState() {
+    setWelcomeText();
+    updateCardHeight();
+  }
 
     function switchToLogin() {
         formContainer.classList.remove('register-state');
         formContainer.classList.add('login-state');
-        mainWelcomeText.textContent = 'Welcome Back!';
-        mainCard.style.height = LOGIN_HEIGHT;
+        setWelcomeText();
+        updateCardHeight();
     }
 
   function switchToLoginbottom() {
     formContainer.classList.remove('register-state');
     formContainer.classList.add('login-state');
-    mainWelcomeText.textContent = 'Welcome Back!';
-    mainCard.style.height = LOGIN_HEIGHT;
+    setWelcomeText();
+    updateCardHeight();
   }
 
   function switchToRegister() {
     formContainer.classList.remove('login-state');
     formContainer.classList.add('register-state');
-    mainWelcomeText.textContent = 'Welcome!';
-    mainCard.style.height = REGISTER_HEIGHT;
+    setWelcomeText();
+    updateCardHeight();
   }
 
   function switchToRegisterbottom() {
     formContainer.classList.remove('login-state');
     formContainer.classList.add('register-state');
-    mainWelcomeText.textContent = 'Welcome!';
-    mainCard.style.height = REGISTER_HEIGHT;
+    setWelcomeText();
+    updateCardHeight();
   }
+
+  initializeState();
 
     if (switchToLoginLink) {
         switchToLoginLink.addEventListener('click', (e) => {

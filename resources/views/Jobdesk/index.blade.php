@@ -45,6 +45,7 @@
 
             <div class="card-content">
                 <h3>Jobdesk Table</h3>
+                <div class="table-responsive">
                 <table class="table-absensi" id="jobdeskTable">
                     <thead>
                         <tr>
@@ -80,6 +81,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
 
             </div>
         </main>

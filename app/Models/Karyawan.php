@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 
 class Karyawan extends Authenticatable
 {
@@ -18,10 +19,25 @@ class Karyawan extends Authenticatable
         'telepon',
         'password',
         'role',
-        'status'
+        'status',
+        'api_token',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'api_token'];
+
+    public function createToken(): string
+    {
+        $this->api_token = Str::random(80);
+        $this->save();
+
+        return $this->api_token;
+    }
+
+    public function revokeToken(): void
+    {
+        $this->api_token = null;
+        $this->save();
+    }
 
     public function isAdmin()
     {

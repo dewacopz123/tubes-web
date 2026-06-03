@@ -55,6 +55,7 @@
 @endauth
 
 {{-- ADMIN & KARYAWAN BISA MELIHAT --}}
+<div class="table-responsive">
 <table class="table-absensi">
 <thead>
 <tr>
@@ -89,6 +90,7 @@
 @endforeach
 </tbody>
 </table>
+</div>
 
 </main>
 </div>

@@ -60,6 +60,7 @@
                 @endif
             </div>
 
+            <div class="table-responsive">
             <table class="jobdesk-table">
                 <thead>
                     <tr>
@@ -101,6 +102,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 

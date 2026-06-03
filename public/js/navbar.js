@@ -1,7 +1,19 @@
+function setSidebarHeaderTitle(menuName) {
+  const sekLogo =
+    document.getElementById("sek_logo") ||
+    document.querySelector(".sidebar-header .logo-text");
+
+  if (!sekLogo || !menuName) return;
+
+  const titleText = `SEK ${menuName.toUpperCase()}`;
+  sekLogo.textContent = titleText;
+  localStorage.setItem("sekTitle", titleText);
+}
+
 function initNavbarTitle() {
   const sekLogo =
     document.getElementById("sek_logo") ||
-    document.querySelector(".logo-text");
+    document.querySelector(".sidebar-header .logo-text");
 
   if (!sekLogo) return;
 
@@ -18,10 +30,7 @@ function initNavbarTitle() {
       const menuName = span.textContent.trim();
       const href = this.getAttribute("href");
 
-      localStorage.setItem(
-        "sekTitle",
-        `SEK ${menuName.toUpperCase()}`
-      );
+      setSidebarHeaderTitle(menuName);
 
       if (href && href !== "#") {
         e.preventDefault();
@@ -31,6 +40,47 @@ function initNavbarTitle() {
       }
     });
   });
+}
+
+function initSidebarActiveMenu() {
+  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+  const menuLinks = document.querySelectorAll(".sidebar-nav ul li a");
+
+  document.querySelectorAll(".sidebar-nav ul li").forEach((item) => {
+    item.classList.remove("active");
+  });
+
+  let activeItem = Array.from(menuLinks).find((link) => {
+    const href = link.getAttribute("href");
+    if (!href || href === "#" || href === "javascript:void(0)") return false;
+
+    const url = new URL(href, window.location.origin);
+    const path = url.pathname.replace(/\/$/, "") || "/";
+
+    if (path === currentPath) return true;
+    if (currentPath === "/" && path === "/dashboard") return true;
+    return false;
+  });
+
+  if (!activeItem && currentPath !== "/") {
+    activeItem = Array.from(menuLinks).find((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return false;
+
+      const url = new URL(href, window.location.origin);
+      const path = url.pathname.replace(/\/$/, "") || "/";
+      return currentPath.startsWith(path) && path !== "/";
+    });
+  }
+
+  if (activeItem) {
+    activeItem.closest("li")?.classList.add("active");
+
+    const activeMenuName = activeItem.querySelector("span")?.textContent.trim();
+    if (activeMenuName) {
+      setSidebarHeaderTitle(activeMenuName);
+    }
+  }
 }
 
 /* ================= SIDEBAR TOGGLE ================= */
@@ -77,6 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Sidebar toggle init
+  // Sidebar init
+  initSidebarActiveMenu();
   initSidebarToggle();
 });

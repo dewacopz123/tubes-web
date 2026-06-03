@@ -62,6 +62,7 @@
             <div class="card-content">
                 <h3>Tabel Data Karyawan</h3>
 
+                <div class="table-responsive">
                 <table class="table-absensi">
                     <thead>
                         <tr>
@@ -113,6 +114,7 @@
 
 
                 </table>
+                </div>
             </div>
 
             {{-- MODAL CONTAINER --}}

@@ -30,9 +30,10 @@ body {
 body::before {
     content: '';
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: calc(100% - 15px);
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     height: 70vh; 
     border-bottom-left-radius: 30px; 
     border-bottom-right-radius: 30px; 
@@ -169,6 +170,12 @@ body::before {
 #register-form .input-group-label:first-child input { padding-left: 40px; } 
 
 .input-field-wrapper input:focus { border-color: var(--main-color); }
+
+.form-error {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
 
 .icon-placeholder { 
     position: absolute; 

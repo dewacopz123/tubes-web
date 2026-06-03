@@ -64,11 +64,17 @@ body {
 .sidebar-nav a img,
 .sidebar-nav .logout-link img {
     filter: invert(97%) sepia(0%) saturate(0%) hue-rotate(320deg) brightness(80%) contrast(87%);
+    transition: filter 0.3s ease;
 }
 
 .sidebar-nav a:hover img,
 .sidebar-nav .logout-link:hover img {
     filter: invert(50%) sepia(19%) saturate(7481%) hue-rotate(151deg) brightness(95%) contrast(101%);
+}
+
+.sidebar-nav li.active a img,
+.sidebar-nav li.active .logout-link img {
+    filter: invert(35%) sepia(78%) saturate(3267%) hue-rotate(150deg) brightness(100%) contrast(90%);
 }
 
 .sidebar-nav a,
@@ -106,7 +112,12 @@ body {
 }
 
 .sidebar-nav li:hover a,
-.sidebar-nav li:hover .logout-link,
+.sidebar-nav li:hover .logout-link
+{
+    color: var(--sidebar-active-color);
+    font-weight: 600;
+    margin-left: 10px;
+}
 .sidebar-nav li.active a {
     background-color: var(--sidebar-link-hover);
     color: var(--sidebar-active-color);
@@ -508,12 +519,21 @@ h3.logo-text {
 }
 
 /* TABLE */
-.table-absensi table {
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table,
+.table-absensi {
     width: 100%;
     border-collapse: collapse;
     min-width: 720px; /* biar tidak rusak di desktop */
     font-size: 0.95rem;
     text-align: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* HEADER */
@@ -582,7 +602,8 @@ h3.logo-text {
 
 /* 📱 MOBILE */
 @media (max-width: 768px) {
-    .table-absensi table {
+    .table-responsive table,
+    .table-absensi {
         min-width: 600px;
         font-size: 0.85rem;
     }
@@ -598,7 +619,8 @@ h3.logo-text {
 
 /* 📱 SMALL PHONE */
 @media (max-width: 480px) {
-    .table-absensi table {
+    .table-responsive table,
+    .table-absensi {
         min-width: 520px;
     }
 }
