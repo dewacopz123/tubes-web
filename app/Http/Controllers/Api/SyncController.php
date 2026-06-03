@@ -85,14 +85,14 @@ class SyncController extends Controller
 
     public function jobdesks()
     {
-        return Jobdesk::with('karyawan:id,nama')->orderBy('id', 'desc')->get();
+        return Jobdesk::with('karyawans:id,nama')->orderBy('id', 'desc')->get();
     }
 
     public function showJobdesk($id)
     {
         return response()->json([
             'success' => true,
-            'data' => Jobdesk::with('karyawan:id,nama')->findOrFail($id),
+            'data' => Jobdesk::with('karyawans:id,nama')->findOrFail($id),
         ]);
     }
 
@@ -245,14 +245,14 @@ class SyncController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Jobdesk berhasil ditambahkan.',
-            'data' => $jobdesk->load('karyawan:id,nama'),
+            'data' => $jobdesk->load('karyawans:id,nama'),
         ], 201);
     }
 
     public function updateJobdesk(Request $request, $id)
     {
         $data = $request->validate(
-            $this->jobdeskRules(),
+            $this->jobdeskRules($id),
             $this->validationMessages(),
             $this->validationAttributes()
         );
@@ -263,7 +263,7 @@ class SyncController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Jobdesk berhasil diperbarui.',
-            'data' => $jobdesk->load('karyawan:id,nama'),
+            'data' => $jobdesk->load('karyawans:id,nama'),
         ]);
     }
 

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sistem Etos Kerja - Jobdesk</title>
+    
     {{-- CSS --}}
     <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
     <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
@@ -38,9 +39,17 @@
                 </div>
             </div>
             @if($isAdmin)
-                <button id="btnAddJobdesk" class="btn-primary btn-long">Tambah Jobdesk</button>
+                <button id="btnAddJobdesk" class="btn btn-primary btn-long">
+                    <i class="fas fa-plus"></i> Tambah Jobdesk
+                </button>
+                <button id="btnAssignJobdesk" class="btn btn-jobdesk btn-long" style="margin-left: 10px;">
+                    <i class="fas fa-user-plus"></i> Assign Jobdesk
+                </button>
             @endif
+
+            {{-- MODAL CONTAINERS --}}
             <div id="popupContainer"></div>
+            <div id="dialogContainer"></div>
 
             <div class="card-content">
                 <h3>Jobdesk Table</h3>
@@ -59,25 +68,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($jobdesks as $jobdesk)
+                            @forelse ($jobdesks as $jobdesk)
                                 <tr data-id="{{ $jobdesk->id }}">
-                                    <td>{{ $jobdesk->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $jobdesk->kode_jobdesk }}</td>
                                     <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
                                     <td>{{ $jobdesk->tugas_utama }}</td>
-                                    <td class="col-karyawan">{{ optional($jobdesk->karyawan)->nama ?? '-' }}</td>
+                                    <td class="col-karyawan">{{ $jobdesk->karyawans->pluck('nama')->implode(', ') ?: '-' }}</td>
                                     @if($isAdmin)
-                                        <td class="aksi-icon action-cell">
-                                            <button type="button" class="btn-edit icon-btn edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn-delete icon-btn delete">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                                        <td>
+                                            <button type="button" class="badge badge-biru btnEdit" data-id="{{ $jobdesk->id }}"
+                                                title="Edit">Edit</button>
+                                            <button type="button" class="badge badge-danger btnDelete" data-id="{{ $jobdesk->id }}"
+                                                title="Hapus">Hapus</button>
                                         </td>
                                     @endif
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="{{ $isAdmin ? 6 : 5 }}" style="text-align:center">
+                                        Data jobdesk belum tersedia
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

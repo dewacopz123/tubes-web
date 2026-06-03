@@ -33,7 +33,7 @@ class DashboardController extends Controller
             'karyawanNonaktif' => Karyawan::where('status', 'Nonaktif')->count(),
             'hadirHariIni' => $hadirHariIni,
             'karyawanPunyaJobdesk' => $hasJobdesksTable
-                ? Jobdesk::distinct('karyawan_id')->count('karyawan_id')
+                ? Karyawan::has('jobdesks')->count()
                 : 0,
             'karyawanTanpaJobdesk' => $hasJobdesksTable
                 ? Karyawan::doesntHave('jobdesks')->count()

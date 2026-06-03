@@ -26,9 +26,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/jobdesk', [JobdeskController::class, 'index']);
     Route::post('/jobdesk', [JobdeskController::class, 'store']);
     Route::get('/jobdesk/form', [JobdeskController::class, 'form']);
+    Route::get('/jobdesk/assign/form', [JobdeskController::class, 'assignForm']);
+    Route::post('/jobdesk/assign', [JobdeskController::class, 'assign']);
     Route::get('/jobdesk/{id}', [JobdeskController::class, 'show']);
     Route::put('/jobdesk/{id}', [JobdeskController::class, 'update']);
     Route::delete('/jobdesk/{id}', [JobdeskController::class, 'destroy']);
+    Route::delete('/jobdesk/{jobdesk}/karyawan/{karyawan}', [JobdeskController::class, 'removeKaryawan']);
 
     Route::get('/penggajian', [PenggajianController::class,'index']);
     Route::get('/penggajian/create', [PenggajianController::class,'create']);

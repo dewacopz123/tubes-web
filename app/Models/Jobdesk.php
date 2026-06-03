@@ -13,7 +13,6 @@ class Jobdesk extends Model
         'kode_jobdesk',
         'nama_jobdesk',
         'tugas_utama',
-        'karyawan_id'
     ];
 
     // generate kode otomatis sebelum insert
@@ -28,8 +27,8 @@ class Jobdesk extends Model
         });
     }
 
-    public function karyawan()
+    public function karyawans()
     {
-        return $this->belongsTo(Karyawan::class);
+        return $this->belongsToMany(Karyawan::class, 'jobdesk_karyawan');
     }
 }

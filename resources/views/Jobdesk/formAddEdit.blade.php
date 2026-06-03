@@ -1,6 +1,5 @@
 <div class="modal-form-overlay">
     <div class="modal-form">
-        <span class="modal-close" data-close>&times;</span>
         <h3 id="modalTitle">Jobdesk</h3>
         <form id="formJobdesk">
             <input type="hidden" id="jobdesk_id" name="jobdesk_id" value="">
@@ -17,18 +16,16 @@
                 <div class="input-error" id="error-tugas_utama"></div>
             </div>
 
-            <div class="group">
-                <label for="karyawan_id">Karyawan</label>
-                <select name="karyawan_id" id="karyawan_id" class="form-control" required>
-                    <option value="">Pilih Karyawan</option>
-                    @foreach ($karyawans as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                    @endforeach
-                </select>
-                <div class="input-error" id="error-karyawan_id"></div>
+            <div class="group" id="assignedSection" style="display: none;">
+                <label>Daftar Karyawan yang Ditugaskan</label>
+                <div id="assignedKaryawansEdit" class="assigned-list"></div>
+                <div class="input-error" id="error-assigned_karyawans"></div>
             </div>
 
-            <button type="submit" class="btn-jobdesk">Simpan</button>
+            <div class="button-group">
+                <button type="submit" class="btn-jobdesk" id="btnSubmit">Simpan</button>
+                <button type="button" class="btn-danger" data-close>Batal</button>
+            </div>
         </form>
     </div>
 </div>

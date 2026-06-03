@@ -7,7 +7,7 @@ class JobdeskRepository
 {
     public function all()
     {
-        return Jobdesk::with('karyawan')->get();
+        return Jobdesk::with('karyawans')->get();
     }
 
     public function create(array $data)

@@ -34,7 +34,7 @@
                     <p>
                         <b>Status:</b>
                         <span class="badge 
-                {{ auth()->user()->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
+                    {{ auth()->user()->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
                             {{ auth()->user()->status }}
                         </span>
                     </p>
@@ -93,6 +93,9 @@
 
         </main>
     </div>
+    <div id="dialogContainer">
+    </div>
+
 
     <script src="/js/absensi.js?v=20260521"></script>
     <script src="/js/navbar.js?v=20260521"></script>

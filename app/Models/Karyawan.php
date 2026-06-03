@@ -51,7 +51,7 @@ class Karyawan extends Authenticatable
 
     public function jobdesks()
     {
-        return $this->hasMany(Jobdesk::class);
+        return $this->belongsToMany(Jobdesk::class, 'jobdesk_karyawan');
     }
 
     public function penggajians()

@@ -21,12 +21,17 @@ trait ValidatesSekData
         ];
     }
 
-    protected function jobdeskRules(): array
+    protected function jobdeskRules(?int $ignoreId = null): array
     {
         return [
-            'nama_jobdesk' => ['required', 'string', 'max:255'],
-            'tugas_utama' => ['required', 'string', 'max:255'],
-            'karyawan_id' => ['required', 'exists:karyawans,id'],
+            'nama_jobdesk' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('jobdesks', 'nama_jobdesk')->ignore($ignoreId),
+                'regex:/^[A-Za-z0-9\s]+$/',
+            ],
+            'tugas_utama' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9\s,]+$/'],
         ];
     }
 
@@ -81,6 +86,11 @@ trait ValidatesSekData
             'regex' => 'Format :attribute tidak valid.',
             'nama.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
             'telepon.regex' => 'Telepon hanya boleh berisi angka, spasi, tanda plus, atau strip.',
+            'nama_jobdesk.regex' => 'Nama jobdesk hanya boleh berisi huruf, angka, dan spasi.',
+            'tugas_utama.regex' => 'Tugas utama hanya boleh berisi huruf, angka, dan spasi.',
+            'karyawan_id.array' => 'Karyawan harus berupa daftar pilihan.',
+            'karyawan_id.min' => 'Pilih minimal satu karyawan.',
+            'karyawan_id.*.exists' => 'Salah satu karyawan tidak ditemukan.',
         ];
     }
 
@@ -95,6 +105,7 @@ trait ValidatesSekData
             'nama_jobdesk' => 'Nama jobdesk',
             'tugas_utama' => 'Tugas utama',
             'karyawan_id' => 'Karyawan',
+            'jobdesk_id' => 'Jobdesk',
             'tanggal' => 'Tanggal',
             'gaji_pokok' => 'Gaji pokok',
             'jam_masuk' => 'Jam masuk',

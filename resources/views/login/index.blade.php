@@ -55,6 +55,7 @@
           <label>Password</label>
           <div class="input-field-wrapper">
             <input type="password" name="password" required>
+            <i class="fa-solid fa-eye-slash password-icon" aria-hidden="true"></i>
             @error('password')
               <div class="form-error">{{ $message }}</div>
             @enderror
