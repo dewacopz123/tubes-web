@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
   const formContainer = document.getElementById('form-container');
-  const mainCard = document.getElementById('main-card');
   const mainWelcomeText = document.getElementById('main-welcome-text');
   const switchToLoginLink = document.getElementById('switch-to-login');
   const switchToRegisterLink = document.getElementById('switch-to-register');
@@ -12,8 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateCardHeight() {
     const activeForm = formContainer.classList.contains('register-state') ? registerForm : loginForm;
-    const height = activeForm.scrollHeight + 60; // include card padding
-    mainCard.style.height = `${height}px`;
+    formContainer.style.setProperty('--active-form-height', `${activeForm.scrollHeight}px`);
   }
 
   function setWelcomeText() {
@@ -83,4 +81,21 @@ document.addEventListener('DOMContentLoaded', () => {
       switchToRegisterbottom();
     });
   }
+
+  const passwordIcons = document.querySelectorAll('.password-icon');
+  passwordIcons.forEach((icon) => {
+    const wrapper = icon.closest('.input-field-wrapper');
+    const passwordInput = wrapper ? wrapper.querySelector('input[type="password"], input[type="text"]') : null;
+    if (!passwordInput) {
+      return;
+    }
+
+    icon.style.cursor = 'pointer';
+    icon.addEventListener('click', () => {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      icon.classList.toggle('fa-eye', isHidden);
+      icon.classList.toggle('fa-eye-slash', !isHidden);
+    });
+  });
 });

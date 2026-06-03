@@ -24,24 +24,30 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if (
-            Auth::attempt([
-                'email' => $request->email,
-                'password' => $request->password,
-                'status' => 'Aktif'
-            ])
-        ) {
-            $request->session()->regenerate();
+        $user = Karyawan::where('email', $request->email)->first();
 
-            return Auth::user()->role === 'admin'
-                ? redirect('/dashboard')
-                : redirect('/dashboard');
+        if (! $user) {
+            return back()->withErrors([
+                'email' => 'Email incorrect'
+            ])->withInput()->with('active', 'login');
         }
 
-        return back()->withErrors([
-            'email' => 'email incorrect',
-            'password' => 'Password incorrect'
-        ])->withInput()->with('active', 'login');
+        if ($user->status !== 'Aktif') {
+            return back()->withErrors([
+                'email' => 'Your account is not active'
+            ])->withInput()->with('active', 'login');
+        }
+
+        if (! Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'Password incorrect'
+            ])->withInput()->with('active', 'login');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect('/dashboard');
     }
 
     public function register(Request $request)
