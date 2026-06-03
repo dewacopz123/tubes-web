@@ -10,16 +10,19 @@
             <div class="form-group">
                 <label for="namaKaryawan">Nama</label>
                 <input type="text" id="namaKaryawan" class="form-control" required />
+                <div class="input-error" id="error-namaKaryawan"></div>
             </div>
 
             <div class="form-group">
                 <label for="emailKaryawan">Email</label>
                 <input type="email" id="emailKaryawan" class="form-control" required />
+                <div class="input-error" id="error-emailKaryawan"></div>
             </div>
 
             <div class="form-group">
                 <label for="teleponKaryawan">Telepon</label>
-                <input type="text" id="teleponKaryawan" class="form-control" />
+                <input type="number" id="teleponKaryawan" class="form-control" />
+                <div class="input-error" id="error-teleponKaryawan"></div>
             </div>
 
             <div class="form-group">
@@ -29,7 +32,7 @@
                     <option value="karyawan">Karyawan</option>
                     <option value="admin">Admin</option>
                 </select>
-
+                <div class="input-error" id="error-roleKaryawan"></div>
             </div>
 
             <div class="form-group">
@@ -38,12 +41,11 @@
                     <option value="Aktif">Aktif</option>
                     <option value="Nonaktif">Nonaktif</option>
                 </select>
+                <div class="input-error" id="error-statusKaryawan"></div>
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn-jobdesk" id="btnSubmit">
-                    Simpan
-                </button>
+                <button type="submit" class="btn-jobdesk" id="btnSubmit">Simpan</button>
                 <button type="button" class="btn-danger" data-close>Batal</button>
             </div>
         </form>

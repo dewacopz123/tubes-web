@@ -17,6 +17,7 @@
                         <option value="{{ $k->id }}">{{ $k->nama }}</option>
                     @endforeach
                 </select>
+                <div class="input-error" id="error-karyawan_id"></div>
             </div>
 
             <div class="form-group">
@@ -26,11 +27,13 @@
         id="tanggal"
         class="form-control"
     >
+                <div class="input-error" id="error-tanggal"></div>
             </div>
 
             <div class="form-group">
                 <label>Gaji Pokok</label>
                 <input type="number" id="gaji_pokok" class="form-control">
+                <div class="input-error" id="error-gaji_pokok"></div>
             </div>
 
             <div class="button-group">

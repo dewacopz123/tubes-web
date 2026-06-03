@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ValidatesSekData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Karyawan;
 
 class ProfileController extends Controller
 {
+    use ValidatesSekData;
+
     public function index()
     {
         $karyawan = Karyawan::findOrFail(Auth::id());
@@ -19,16 +22,16 @@ class ProfileController extends Controller
     {
         $karyawan = Karyawan::findOrFail(Auth::id());
 
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'email' => 'required|email',
-            'telepon' => 'nullable|string|max:20',
-        ]);
+        $data = $request->validate(
+            $this->profileRules((int) $karyawan->id),
+            $this->validationMessages(),
+            $this->validationAttributes()
+        );
 
         $karyawan->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'telepon' => $request->telepon,
+            'nama' => $data['nama'],
+            'email' => $data['email'],
+            'telepon' => $data['telepon'] ?? null,
         ]);
 
         return redirect()->back()->with('success', 'Profile berhasil diperbarui');

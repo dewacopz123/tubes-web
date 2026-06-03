@@ -29,8 +29,6 @@
     <div class="main-wrapper">
         <main class="page-content">
 
-            <h2>Data Karyawan</h2>
-
             {{-- FILTER --}}
             <div class="card-content">
                 <div>
@@ -38,7 +36,7 @@
                     <select id="filterNama" class="searchCategory">
                         <option value="">Semua</option>
                         @foreach($karyawans as $k)
-                        <option value="{{ $k->nama }}">{{ $k->nama }}</option>
+                            <option value="{{ $k->nama }}">{{ $k->nama }}</option>
                         @endforeach
                     </select>
 
@@ -46,16 +44,16 @@
                     <select id="filterRole" class="searchCategory">
                         <option value="">Semua</option>
                         <option value="Karyawan">Karyawan</option>
-                        <option value="Manager">Manager</option>
+                        <option value="Admin">Admin</option>
                     </select>
                 </div>
             </div>
 
             {{-- BUTTON --}}
             @if($isAdmin)
-            <button id="btnAddKaryawan" class="btn btn-primary btn-long">
-                <i class="fas fa-plus"></i> Tambah Data Karyawan
-            </button>
+                <button id="btnAddKaryawan" class="btn btn-primary btn-long">
+                    <i class="fas fa-plus"></i> Tambah Data Karyawan
+                </button>
             @endif
 
             {{-- TABLE --}}
@@ -63,69 +61,68 @@
                 <h3>Tabel Data Karyawan</h3>
 
                 <div class="table-responsive">
-                <table class="table-absensi">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Telepon</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            @if($isAdmin)
-                            <th>Aksi</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($karyawans as $k)
-                        <tr data-nama="{{ strtolower($k->nama) }}" data-role="{{ strtolower($k->role) }}">
-                            <td>{{ $k->id }}</td>
-                            <td>{{ $k->nama }}</td>
-                            <td>{{ $k->email }}</td>
-                            <td>{{ $k->telepon ?? '-' }}</td>
-                            <td>{{ $k->role }}</td>
-                            <td>
-                                <span class="badge
-                                    {{ $k->status === 'Aktif' ? 'badge-success' : 'badge-danger' }}">
-                                    {{ $k->status }}
-                                </span>
-                            </td>
-                            @if($isAdmin)
-                            <td class="aksi-icon">
-                                <button class="btnEdit icon-btn edit" data-id="{{ $k->id }}" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
+                    <table class="table-absensi">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Telepon</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                @if($isAdmin)
+                                    <th>Aksi</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($karyawans as $k)
+                                <tr data-nama="{{ strtolower($k->nama) }}" data-role="{{ strtolower($k->role) }}">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $k->nama }}</td>
+                                    <td>{{ $k->email }}</td>
+                                    <td>{{ $k->telepon ?? '-' }}</td>
+                                    <td>{{ $k->role }}</td>
+                                    <td>
+                                        <span class="badge
+                                        {{ $k->status === 'Aktif' ? 'badge-success' : 'badge-secondary' }}">
+                                            {{ $k->status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($isAdmin)
+                                            <button type="button" class="badge badge-biru btnEdit" data-id="{{ $k->id }}"
+                                                title="Edit">Edit</button>
 
-                                <button class="btnDelete icon-btn delete" data-id="{{ $k->id }}" title="Hapus">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                            @endif
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" style="text-align:center">
-                                Data karyawan belum tersedia
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
+                                            <button type="button" class="badge badge-danger btnDelete" data-id="{{ $k->id }}"
+                                                title="Hapus">Hapus</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" style="text-align:center">
+                                        Data karyawan belum tersedia
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
 
 
-                </table>
+                    </table>
                 </div>
             </div>
 
             {{-- MODAL CONTAINER --}}
             <div id="popupContainer"></div>
+            <div id="dialogContainer"></div>
 
         </main>
     </div>
 
     {{-- JS --}}
-    <script src="/js/load_navbar.js?v=20260521"></script>
     <script src="/js/navbar.js?v=20260521"></script>
+    <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/data_karyawan.js?v=20260521"></script>
 
 </body>

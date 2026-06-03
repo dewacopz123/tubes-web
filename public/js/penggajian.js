@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById("popupContainer");
     const csrf = document.querySelector('meta[name="csrf-token"]').content;
+    const notify = window.SEKNotify;
 
     // ================= MODAL =================
     function openModal(html) {
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const dataRes = await fetch(`/penggajian/${id}`, { headers: { "Accept": "application/json" } });
             if (!dataRes.ok) {
-                alert("Gagal mengambil data penggajian");
+                notify?.error("Gagal mengambil data penggajian.");
                 return;
             }
 
@@ -63,12 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Accept": "application/json"
                 }
             });
+            const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                alert("Gagal menghapus data penggajian");
+                notify?.error(data.message || "Gagal menghapus data penggajian.");
                 return;
             }
 
+            notify?.flash("success", data.message || "Data penggajian berhasil dihapus.");
             location.reload();
         };
     });
@@ -78,8 +81,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formPenggajian");
     if (!form) return;
 
+    function clearValidationErrors() {
+        popup.querySelectorAll(".input-error").forEach(el => el.textContent = "");
+        popup.querySelectorAll(".form-control").forEach(el => el.classList.remove("input-invalid"));
+    }
+
+    function showValidationErrors(errors) {
+        Object.entries(errors || {}).forEach(([field, messages]) => {
+            const input = document.getElementById(field);
+            const error = document.getElementById(`error-${field}`);
+            if (input) input.classList.add("input-invalid");
+            if (error) error.textContent = messages[0];
+        });
+    }
+
     form.onsubmit = async (e) => {
         e.preventDefault();
+        clearValidationErrors();
 
         const mode = document.getElementById("mode").value;
         const id = document.getElementById("penggajian_id").value;
@@ -105,14 +123,20 @@ document.addEventListener("DOMContentLoaded", () => {
             body: data
         });
 
-        const result = await res.json(); // parse JSON
+        const result = await res.json().catch(() => ({})); // parse JSON
 
         if (!res.ok || !result.success) {
-            alert("Gagal menyimpan data: " + (result.message || "unknown error"));
+            if (res.status === 422) {
+                showValidationErrors(result.errors);
+                notify?.error("Validasi gagal. Periksa kembali data penggajian.");
+                return;
+            }
+
+            notify?.error("Gagal menyimpan data: " + (result.message || "unknown error"));
             return;
         }
 
-        alert("Data penggajian berhasil disimpan");
+        notify?.flash("success", result.message || "Data penggajian berhasil disimpan.");
         location.reload();
     };
 }

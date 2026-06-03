@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
+use App\Http\Controllers\Concerns\ValidatesSekData;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
+    use ValidatesSekData;
+
     public function index()
     {
         // JIKA ADMIN → LIHAT SEMUA
@@ -37,17 +40,24 @@ class AbsensiController extends Controller
             ->first();
 
         if ($cek) {
-            return response()->json(['message' => 'Sudah absen hari ini'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal absen masuk. Anda sudah absen hari ini.',
+            ], 400);
         }
 
-        Absensi::create([
+        $absensi = Absensi::create([
             'karyawan_id' => $karyawan_id,
             'tanggal' => $tanggal,
             'jam_masuk' => now()->format('H:i:s'),
             'status' => 'Masuk'
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil absen masuk kerja.',
+            'data' => $absensi,
+        ], 201);
     }
 
     public function keluar()
@@ -60,11 +70,17 @@ class AbsensiController extends Controller
             ->first();
 
         if (!$absensi) {
-            return response()->json(['message' => 'Belum absen masuk'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal absen keluar. Anda belum absen masuk.',
+            ], 400);
         }
 
         if ($absensi->jam_keluar) {
-            return response()->json(['message' => 'Sudah absen keluar'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal absen keluar. Anda sudah absen keluar.',
+            ], 400);
         }
 
         $absensi->update([
@@ -72,6 +88,10 @@ class AbsensiController extends Controller
             'status' => 'Selesai'
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil absen selesai kerja.',
+            'data' => $absensi,
+        ]);
     }
 }

@@ -11,7 +11,7 @@
 <div id="sidebar" class="sidebar">
     <div class="sidebar-header">
         <img src="/asset/img/logo2.jpg?v=20260521" alt="SEK Logo" class="sidebar-logo">
-        <h3 class="logo-text">SEK DASHBOARD</h3>
+        <h3 class="logo-text">SEKP DASHBOARD</h3>
     </div>
 
     <nav class="sidebar-nav">
@@ -39,10 +39,14 @@
 </div>
 
 <header class="top-navbar">
-    <!-- TOGGLE BUTTON (FIXED ID) -->
-    <button id="sidebar-toggle" class="toggle-btn">
-        <i class="fas fa-bars"></i>
-    </button>
+    <div class="navbar-left">
+        <!-- TOGGLE BUTTON (FIXED ID) -->
+        <button id="sidebar-toggle" class="toggle-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <h1 id="navbar-page-title" class="navbar-title">Dashboard</h1>
+    </div>
 
     <div class="navbar-right">
         <div class="user-profile">

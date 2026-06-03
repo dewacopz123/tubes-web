@@ -24,7 +24,6 @@
     <div id="main-wrapper" class="main-wrapper">
 
         <main class="page-content">
-            <h2>Jobdesk Karyawan</h2>
 
             <div class="card-content">
                 <div>
@@ -39,56 +38,56 @@
                 </div>
             </div>
             @if($isAdmin)
-            <button id="btnAddJobdesk" class="btn-primary btn-long">Tambah Jobdesk</button>
+                <button id="btnAddJobdesk" class="btn-primary btn-long">Tambah Jobdesk</button>
             @endif
             <div id="popupContainer"></div>
 
             <div class="card-content">
                 <h3>Jobdesk Table</h3>
                 <div class="table-responsive">
-                <table class="table-absensi" id="jobdeskTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Kode Jobdesk</th>
-                            <th>Nama Jobdesk</th>
-                            <th>Tugas Utama</th>
-                            <th>Nama Karyawan</th>
-                            @if($isAdmin)
-                            <th>Aksi</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($jobdesks as $jobdesk)
-                        <tr data-id="{{ $jobdesk->id }}">
-                            <td>{{ $jobdesk->id }}</td>
-                            <td>{{ $jobdesk->kode_jobdesk }}</td>
-                            <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
-                            <td>{{ $jobdesk->tugas_utama }}</td>
-                            <td class="col-karyawan">{{ optional($jobdesk->karyawan)->nama ?? '-' }}</td>
-                            @if($isAdmin)
-                            <td class="aksi-icon action-cell">
-                                <button type="button" class="btn-edit icon-btn edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn-delete icon-btn delete">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                            @endif
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                    <table class="table-absensi" id="jobdeskTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Kode Jobdesk</th>
+                                <th>Nama Jobdesk</th>
+                                <th>Tugas Utama</th>
+                                <th>Nama Karyawan</th>
+                                @if($isAdmin)
+                                    <th>Aksi</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($jobdesks as $jobdesk)
+                                <tr data-id="{{ $jobdesk->id }}">
+                                    <td>{{ $jobdesk->id }}</td>
+                                    <td>{{ $jobdesk->kode_jobdesk }}</td>
+                                    <td class="col-jobdesk">{{ $jobdesk->nama_jobdesk }}</td>
+                                    <td>{{ $jobdesk->tugas_utama }}</td>
+                                    <td class="col-karyawan">{{ optional($jobdesk->karyawan)->nama ?? '-' }}</td>
+                                    @if($isAdmin)
+                                        <td class="aksi-icon action-cell">
+                                            <button type="button" class="btn-edit icon-btn edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn-delete icon-btn delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
         </main>
     </div>
 
-    <script src="/js/load_navbar.js?v=20260521"></script>
     <script src="/js/navbar.js?v=20260521"></script>
+    <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/jobdesk.js?v=20260521"></script>
 
 </body>

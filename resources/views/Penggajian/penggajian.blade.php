@@ -29,8 +29,6 @@
     <div class="main-wrapper">
         <main class="page-content">
 
-            <h2>Data Penggajian</h2>
-
             {{-- FILTER --}}
             <div class="card-content">
                 <div>
@@ -72,47 +70,48 @@
                 <h3>Tabel Data Penggajian</h3>
 
                 <div class="table-responsive">
-                <table class="table-absensi">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama Karyawan</th>
-                            <th>Tanggal</th>
-                            <th>Gaji Pokok</th>
-                            @if($isAdmin)
-                                <th>Aksi</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($penggajians as $pg)
-                            <tr data-nama="{{ strtolower(optional($pg->karyawan)->nama ?? '') }}" data-tanggal="{{ $pg->tanggal }}">
-                                <td>{{ $pg->kode_penggajian }}</td>
-                                <td>{{ optional($pg->karyawan)->nama ?? '-' }}</td>
-                                <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>
-                                <td>Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
-
+                    <table class="table-absensi">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama Karyawan</th>
+                                <th>Tanggal</th>
+                                <th>Gaji Pokok</th>
                                 @if($isAdmin)
-                                    <td class="aksi-icon">
-                                        <button class="btnEdit icon-btn edit" data-id="{{ $pg->id }}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-
-                                        <button class="btnDelete icon-btn delete" data-id="{{ $pg->id }}" title="Hapus">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" style="text-align:center">
-                                    Data penggajian belum tersedia
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($penggajians as $pg)
+                                <tr data-nama="{{ strtolower(optional($pg->karyawan)->nama ?? '') }}"
+                                    data-tanggal="{{ $pg->tanggal }}">
+                                    <td>{{ $pg->kode_penggajian }}</td>
+                                    <td>{{ optional($pg->karyawan)->nama ?? '-' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>
+                                    <td>Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
+
+                                    @if($isAdmin)
+                                        <td class="aksi-icon">
+                                            <button class="btnEdit icon-btn edit" data-id="{{ $pg->id }}" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+
+                                            <button class="btnDelete icon-btn delete" data-id="{{ $pg->id }}" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" style="text-align:center">
+                                        Data penggajian belum tersedia
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -123,8 +122,8 @@
     </div>
 
     {{-- JS --}}
-    <script src="/js/load_navbar.js?v=20260521"></script>
     <script src="/js/navbar.js?v=20260521"></script>
+    <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/penggajian.js?v=20260521"></script>
 
 </body>

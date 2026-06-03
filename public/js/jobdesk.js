@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ===================== CRUD JOBDESK ===================== */
     const popupContainer = document.getElementById("popupContainer");
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    const notify = window.SEKNotify;
 
     function removeModal(id) {
         const m = document.getElementById(id);
@@ -74,8 +75,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const form = modal.querySelector("#formJobdesk");
         if (form) {
+            const clearValidationErrors = () => {
+                modal.querySelectorAll(".input-error").forEach(el => el.textContent = "");
+                modal.querySelectorAll(".form-control").forEach(el => el.classList.remove("input-invalid"));
+            };
+
+            const showValidationErrors = (errors) => {
+                Object.entries(errors || {}).forEach(([field, messages]) => {
+                    const input = modal.querySelector(`[name="${field}"]`);
+                    const error = modal.querySelector(`#error-${field}`);
+                    if (input) input.classList.add("input-invalid");
+                    if (error) error.textContent = messages[0];
+                });
+            };
+
             form.addEventListener("submit", async function (e) {
                 e.preventDefault();
+                clearValidationErrors();
 
                 const jobdeskId = form.querySelector("#jobdesk_id").value;
                 const formData = new FormData(form);
@@ -86,20 +102,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 try {
                     const res = await fetch(url, {
                         method: "POST",
-                        headers: { "X-CSRF-TOKEN": csrfToken },
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken,
+                            "Accept": "application/json",
+                        },
                         body: formData
                     });
 
                     const data = await res.json().catch(() => ({}));
                     if (!res.ok) {
-                        alert(data.message || "Gagal menyimpan jobdesk");
+                        if (res.status === 422) {
+                            showValidationErrors(data.errors);
+                            notify?.error("Validasi gagal. Periksa kembali data jobdesk.");
+                            return;
+                        }
+
+                        notify?.error(data.message || "Gagal menyimpan jobdesk.");
                         return;
                     }
-                    alert(data.message);
+                    notify?.flash("success", data.message || "Jobdesk berhasil disimpan.");
                     location.reload();
                 } catch (err) {
                     console.error(err);
-                    alert("Gagal menyimpan jobdesk");
+                    notify?.error("Gagal menyimpan jobdesk.");
                 }
             });
         }
@@ -128,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const resData = await fetch(`/jobdesk/${id}`);
             if (!resData.ok) {
-                alert("Gagal mengambil data jobdesk");
+                notify?.error("Gagal mengambil data jobdesk.");
                 return;
             }
             const data = await resData.json();
@@ -150,15 +175,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const res = await fetch(`/jobdesk/${id}`, {
                 method: "DELETE",
-                headers: { "X-CSRF-TOKEN": csrfToken }
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Accept": "application/json",
+                }
             });
 
             const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-                alert(data.message || "Gagal menghapus jobdesk");
+                notify?.error(data.message || "Gagal menghapus jobdesk.");
                 return;
             }
-            alert(data.message);
+            notify?.flash("success", data.message || "Jobdesk berhasil dihapus.");
             location.reload();
         }
     });

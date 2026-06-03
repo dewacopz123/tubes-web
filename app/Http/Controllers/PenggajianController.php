@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ValidatesSekData;
 use App\Models\Penggajian;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
@@ -9,6 +10,8 @@ use Carbon\Carbon;
 
 class PenggajianController extends Controller
 {
+    use ValidatesSekData;
+
     public function index()
     {
         return view('Penggajian.penggajian', [
@@ -26,27 +29,31 @@ class PenggajianController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'karyawan_id' => 'required|exists:karyawans,id',
-            'tanggal' => 'required|date',
-            'gaji_pokok' => 'required|numeric'
-        ]);
+        $data = $request->validate(
+            $this->penggajianRules(),
+            $this->validationMessages(),
+            $this->validationAttributes()
+        );
 
-        $tanggal = $request->tanggal;
+        $tanggal = $data['tanggal'];
 
         if (str_contains($tanggal, '/')) {
             $tanggal = Carbon::createFromFormat('d/m/Y', $tanggal)
                 ->format('Y-m-d');
         }
 
-        Penggajian::create([
+        $penggajian = Penggajian::create([
             'kode_penggajian' => 'PG-' . time(),
-            'karyawan_id' => $request->karyawan_id,
+            'karyawan_id' => $data['karyawan_id'],
             'tanggal' => $tanggal,
-            'gaji_pokok' => $request->gaji_pokok
+            'gaji_pokok' => $data['gaji_pokok']
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data penggajian berhasil ditambahkan.',
+            'data' => $penggajian->load('karyawan:id,nama'),
+        ], 201);
     }
 
 
@@ -57,26 +64,33 @@ class PenggajianController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'karyawan_id' => 'required|exists:karyawans,id',
-            'tanggal' => 'required|date',
-            'gaji_pokok' => 'required|numeric'
-        ]);
+        $data = $request->validate(
+            $this->penggajianRules(),
+            $this->validationMessages(),
+            $this->validationAttributes()
+        );
 
         $penggajian = Penggajian::findOrFail($id);
 
         $penggajian->update([
-            'karyawan_id' => $request->karyawan_id,
-            'tanggal' => $request->tanggal,
-            'gaji_pokok' => $request->gaji_pokok
+            'karyawan_id' => $data['karyawan_id'],
+            'tanggal' => $data['tanggal'],
+            'gaji_pokok' => $data['gaji_pokok']
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data penggajian berhasil diperbarui.',
+            'data' => $penggajian->load('karyawan:id,nama'),
+        ]);
     }
 
     public function destroy($id)
     {
         Penggajian::findOrFail($id)->delete();
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data penggajian berhasil dihapus.',
+        ]);
     }
 }

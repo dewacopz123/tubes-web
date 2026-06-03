@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnMasuk = document.getElementById("btnMasukKerja");
     const btnKeluar = document.getElementById("btnKeluarKerja");
     const csrf = document.querySelector('meta[name="csrf-token"]').content;
+    const notify = window.SEKNotify;
 
     function kirimAbsensi(url, pesan) {
         fetch(url, {
@@ -17,10 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
             return data;
         })
         .then(() => {
-            alert(pesan);
+            notify?.flash("success", pesan);
             location.reload();
         })
-        .catch(err => alert(err.message || "Terjadi kesalahan"));
+        .catch(err => notify?.error(err.message || "Terjadi kesalahan"));
     }
 
     btnMasuk?.addEventListener("click", () =>

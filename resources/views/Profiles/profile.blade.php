@@ -21,7 +21,7 @@
             <section class="container">
 
                 <div class="header">
-                    <h2 class="title">Edit Profile</h2>
+                    <h2 class="title">Profile</h2>
                     <img
                         src="/asset/Icon/profile.png?v=20260521"
                         alt="User Photo"
