@@ -16,6 +16,8 @@
     {{-- NAVBAR --}}
     @include('Navbar.navbar')
 
+    <div id="popupContainer"></div>
+    <div id="dialogContainer"></div>
     <div class="main-wrapper">
         <main class="profile">
             <section class="container">

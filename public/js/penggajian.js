@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("modalTitle").innerText = "Tambah Penggajian";
             document.getElementById("mode").value = "create";
             document.getElementById("formPenggajian").reset();
-        };
+        }; 
     }
 
     // ================= EDIT =================

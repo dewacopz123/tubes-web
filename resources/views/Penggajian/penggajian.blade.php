@@ -26,6 +26,8 @@
         $isAdmin = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'admin';
     @endphp
 
+    <div id="popupContainer"></div>
+    <div id="dialogContainer"></div>
     <div class="main-wrapper">
         <main class="page-content">
 

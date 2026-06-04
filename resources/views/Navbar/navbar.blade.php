@@ -16,21 +16,28 @@
 
     <nav class="sidebar-nav">
         <ul>
-            <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><a href="{{ url('/dashboard') }}"><img src="/asset/Icon/dashboard.png"><span>Dashboard</span></a></li>
-            <li class="{{ request()->is('absensi*') ? 'active' : '' }}"><a href="{{ url('/absensi') }}"><img src="/asset/Icon/absensi.png"><span>Absensi</span></a></li>
-            <li class="{{ request()->is('karyawan*') ? 'active' : '' }}"><a href="{{ url('/karyawan') }}"><img src="/asset/Icon/data_karyawan.png"><span>Data Karyawan</span></a></li>
-            <li class="{{ request()->is('jobdesk*') ? 'active' : '' }}"><a href="{{ url('/jobdesk') }}"><img src="/asset/Icon/data_jobdesk.png"><span>Data Jobdesk</span></a></li>
-            <li class="{{ request()->is('penggajian*') ? 'active' : '' }}"><a href="{{ url('/penggajian') }}"><img src="/asset/Icon/penggajihan.png"><span>Penggajian</span></a></li>
+            <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><a href="{{ url('/dashboard') }}"><img
+                        src="/asset/Icon/dashboard.png"><span>Dashboard</span></a></li>
+            <li class="{{ request()->is('absensi*') ? 'active' : '' }}"><a href="{{ url('/absensi') }}"><img
+                        src="/asset/Icon/absensi.png"><span>Absensi</span></a></li>
+            <li class="{{ request()->is('karyawan*') ? 'active' : '' }}"><a href="{{ url('/karyawan') }}"><img
+                        src="/asset/Icon/data_karyawan.png"><span>Data Karyawan</span></a></li>
+            <li class="{{ request()->is('jobdesk*') ? 'active' : '' }}"><a href="{{ url('/jobdesk') }}"><img
+                        src="/asset/Icon/data_jobdesk.png"><span>Data Jobdesk</span></a></li>
+            <li class="{{ request()->is('penggajian*') ? 'active' : '' }}"><a href="{{ url('/penggajian') }}"><img
+                        src="/asset/Icon/penggajihan.png"><span>Penggajian</span></a></li>
 
             <li class="menu-divider">ACCOUNT PAGES</li>
 
-            <li class="{{ request()->routeIs('profile') || request()->is('profile*') ? 'active' : '' }}"><a href="{{ url('/profile') }}"><img src="/asset/Icon/profile.png"><span>Profile</span></a></li>
+            <li class="{{ request()->routeIs('profile') || request()->is('profile*') ? 'active' : '' }}"><a
+                    href="{{ url('/profile') }}"><img src="/asset/Icon/profile.png"><span>Profile</span></a></li>
 
             <li>
-                <form method="POST" action="{{ route('logout') }}">
+                <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="logout-link">
-                        <img src="/asset/Icon/logout.png"><span>Log Out</span>
+                        <img src="/asset/Icon/logout.png">
+                        <span>Log Out</span>
                     </button>
                 </form>
             </li>
