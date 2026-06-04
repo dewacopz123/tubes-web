@@ -26,8 +26,6 @@
         $isAdmin = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'admin';
     @endphp
 
-    <div id="popupContainer"></div>
-    <div id="dialogContainer"></div>
     <div class="main-wrapper">
         <main class="page-content">
 
@@ -49,20 +47,15 @@
 
             {{-- BUTTON TAMBAH --}}
             @auth
-                <div class="d-flex justify-content-between align-items-center mb-3">
-
-                    {{-- KIRI: Tambah Penggajian --}}
+                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:4px;">
                     @if($isAdmin)
                         <button id="btnAddPenggajian" class="btn btn-primary btn-long">
                             <i class="fas fa-plus"></i> Tambah Data Penggajian
                         </button>
                     @endif
-
-                    {{-- KANAN: Export --}}
                     <button type="button" class="btn btn-export-pill" onclick="window.location.href='/export/penggajian'">
                         <i class="fas fa-file-excel"></i> Export Penggajian
                     </button>
-
                 </div>
             @endauth
 
@@ -93,15 +86,10 @@
                                     <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>
                                     <td>Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
 
-                                    @if($isAdmin)
-                                        <td class="aksi-icon">
-                                            <button class="btnEdit icon-btn edit" data-id="{{ $pg->id }}" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-
-                                            <button class="btnDelete icon-btn delete" data-id="{{ $pg->id }}" title="Hapus">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                    @if($isAdmin)
+                                        <td>
+                                            <button type="button" class="badge badge-biru btnEdit" data-id="{{ $pg->id }}" title="Edit">Edit</button>
+                                            <button type="button" class="badge badge-danger btnDelete" data-id="{{ $pg->id }}" title="Hapus">Hapus</button>
                                         </td>
                                     @endif
                                 </tr>
@@ -117,13 +105,12 @@
                 </div>
             </div>
 
-            {{-- MODAL --}}
-            <div id="popupContainer"></div>
-
         </main>
     </div>
 
     {{-- JS --}}
+    <div id="popupContainer"></div>
+    <div id="dialogContainer"></div>
     <script src="/js/navbar.js?v=20260521"></script>
     <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/penggajian.js?v=20260521"></script>

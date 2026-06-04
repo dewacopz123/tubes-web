@@ -16,13 +16,49 @@
     font-family: 'Helvetica';
 }
 
+/* Anti-flash: background & body base dideklarasikan paling awal
+   agar browser langsung render warna yang benar sejak frame pertama */
+html {
+    background-color: #F4F7FB;
+}
+
 body {
     background-color: var(--light-bg);
     display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar & navbar pre-paint dengan warna yang benar
+   sebelum JS menambahkan class .collapsed */
+.sidebar {
+    background-color: #F4F7FB;
+}
+
+.sidebar-header,
+.top-navbar {
+    background-color: #00ABB6;
 }
 
 body.mobile-sidebar-open {
     overflow: hidden;
+}
+
+/* Anti-flash: class ini diterapkan di <html> sebelum render
+   oleh script sync di navbar, agar sidebar & navbar langsung
+   muncul di posisi collapsed tanpa animasi saat page load */
+html.sidebar-will-collapse .sidebar {
+    width: var(--sidebar-width-collapsed);
+}
+
+html.sidebar-will-collapse .top-navbar {
+    left: var(--sidebar-width-collapsed);
+    width: calc(100% - var(--sidebar-width-collapsed));
+}
+
+html.sidebar-will-collapse .main-wrapper {
+    margin-left: var(--sidebar-width-collapsed);
+    width: calc(100% - var(--sidebar-width-collapsed));
 }
 
 /* -------------------- */
@@ -224,10 +260,18 @@ body.mobile-sidebar-open {
     font-size: 1.25rem;
     cursor: pointer;
     color: #ffffff;
-    padding: 6px;
+    padding: 6px 8px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    min-width: 36px;
+    min-height: 36px;
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .navbar-left {
@@ -549,6 +593,38 @@ button:hover {
 }
 
 /* -------------------- */
+/* 6. PAGE TRANSITION   */
+/* -------------------- */
+
+/* Sidebar dan navbar tidak ikut fade */
+.sidebar,
+.top-navbar {
+    will-change: width, left;
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+/* Hanya konten utama yang fade masuk */
+@keyframes pageFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.main-wrapper {
+    animation: pageFadeIn 0.12s ease forwards;
+}
+
+/* Sembunyikan flash putih saat navigasi:
+   sidebar & navbar langsung visible, body background sama */
+html {
+    background-color: #F4F7FB;
+}
+
+body {
+    background-color: var(--light-bg);
+}
+
+/* -------------------- */
 /* 5. TOGGLE COLLAPSED  */
 /* -------------------- */
 
@@ -583,6 +659,22 @@ button:hover {
 .sidebar.collapsed .sidebar-nav a,
 .sidebar.collapsed .sidebar-nav .logout-link {
     justify-content: center;
+    padding: 10px;
+    border-radius: 12px;
+    width: 54px;
+    margin: 0 auto;
+}
+
+/* hover saat collapsed: background pas di sekitar icon */
+.sidebar.collapsed .sidebar-nav li:hover a,
+.sidebar.collapsed .sidebar-nav li:hover .logout-link {
+    background-color: rgba(0, 171, 182, 0.12);
+}
+
+/* active saat collapsed */
+.sidebar.collapsed .sidebar-nav li.active a {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
 }
 
 .sidebar.collapsed .sidebar-info-box {

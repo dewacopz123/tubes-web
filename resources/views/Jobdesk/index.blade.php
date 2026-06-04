@@ -47,10 +47,6 @@
                 </button>
             @endif
 
-            {{-- MODAL CONTAINERS --}}
-            <div id="popupContainer"></div>
-            <div id="dialogContainer"></div>
-
             <div class="card-content">
                 <h3>Jobdesk Table</h3>
                 <div class="table-responsive">
@@ -99,6 +95,8 @@
         </main>
     </div>
 
+    <div id="popupContainer"></div>
+    <div id="dialogContainer"></div>
     <script src="/js/navbar.js?v=20260521"></script>
     <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/jobdesk.js?v=20260521"></script>

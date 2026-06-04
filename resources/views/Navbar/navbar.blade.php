@@ -8,6 +8,16 @@
     }
 @endphp
 
+{{-- Anti-flash script: berjalan sync sebelum render, terapkan class collapsed
+     dari localStorage SEBELUM browser paint frame pertama --}}
+<script>
+(function(){
+    if(localStorage.getItem('sidebarState')==='collapsed'){
+        document.documentElement.classList.add('sidebar-will-collapse');
+    }
+})();
+</script>
+
 <div id="sidebar" class="sidebar">
     <div class="sidebar-header">
         <img src="/asset/img/logo2.jpg?v=20260521" alt="SEK Logo" class="sidebar-logo">
@@ -44,6 +54,9 @@
         </ul>
     </nav>
 </div>
+
+{{-- Global dialog container: selalu di level body, digunakan oleh semua halaman --}}
+{{-- Note: container ini di-inject langsung ke body oleh navbar.js --}}
 
 <header class="top-navbar">
     <div class="navbar-left">

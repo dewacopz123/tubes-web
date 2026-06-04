@@ -29,10 +29,17 @@ class ProfileController extends Controller
         );
 
         $karyawan->update([
-            'nama' => $data['nama'],
-            'email' => $data['email'],
+            'nama'    => $data['nama'],
+            'email'   => $data['email'],
             'telepon' => $data['telepon'] ?? null,
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile berhasil diperbarui.',
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Profile berhasil diperbarui');
     }

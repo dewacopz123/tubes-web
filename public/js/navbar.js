@@ -1,87 +1,47 @@
+/* ==========================================================
+   navbar.js — Sidebar, Dialog, Logout
+   ========================================================== */
+
+/* ================= NAVBAR TITLE ================= */
+
 function initNavbarTitle() {
   const navbarTitle = document.getElementById("navbar-page-title");
   if (!navbarTitle) return;
 
-  const activeMenuText = document
-    .querySelector(".sidebar-nav ul li.active span")
-    ?.textContent?.trim();
-
-  const savedTitle = localStorage.getItem("navbarPageTitle");
-
-  if (activeMenuText) {
-    navbarTitle.textContent = activeMenuText;
-    localStorage.setItem("navbarPageTitle", activeMenuText);
-  } else if (savedTitle) {
-    navbarTitle.textContent = savedTitle;
-  } else {
-    navbarTitle.textContent = "Dashboard";
+  const activeItem = document.querySelector(".sidebar-nav ul li.active span");
+  if (activeItem) {
+    navbarTitle.textContent = activeItem.textContent.trim();
   }
-
-  const menuLinks = document.querySelectorAll(".sidebar-nav ul li a");
-
-  menuLinks.forEach((link) => {
-    link.addEventListener("click", function () {
-      const span = this.querySelector("span");
-      if (!span) return;
-
-      localStorage.setItem(
-        "navbarPageTitle",
-        span.textContent.trim()
-      );
-    });
-  });
 }
 
+/* ================= SIDEBAR ACTIVE MENU ================= */
+
 function initSidebarActiveMenu() {
-  const currentPath =
-    window.location.pathname.replace(/\/$/, "") || "/";
+  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+  const menuLinks   = document.querySelectorAll(".sidebar-nav ul li a");
 
-  const menuLinks =
-    document.querySelectorAll(".sidebar-nav ul li a");
-
-  document
-    .querySelectorAll(".sidebar-nav ul li")
-    .forEach((item) => item.classList.remove("active"));
+  document.querySelectorAll(".sidebar-nav ul li")
+    .forEach((li) => li.classList.remove("active"));
 
   let activeItem = Array.from(menuLinks).find((link) => {
     const href = link.getAttribute("href");
+    if (!href || href === "#" || href === "javascript:void(0)") return false;
 
-    if (
-      !href ||
-      href === "#" ||
-      href === "javascript:void(0)"
-    ) {
-      return false;
-    }
-
-    const url = new URL(href, window.location.origin);
+    const url  = new URL(href, window.location.origin);
     const path = url.pathname.replace(/\/$/, "") || "/";
 
     if (path === currentPath) return true;
-
-    if (
-      currentPath === "/" &&
-      path === "/dashboard"
-    ) {
-      return true;
-    }
-
+    if (currentPath === "/" && path === "/dashboard") return true;
     return false;
   });
 
   if (!activeItem && currentPath !== "/") {
     activeItem = Array.from(menuLinks).find((link) => {
       const href = link.getAttribute("href");
-
       if (!href) return false;
-
-      const url = new URL(href, window.location.origin);
+      const url  = new URL(href, window.location.origin);
       const path = url.pathname.replace(/\/$/, "") || "/";
-
-      return (
-        currentPath.startsWith(path) &&
-        path !== "/"
-      );
+      return currentPath.startsWith(path) && path !== "/";
     });
   }
 
@@ -93,126 +53,85 @@ function initSidebarActiveMenu() {
 /* ================= SIDEBAR TOGGLE ================= */
 
 function updateMobileBodyState() {
-  const sidebar = document.querySelector(".sidebar");
-
+  const sidebar  = document.querySelector(".sidebar");
   const isMobile = window.innerWidth <= 900;
-
-  const isExpanded =
-    sidebar &&
-    !sidebar.classList.contains("collapsed");
-
-  document.body.classList.toggle(
-    "mobile-sidebar-open",
-    isMobile && isExpanded
-  );
+  const isExpanded = sidebar && !sidebar.classList.contains("collapsed");
+  document.body.classList.toggle("mobile-sidebar-open", isMobile && isExpanded);
 }
 
 function initSidebarToggle() {
-  const sidebar = document.querySelector(".sidebar");
+  const sidebar   = document.querySelector(".sidebar");
   const toggleBtn = document.getElementById("sidebar-toggle");
-
   if (!sidebar || !toggleBtn) return;
 
-  const saved = localStorage.getItem("sidebarState");
-
-  if (saved === "collapsed") {
+  if (localStorage.getItem("sidebarState") === "collapsed") {
     sidebar.classList.add("collapsed");
   }
+
+  // Hapus class anti-flash dari <html> setelah sidebar siap
+  document.documentElement.classList.remove("sidebar-will-collapse");
 
   updateMobileBodyState();
 
   toggleBtn.addEventListener("click", function () {
     sidebar.classList.toggle("collapsed");
-
-    const state = sidebar.classList.contains("collapsed")
-      ? "collapsed"
-      : "expanded";
-
+    const state = sidebar.classList.contains("collapsed") ? "collapsed" : "expanded";
     localStorage.setItem("sidebarState", state);
-
+    // Set cookie agar server bisa pre-render sidebar state yang benar (anti-flash)
+    document.cookie = "sidebarState=" + state + ";path=/;max-age=31536000";
     updateMobileBodyState();
   });
 
-  window.addEventListener(
-    "resize",
-    updateMobileBodyState
-  );
+  window.addEventListener("resize", updateMobileBodyState);
 }
 
 /* ================= DIALOG ================= */
 
-function openDialog(html) {
-  const dialog = document.getElementById("dialogContainer");
-  if (!dialog) return;
-
-  dialog.innerHTML = html;
-
-  dialog.querySelectorAll("[data-dialog-close]").forEach((btn) => {
-    btn.onclick = () => {
-      dialog.innerHTML = "";
-    };
-  });
+function closeDialog() {
+  const el = document.getElementById("__navbarDialog");
+  if (el) el.remove();
 }
 
 function showConfirmDialog(title, message, onConfirm) {
-  openDialog(`
-    <div class="dialog-overlay">
-      <div class="dialog-box">
-        <h3>${title}</h3>
+  closeDialog();
 
-        <p class="dialog-text">
-          ${message}
-        </p>
-
-        <div class="dialog-actions">
-          <button
-            type="button"
-            class="btn btn-jobdesk"
-            data-dialog-confirm>
-            Ya
-          </button>
-
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-dialog-close>
-            Batal
-          </button>
-        </div>
+  const overlay = document.createElement("div");
+  overlay.id        = "__navbarDialog";
+  overlay.className = "dialog-overlay";
+  overlay.innerHTML = `
+    <div class="dialog-box">
+      <h3>${title}</h3>
+      <p class="dialog-text">${message}</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-jobdesk" id="__dialogConfirm">Ya</button>
+        <button type="button" class="btn btn-danger"  id="__dialogCancel">Batal</button>
       </div>
-    </div>
-  `);
+    </div>`;
 
-  const dialog = document.getElementById("dialogContainer");
+  document.body.appendChild(overlay);
 
-  const confirmButton =
-    dialog.querySelector("[data-dialog-confirm]");
-
-  if (confirmButton) {
-    confirmButton.onclick = () => {
-      dialog.innerHTML = "";
-      onConfirm();
-    };
-  }
+  document.getElementById("__dialogConfirm").onclick = function () {
+    closeDialog();
+    onConfirm();
+  };
+  document.getElementById("__dialogCancel").onclick = closeDialog;
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeDialog();
+  });
 }
 
 /* ================= LOGOUT ================= */
 
 function initLogoutConfirmation() {
-  const logoutForm =
-    document.getElementById("logoutForm");
-
+  const logoutForm = document.getElementById("logoutForm");
   if (!logoutForm) return;
 
   logoutForm.addEventListener("submit", function (e) {
     e.preventDefault();
-
     showConfirmDialog(
       "Logout",
       "Apakah Anda yakin ingin keluar dari sistem?",
-      () => {
-        logoutForm.submit();
-      }
+      () => logoutForm.submit()
     );
   });
 }
@@ -220,25 +139,8 @@ function initLogoutConfirmation() {
 /* ================= INIT ================= */
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.getElementById("navbar-page-title")) {
-    initNavbarTitle();
-  } else {
-    const observer = new MutationObserver(() => {
-      if (
-        document.getElementById("navbar-page-title")
-      ) {
-        initNavbarTitle();
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-  }
-
   initSidebarActiveMenu();
+  initNavbarTitle();
   initSidebarToggle();
   initLogoutConfirmation();
 });

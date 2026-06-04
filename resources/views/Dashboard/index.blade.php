@@ -7,6 +7,7 @@
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
+    <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
     <link rel="stylesheet" href="/css/dashboard.css?v=20260521">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -17,8 +18,6 @@
     @php
         $isAdmin = auth()->check() && strtolower(trim((string) auth()->user()->role)) === 'admin';
     @endphp
-    <div id="popupContainer"></div>
-    <div id="dialogContainer"></div>
     <div class="main-wrapper">
         <div class="dashboard-container">
 
@@ -106,7 +105,7 @@
     </div>
 
     <script src="/js/navbar.js?v=20260521"></script>
-    <script src="/js/dashboard.js?v=20260521"></script>
+    <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/dashboard.js?v=20260521"></script>
 </body>
 

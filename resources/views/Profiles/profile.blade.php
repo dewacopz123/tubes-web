@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sistem Etos Kerja - Profile</title>
 
     {{-- CSS --}}
     <link rel="stylesheet" href="/css/menu_style.css?v=20260521">
     <link rel="stylesheet" href="/css/formAddEdit.css?v=20260521">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -16,8 +18,6 @@
     {{-- NAVBAR --}}
     @include('Navbar.navbar')
 
-    <div id="popupContainer"></div>
-    <div id="dialogContainer"></div>
     <div class="main-wrapper">
         <main class="profile">
             <section class="container">
@@ -32,45 +32,54 @@
                 </div>
 
                 {{-- FORM PROFILE --}}
-                <form class="form" method="POST" action="{{ route('profile.update') }}">
+                <form class="form" id="formProfile" method="POST" action="{{ route('profile.update') }}">
                     @csrf
 
                     <div class="group">
-                        <label>ID</label>
+                        <label class="label">ID</label>
                         <input type="text" value="{{ $karyawan->id }}" disabled>
                     </div>
 
                     <div class="row">
                         <div class="group">
-                            <label>Nama</label>
+                            <label class="label">Nama</label>
                             <input
+                                id="inputNama"
                                 type="text"
                                 name="nama"
                                 value="{{ old('nama', $karyawan->nama) }}"
-                                required>
+                                required
+                                disabled>
+                            <span class="input-error" id="error-nama"></span>
                         </div>
 
                         <div class="group">
-                            <label>Email</label>
+                            <label class="label">Email</label>
                             <input
+                                id="inputEmail"
                                 type="email"
                                 name="email"
                                 value="{{ old('email', $karyawan->email) }}"
-                                required>
+                                required
+                                disabled>
+                            <span class="input-error" id="error-email"></span>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="group">
-                            <label>Telepon</label>
+                            <label class="label">Telepon</label>
                             <input
+                                id="inputTelepon"
                                 type="text"
                                 name="telepon"
-                                value="{{ old('telepon', $karyawan->telepon) }}">
+                                value="{{ old('telepon', $karyawan->telepon) }}"
+                                disabled>
+                            <span class="input-error" id="error-telepon"></span>
                         </div>
 
                         <div class="group">
-                            <label>Role</label>
+                            <label class="label">Role</label>
                             <input
                                 type="text"
                                 value="{{ $karyawan->role }}"
@@ -80,7 +89,7 @@
 
                     <div class="row">
                         <div class="group">
-                            <label>Status</label>
+                            <label class="label">Status</label>
                             <input
                                 type="text"
                                 value="{{ $karyawan->status }}"
@@ -91,43 +100,24 @@
 
                     <div class="button-group">
                         <button type="button" id="btnEdit" class="btn-primary">Edit</button>
-                        <button type="submit" id="btnSave" class="btn-jobdesk" style="display:none;">Save</button>
+                        <button type="submit" id="btnSave" class="btn-jobdesk" style="display:none;">Simpan</button>
+                        <button type="button" id="btnCancel" class="btn-danger" style="display:none;">Batal</button>
                     </div>
 
-
                 </form>
-
-                {{-- SUCCESS MESSAGE --}}
-                @if(session('success'))
-                    <script>
-                        alert("{{ session('success') }}");
-                    </script>
-                @endif
 
             </section>
         </main>
     </div>
 
+    {{-- Containers untuk dialog --}}
+    <div id="popupContainer"></div>
+    <div id="dialogContainer"></div>
+
     {{-- JS --}}
     <script src="/js/navbar.js?v=20260521"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector(".form");
-    const btnEdit = document.getElementById("btnEdit");
-    const btnSave = document.getElementById("btnSave");
-
-    // Semua input disabled saat awal
-    const inputs = form.querySelectorAll("input[name]");
-    inputs.forEach(input => input.disabled = true);
-
-    btnEdit.addEventListener("click", function () {
-        inputs.forEach(input => input.disabled = false);
-
-        btnEdit.style.display = "none";
-        btnSave.style.display = "inline-block";
-    });
-});
-</script>
+    <script src="/js/sek-notify.js?v=20260521"></script>
+    <script src="/js/profile.js?v=20260521"></script>
 
 </body>
 </html>

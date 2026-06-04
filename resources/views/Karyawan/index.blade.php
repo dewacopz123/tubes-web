@@ -113,14 +113,12 @@
                 </div>
             </div>
 
-            {{-- MODAL CONTAINER --}}
-            <div id="popupContainer"></div>
-            <div id="dialogContainer"></div>
-
         </main>
     </div>
 
     {{-- JS --}}
+    <div id="popupContainer"></div>
+    <div id="dialogContainer"></div>
     <script src="/js/navbar.js?v=20260521"></script>
     <script src="/js/sek-notify.js?v=20260521"></script>
     <script src="/js/data_karyawan.js?v=20260521"></script>
