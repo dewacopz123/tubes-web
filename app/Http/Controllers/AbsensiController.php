@@ -13,16 +13,15 @@ class AbsensiController extends Controller
 
     public function index()
     {
-        // JIKA ADMIN → LIHAT SEMUA
-        if (Auth::user()->role === 'admin') {
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
             $absensis = Absensi::with('karyawan')
                 ->orderBy('tanggal', 'desc')
                 ->get();
-        }
-        // JIKA KARYAWAN → HANYA DATA DIRI SENDIRI
-        else {
+        } else {
             $absensis = Absensi::with('karyawan')
-                ->where('karyawan_id', Auth::id())
+                ->where('karyawan_id', $user->id)
                 ->orderBy('tanggal', 'desc')
                 ->get();
         }
@@ -32,7 +31,8 @@ class AbsensiController extends Controller
 
     public function masuk()
     {
-        $karyawan_id = Auth::id();
+        $user = Auth::user();
+        $karyawan_id = $user->id;
         $tanggal = Carbon::today();
 
         $cek = Absensi::where('karyawan_id', $karyawan_id)
@@ -59,10 +59,10 @@ class AbsensiController extends Controller
             'data' => $absensi,
         ], 201);
     }
-
     public function keluar()
     {
-        $karyawan_id = Auth::id();
+        $user = Auth::user();
+        $karyawan_id = $user->id;
         $tanggal = Carbon::today();
 
         $absensi = Absensi::where('karyawan_id', $karyawan_id)

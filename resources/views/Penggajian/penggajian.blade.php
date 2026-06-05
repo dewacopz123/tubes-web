@@ -68,6 +68,7 @@
                     <table class="table-absensi">
                         <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Kode</th>
                                 <th>Nama Karyawan</th>
                                 <th>Tanggal</th>
@@ -81,15 +82,19 @@
                             @forelse($penggajians as $pg)
                                 <tr data-nama="{{ strtolower(optional($pg->karyawan)->nama ?? '') }}"
                                     data-tanggal="{{ $pg->tanggal }}">
+                                    <td>{{ $loop->iteration }}</td>
+
                                     <td>{{ $pg->kode_penggajian }}</td>
                                     <td>{{ optional($pg->karyawan)->nama ?? '-' }}</td>
                                     <td>{{ \Carbon\Carbon::parse($pg->tanggal)->format('d-m-Y') }}</td>
                                     <td>Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}</td>
 
-                    @if($isAdmin)
+                                    @if($isAdmin)
                                         <td>
-                                            <button type="button" class="badge badge-biru btnEdit" data-id="{{ $pg->id }}" title="Edit">Edit</button>
-                                            <button type="button" class="badge badge-danger btnDelete" data-id="{{ $pg->id }}" title="Hapus">Hapus</button>
+                                            <button type="button" class="badge badge-biru btnEdit" data-id="{{ $pg->id }}"
+                                                title="Edit">Edit</button>
+                                            <button type="button" class="badge badge-danger btnDelete" data-id="{{ $pg->id }}"
+                                                title="Hapus">Hapus</button>
                                         </td>
                                     @endif
                                 </tr>

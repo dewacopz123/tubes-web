@@ -12,13 +12,23 @@ class PenggajianController extends Controller
 {
     use ValidatesSekData;
 
-    public function index()
-    {
-        return view('Penggajian.penggajian', [
-            'penggajians' => Penggajian::with('karyawan')->get(),
-            'karyawans' => Karyawan::all()
-        ]);
+    public function index(Request $request)
+{
+    $user = $request->user();
+
+    if ($user->role === 'admin') {
+        $penggajians = Penggajian::with('karyawan')->get();
+    } else {
+        $penggajians = Penggajian::with('karyawan')
+            ->where('karyawan_id', $user->id)
+            ->get();
     }
+
+    return view('Penggajian.penggajian', [
+        'penggajians' => $penggajians,
+        'karyawans' => Karyawan::all()
+    ]);
+}
 
     public function create()
     {
@@ -57,10 +67,18 @@ class PenggajianController extends Controller
     }
 
 
-    public function show($id)
-    {
-        return Penggajian::findOrFail($id);
+    public function show(Request $request, $id)
+{
+    $user = $request->user();
+
+    $penggajian = Penggajian::findOrFail($id);
+
+    if ($user->role !== 'admin' && $penggajian->karyawan_id != $user->id) {
+        abort(403, 'Anda tidak memiliki akses ke data ini.');
     }
+
+    return $penggajian;
+}
 
     public function update(Request $request, $id)
     {

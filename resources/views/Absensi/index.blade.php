@@ -70,7 +70,7 @@
                     <tbody>
                         @foreach($absensis as $a)
                             <tr>
-                                <td>{{ $a->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ optional($a->karyawan)->nama ?? '-' }}</td>
                                 <td>{{ optional($a->karyawan)->email ?? '-' }}</td>
                                 <td>{{ $a->tanggal }}</td>
