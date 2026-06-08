@@ -48,29 +48,49 @@ class ProfileController extends Controller
 
     public function uploadPhoto(Request $request)
     {
-        $request->validate([
-            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048'
-        ]);
+        try {
 
-        $karyawan = Auth::user();
+            $request->validate([
+                'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+            ]);
 
-        $upload = Cloudinary::upload(
-            $request->file('foto')->getRealPath(),
-            [
-                'folder' => 'sek/profile'
-            ]
-        );
+            $karyawan = Auth::user();
 
-        $fotoUrl = $upload->getSecurePath();
+            if (!$karyawan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User tidak ditemukan'
+                ], 401);
+            }
 
-        $karyawan->update([
-            'foto' => $fotoUrl
-        ]);
+            $uploadedFileUrl = Cloudinary::upload(
+                $request->file('foto')->getRealPath(),
+                [
+                    'folder' => 'sek/profile'
+                ]
+            )->getSecurePath();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Foto berhasil diupload',
-            'foto_url' => $fotoUrl
-        ]);
+            $karyawan->foto = $uploadedFileUrl;
+            $karyawan->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto berhasil diupload',
+                'foto_url' => $uploadedFileUrl
+            ]);
+
+        } catch (\Throwable $e) {
+
+            \Log::error('Cloudinary Upload Error', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
