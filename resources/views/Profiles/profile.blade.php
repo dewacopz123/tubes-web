@@ -27,9 +27,7 @@
 
                     <div class="profile-photo-wrapper">
 
-                        <img src="{{ $karyawan->foto
-    ? asset('storage/' . $karyawan->foto)
-    : asset('/asset/Icon/profile.png') }}" alt="Foto Profil" class="photo" id="profilePhoto">
+                        <img src="{{ $karyawan->foto ?: asset('asset/Icon/profile.png') }}" alt="Foto Profil" class="photo" id="profilePhoto">
 
                         <input type="file" id="photoInput" accept=".jpg,.jpeg,.png" hidden>
 

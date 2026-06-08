@@ -71,8 +71,9 @@ dari localStorage SEBELUM browser paint frame pertama --}}
     <div class="navbar-right">
         <div class="user-profile">
             <img src="{{ $karyawan && $karyawan->foto
-    ? asset('storage/' . $karyawan->foto)
-    : asset('/asset/Icon/profile.png') }}" alt="Profile" class="profile-img" id="navbarProfileImage"> <span>
+    ? $karyawan->foto
+    : asset('/asset/Icon/profile.png') }}" alt="Profile" class="profile-img" id="navbarProfileImage">
+            <span>
                 {{ $karyawan->nama ?? 'Nama Karyawan' }},
                 {{ ucfirst($karyawan->role ?? auth()->user()->role ?? 'User') }}
             </span>

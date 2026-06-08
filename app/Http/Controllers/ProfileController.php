@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ValidatesSekData;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -51,33 +52,25 @@ class ProfileController extends Controller
             'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $karyawan = auth()->user();
+        $karyawan = Auth::user();
 
-        if (!$karyawan) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User tidak ditemukan'
-            ], 401);
-        }
+        $upload = Cloudinary::upload(
+            $request->file('foto')->getRealPath(),
+            [
+                'folder' => 'sek/profile'
+            ]
+        );
 
-        if (
-            $karyawan->foto &&
-            Storage::disk('public')->exists($karyawan->foto)
-        ) {
-            Storage::disk('public')->delete($karyawan->foto);
-        }
-
-        $path = $request->file('foto')
-            ->store('profile', 'public');
+        $fotoUrl = $upload->getSecurePath();
 
         $karyawan->update([
-            'foto' => $path
+            'foto' => $fotoUrl
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Foto berhasil diupload',
-            'foto_url' => asset('storage/' . $path)
+            'foto_url' => $fotoUrl
         ]);
     }
 }
