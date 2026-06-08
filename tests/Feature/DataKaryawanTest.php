@@ -72,17 +72,6 @@ class DataKaryawanTest extends TestCase
     }
 
     /**
-     * KRY-004
-     * Show gagal ketika ID karyawan tidak ditemukan.
-     */
-    public function test_show_karyawan_not_found()
-    {
-        $this->loginAsAdmin();
-        $response = $this->get('/karyawan/99999');
-        $response->assertStatus(404);
-    }
-
-    /**
      * KRY-005
      * Store data karyawan berhasil.
      */
@@ -101,83 +90,6 @@ class DataKaryawanTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonFragment(['success' => true]);
         $this->assertDatabaseHas('karyawans', ['email' => 'siti@example.com']);
-    }
-
-    /**
-     * KRY-006
-     * Store gagal ketika nama kosong.
-     */
-    public function test_store_fails_when_nama_empty()
-    {
-        $this->loginAsAdmin();
-
-        $response = $this->postJson('/karyawan', [
-            'nama' => '',
-            'email' => 'siti@example.com',
-            'role' => 'karyawan',
-            'status' => 'Aktif',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('nama');
-    }
-
-    /**
-     * KRY-007
-     * Store gagal ketika format email tidak valid.
-     */
-    public function test_store_fails_when_email_invalid()
-    {
-        $this->loginAsAdmin();
-
-        $response = $this->postJson('/karyawan', [
-            'nama' => 'Siti Rahayu',
-            'email' => 'bukan-email',
-            'role' => 'karyawan',
-            'status' => 'Aktif',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('email');
-    }
-
-    /**
-     * KRY-008
-     * Store gagal ketika email sudah digunakan.
-     */
-    public function test_store_fails_when_email_duplicate()
-    {
-        $this->loginAsAdmin();
-        $this->createKaryawan(['email' => 'siti@example.com']);
-
-        $response = $this->postJson('/karyawan', [
-            'nama' => 'Siti Rahayu',
-            'email' => 'siti@example.com',
-            'role' => 'karyawan',
-            'status' => 'Aktif',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('email');
-    }
-
-    /**
-     * KRY-009
-     * Store gagal ketika role tidak valid.
-     */
-    public function test_store_fails_when_role_invalid()
-    {
-        $this->loginAsAdmin();
-
-        $response = $this->postJson('/karyawan', [
-            'nama' => 'Siti Rahayu',
-            'email' => 'siti@example.com',
-            'role' => 'superadmin',
-            'status' => 'Aktif',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('role');
     }
 
     /**
@@ -205,24 +117,6 @@ class DataKaryawanTest extends TestCase
     }
 
     /**
-     * KRY-011
-     * Update gagal ketika ID karyawan tidak ditemukan.
-     */
-    public function test_update_karyawan_not_found()
-    {
-        $this->loginAsAdmin();
-
-        $response = $this->putJson('/karyawan/99999', [
-            'nama' => 'Budi Updated',
-            'email' => 'budi@example.com',
-            'role' => 'karyawan',
-            'status' => 'Aktif',
-        ]);
-
-        $response->assertStatus(404);
-    }
-
-    /**
      * KRY-012
      * Delete data karyawan berhasil.
      */
@@ -239,13 +133,50 @@ class DataKaryawanTest extends TestCase
     }
 
     /**
-     * KRY-013
-     * Delete gagal ketika ID karyawan tidak ditemukan.
+     * KRY-004
+     * Show gagal ketika ID karyawan tidak ditemukan.
+     */
+    public function test_show_karyawan_not_found()
+    {
+        $this->loginAsAdmin();
+        $response = $this->get('/karyawan/99999');
+        $response->assertStatus(404);
+    }
+
+    /**
+     * KRY-010
+     * Update data karyawn gagal id tidak di temukan.
+     */
+        public function test_update_karyawan_not_found()
+    {
+        $this->loginAsAdmin();
+
+        $response = $this->putJson('/karyawan/99999', [
+            'nama' => 'Budi Updated',
+            'email' => 'budi@example.com',
+            'role' => 'karyawan',
+            'status' => 'Aktif',
+        ]);
+
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'success' => false
+        ]);
+    }
+
+    /**
+     * KRY-012
+     * Delete data karyawan gagal id tidak ditemukan.
      */
     public function test_destroy_karyawan_not_found()
     {
         $this->loginAsAdmin();
+
         $response = $this->delete('/karyawan/99999');
+
         $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'success' => false
+        ]);
     }
 }

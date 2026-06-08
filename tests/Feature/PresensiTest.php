@@ -105,6 +105,20 @@ class PresensiTest extends TestCase
     }
 
     /**
+     * ABS-006
+     * Absen keluar gagal ketika belum absen masuk.
+     */
+    public function test_keluar_fails_when_not_checked_in()
+    {
+        $this->loginAsKaryawan();
+
+        $response = $this->postJson('/absensi/keluar');
+
+        $response->assertStatus(400);
+        $response->assertJsonFragment(['success' => false]);
+    }
+
+    /**
      * ABS-005
      * Absen keluar berhasil.
      */
@@ -127,20 +141,6 @@ class PresensiTest extends TestCase
             'karyawan_id' => $karyawan->id,
             'status' => 'Selesai',
         ]);
-    }
-
-    /**
-     * ABS-006
-     * Absen keluar gagal ketika belum absen masuk.
-     */
-    public function test_keluar_fails_when_not_checked_in()
-    {
-        $this->loginAsKaryawan();
-
-        $response = $this->postJson('/absensi/keluar');
-
-        $response->assertStatus(400);
-        $response->assertJsonFragment(['success' => false]);
     }
 
     /**

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class SyncController extends Controller
@@ -144,6 +145,81 @@ class SyncController extends Controller
         ]);
     }
 
+    /**
+     * Assign jobdesk ke satu atau banyak karyawan
+     */
+    public function assignJobdesk(Request $request)
+    {
+        $data = $request->validate(
+            [
+                'jobdesk_id' => ['required', 'exists:jobdesks,id'],
+                'karyawan_id' => ['required', 'array', 'min:1'],
+                'karyawan_id.*' => ['required', 'exists:karyawans,id'],
+            ],
+            $this->validationMessages(),
+            $this->validationAttributes()
+        );
+
+        $jobdesk = Jobdesk::findOrFail($data['jobdesk_id']);
+
+        $existingIds = $jobdesk->karyawans()
+            ->pluck('karyawans.id')
+            ->map(fn($id) => (string) $id)
+            ->toArray();
+
+        $duplicateIds = array_intersect(
+            $existingIds,
+            array_map('strval', $data['karyawan_id'])
+        );
+
+        if (!empty($duplicateIds)) {
+            $duplicateNames = Karyawan::whereIn('id', $duplicateIds)
+                ->pluck('nama')
+                ->implode(', ');
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Beberapa karyawan sudah ditugaskan ke jobdesk ini: ' . $duplicateNames,
+            ], 422);
+        }
+
+        $jobdesk->karyawans()->syncWithoutDetaching($data['karyawan_id']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Jobdesk berhasil diassign ke karyawan.',
+            'data' => $jobdesk->load('karyawans:id,nama'),
+        ]);
+    }
+
+    /**
+     * Hapus karyawan dari jobdesk
+     */
+    public function removeJobdeskKaryawan($jobdeskId, $karyawanId)
+    {
+        $jobdesk = Jobdesk::findOrFail($jobdeskId);
+        $karyawan = Karyawan::findOrFail($karyawanId);
+
+        $isAssigned = $jobdesk->karyawans()
+            ->where('karyawans.id', $karyawanId)
+            ->exists();
+
+        if (!$isAssigned) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Karyawan tidak terdaftar pada jobdesk ini.',
+            ], 404);
+        }
+
+        $jobdesk->karyawans()->detach($karyawan->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Karyawan berhasil dihapus dari jobdesk.',
+            'data' => $jobdesk->load('karyawans:id,nama'),
+        ]);
+    }
+
     public function destroyAbsensi($id)
     {
         Absensi::findOrFail($id)->delete();
@@ -206,7 +282,7 @@ class SyncController extends Controller
             ->where('tanggal', $tanggal)
             ->first();
 
-        if (! $absensi) {
+        if (!$absensi) {
             return response()->json([
                 'success' => false,
                 'message' => 'Belum absen masuk',
@@ -331,6 +407,39 @@ class SyncController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data penggajian berhasil dihapus.',
+        ]);
+    }
+
+    public function uploadFoto(Request $request, $id)
+    {
+        $karyawan = Karyawan::findOrFail($id);
+
+        $request->validate([
+            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
+
+        if (
+            $karyawan->foto &&
+            Storage::disk('public')->exists($karyawan->foto)
+        ) {
+
+            Storage::disk('public')->delete($karyawan->foto);
+        }
+
+        $path = $request->file('foto')
+            ->store('karyawan', 'public');
+
+        $karyawan->update([
+            'foto' => $path
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto berhasil diupload',
+            'data' => [
+                'foto' => $path,
+                'foto_url' => asset('storage/' . $path)
+            ]
         ]);
     }
 }

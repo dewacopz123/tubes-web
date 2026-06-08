@@ -33,12 +33,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/jobdesk/{id}', [JobdeskController::class, 'destroy']);
     Route::delete('/jobdesk/{jobdesk}/karyawan/{karyawan}', [JobdeskController::class, 'removeKaryawan']);
 
-    Route::get('/penggajian', [PenggajianController::class,'index']);
-    Route::get('/penggajian/create', [PenggajianController::class,'create']);
-    Route::post('/penggajian', [PenggajianController::class,'store']);  
-    Route::get('/penggajian/{id}', [PenggajianController::class,'show']); 
-    Route::put('/penggajian/{id}', [PenggajianController::class,'update']); 
-    Route::delete('/penggajian/{id}', [PenggajianController::class,'destroy']); 
+    Route::get('/penggajian', [PenggajianController::class, 'index']);
+    Route::get('/penggajian/create', [PenggajianController::class, 'create']);
+    Route::post('/penggajian', [PenggajianController::class, 'store']);
+    Route::get('/penggajian/{id}', [PenggajianController::class, 'show']);
+    Route::put('/penggajian/{id}', [PenggajianController::class, 'update']);
+    Route::delete('/penggajian/{id}', [PenggajianController::class, 'destroy']);
 
     Route::get('/karyawan', [KaryawanController::class, 'index']);
     Route::get('/karyawan/form', [KaryawanController::class, 'form']);
@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/upload-photo', [ProfileController::class, 'uploadPhoto'])->name('profile.upload-photo');
 
     Route::get('/export/laporan', [ExportController::class, 'laporan']);
     Route::get('/export/penggajian', [ExportController::class, 'penggajian']);

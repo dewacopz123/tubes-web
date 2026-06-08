@@ -13,23 +13,23 @@ class JobdeskController extends Controller
 
     // Tampilkan semua jobdesk
     public function index(Request $request)
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    if ($user->role === 'admin') {
-        $jobdesks = Jobdesk::with('karyawans')->get();
-    } else {
-        $jobdesks = Jobdesk::with('karyawans')
-            ->whereHas('karyawans', function ($q) use ($user) {
-                $q->where('karyawans.id', $user->id);
-            })
-            ->get();
+        if ($user->role === 'admin') {
+            $jobdesks = Jobdesk::with('karyawans')->get();
+        } else {
+            $jobdesks = Jobdesk::with('karyawans')
+                ->whereHas('karyawans', function ($q) use ($user) {
+                    $q->where('karyawans.id', $user->id);
+                })
+                ->get();
+        }
+
+        $karyawans = Karyawan::all();
+
+        return view('Jobdesk.index', compact('jobdesks', 'karyawans'));
     }
-
-    $karyawans = Karyawan::all();
-
-    return view('Jobdesk.index', compact('jobdesks', 'karyawans'));
-}
 
     // Store
     public function store(Request $request)
@@ -68,21 +68,21 @@ class JobdeskController extends Controller
     }
 
     public function show(Request $request, $id)
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    $jobdesk = Jobdesk::with('karyawans')->findOrFail($id);
+        $jobdesk = Jobdesk::with('karyawans')->findOrFail($id);
 
-    if ($user->role !== 'admin') {
-        $allowed = $jobdesk->karyawans->contains('id', $user->id);
+        if ($user->role !== 'admin') {
+            $allowed = $jobdesk->karyawans->contains('id', $user->id);
 
-        if (! $allowed) {
-            abort(403, 'Anda tidak memiliki akses ke jobdesk ini.');
+            if (!$allowed) {
+                abort(403, 'Anda tidak memiliki akses ke jobdesk ini.');
+            }
         }
-    }
 
-    return $jobdesk;
-}
+        return $jobdesk;
+    }
 
     public function assignForm()
     {
@@ -104,11 +104,22 @@ class JobdeskController extends Controller
         );
 
         $jobdesk = Jobdesk::findOrFail($data['jobdesk_id']);
-        $existingIds = $jobdesk->karyawans()->pluck('karyawans.id')->map(fn ($id) => (string) $id)->toArray();
-        $duplicateIds = array_intersect($existingIds, array_map('strval', $data['karyawan_id']));
+
+        $existingIds = $jobdesk->karyawans()
+            ->pluck('karyawans.id')
+            ->map(fn($id) => (string) $id)
+            ->toArray();
+
+        $duplicateIds = array_intersect(
+            $existingIds,
+            array_map('strval', $data['karyawan_id'])
+        );
 
         if (!empty($duplicateIds)) {
-            $duplicateNames = Karyawan::whereIn('id', $duplicateIds)->pluck('nama')->implode(', ');
+            $duplicateNames = Karyawan::whereIn('id', $duplicateIds)
+                ->pluck('nama')
+                ->implode(', ');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Beberapa karyawan sudah ditugaskan ke jobdesk ini: ' . $duplicateNames,
@@ -128,6 +139,17 @@ class JobdeskController extends Controller
     {
         $jobdesk = Jobdesk::findOrFail($jobdeskId);
         $karyawan = Karyawan::findOrFail($karyawanId);
+
+        $isAssigned = $jobdesk->karyawans()
+            ->where('karyawans.id', $karyawanId)
+            ->exists();
+
+        if (!$isAssigned) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Karyawan tidak terdaftar pada jobdesk ini.',
+            ], 404);
+        }
 
         $jobdesk->karyawans()->detach($karyawan->id);
 

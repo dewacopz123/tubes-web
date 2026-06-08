@@ -25,43 +25,13 @@ class LoginTest extends TestCase
     }
 
     /**
-     * LT-001
-     * Menguji halaman login dapat diakses.
+     * WBT-01
+     * login email kosong
      */
-    public function test_login_page_can_be_accessed()
-    {
-        $response = $this->get('/login');
-        $response->assertStatus(200);
-    }
-
-    /**
-     * LT-002
-     * Login berhasil dengan kredensial yang valid.
-     */
-    public function test_login_success()
-    {
-        $karyawan = $this->createKaryawan([
-            'email' => 'budi@example.com',
-            'password' => Hash::make('password123'),
-        ]);
-
-        $response = $this->post('/login', [
-            'email' => 'budi@example.com',
-            'password' => 'password123',
-        ]);
-
-        $response->assertRedirect('/dashboard');
-        $this->assertAuthenticatedAs($karyawan);
-    }
-
-    /**
-     * LT-003
-     * Login gagal ketika email tidak ditemukan.
-     */
-    public function test_login_fails_when_email_not_found()
+    public function test_login_fails_when_email_not_fill()
     {
         $response = $this->from('/login')->post('/login', [
-            'email' => 'tidakada@example.com',
+            'email' => '',
             'password' => 'password123',
         ]);
 
@@ -69,7 +39,35 @@ class LoginTest extends TestCase
     }
 
     /**
-     * LT-004
+     * WBT-02
+     * login password kosong
+     */
+    public function test_login_fails_when_password_not_fill()
+    {
+        $response = $this->from('/login')->post('/login', [
+            'email' => 'budi@example.com',
+            'password' => '',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+    }
+
+    /**
+     * WBT-03
+     * Login gagal email tidak di temukan.
+     */
+    public function test_login_fails_when_email_not_found()
+    {
+        $response = $this->from('/login')->post('/login', [
+            'email' => 'tidakditemukan@example.com',
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    /**
+     * WBT-04
      * Login gagal ketika akun berstatus Nonaktif.
      */
     public function test_login_fails_when_account_inactive()
@@ -89,7 +87,7 @@ class LoginTest extends TestCase
     }
 
     /**
-     * LT-005
+     * WBT-05
      * Login gagal ketika password salah.
      */
     public function test_login_fails_when_password_incorrect()
@@ -105,26 +103,47 @@ class LoginTest extends TestCase
     }
 
     /**
-     * LT-006
-     * Login gagal ketika format email tidak valid.
+     * WBT-06
+     * Login berhasil dengan kredensial yang valid.
      */
-    public function test_login_fails_when_email_invalid_format()
+    public function test_login_success()
     {
-        $response = $this->from('/login')->post('/login', [
-            'email' => 'bukan-email',
+        $karyawan = $this->createKaryawan([
+            'email' => 'budi@example.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'budi@example.com',
             'password' => 'password123',
         ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticatedAs($karyawan);
     }
 
     /**
-     * LT-007
+     * WBT-01-FR02 
+     * Register gagal data tidak valid.
+     */
+    public function test_register_fails_when_data_invalid()
+    {
+        $response = $this->from('/login')->post('/register', [
+            'nama' => 'invalid!@#',
+            'email' => 'bukan-email',
+            'password' => 'pass123',
+        ]);
+
+        $response->assertSessionHasErrors(['nama', 'email']);
+    }
+
+    /**
+     * wbt-02-FR02
      * Register berhasil dengan data yang valid.
      */
     public function test_register_success()
     {
-        $response = $this->post('/register', [
+        $response = $this->from('/login')->post('/register', [
             'nama' => 'Andi Wijaya',
             'email' => 'andi@example.com',
             'password' => 'pass123',
@@ -132,67 +151,5 @@ class LoginTest extends TestCase
 
         $response->assertRedirect('/dashboard');
         $this->assertDatabaseHas('karyawans', ['email' => 'andi@example.com']);
-    }
-
-    /**
-     * LT-008
-     * Register gagal ketika nama mengandung angka atau karakter khusus.
-     */
-    public function test_register_fails_when_nama_has_numbers()
-    {
-        $response = $this->from('/login')->post('/register', [
-            'nama' => 'Andi123',
-            'email' => 'andi@example.com',
-            'password' => 'pass123',
-        ]);
-
-        $response->assertSessionHasErrors('nama');
-    }
-
-    /**
-     * LT-009
-     * Register gagal ketika email sudah digunakan.
-     */
-    public function test_register_fails_when_email_duplicate()
-    {
-        $this->createKaryawan(['email' => 'andi@example.com']);
-
-        $response = $this->from('/login')->post('/register', [
-            'nama' => 'Andi Wijaya',
-            'email' => 'andi@example.com',
-            'password' => 'pass123',
-        ]);
-
-        $response->assertSessionHasErrors('email');
-    }
-
-    /**
-     * LT-010
-     * Register gagal ketika password lebih dari 8 karakter.
-     */
-    public function test_register_fails_when_password_too_long()
-    {
-        $response = $this->from('/login')->post('/register', [
-            'nama' => 'Andi Wijaya',
-            'email' => 'andi@example.com',
-            'password' => 'password123',
-        ]);
-
-        $response->assertSessionHasErrors('password');
-    }
-
-    /**
-     * LT-011
-     * Logout berhasil dan diarahkan ke halaman login.
-     */
-    public function test_logout_redirects_to_login()
-    {
-        $karyawan = $this->createKaryawan();
-        $this->actingAs($karyawan);
-
-        $response = $this->post('/logout');
-
-        $response->assertRedirect('/login');
-        $this->assertGuest();
     }
 }

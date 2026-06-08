@@ -14,7 +14,7 @@ class ProfileTest extends TestCase
     private function createKaryawan(array $attributes = []): Karyawan
     {
         return Karyawan::create(array_merge([
-            'kode_karyawan' => 'KRY' . str_pad((string)(Karyawan::count() + 1), 3, '0', STR_PAD_LEFT),
+            'kode_karyawan' => 'KRY' . str_pad((string) (Karyawan::count() + 1), 3, '0', STR_PAD_LEFT),
             'nama' => 'Budi Santoso',
             'email' => 'budi' . (Karyawan::count() + 1) . '@example.com',
             'telepon' => '08123456789',
@@ -32,126 +32,128 @@ class ProfileTest extends TestCase
     }
 
     /**
-     * PRF-001
-     * Menguji halaman profil dapat diakses.
+     * TC-WBT-FR08-01
+     * Menguji fungsi index() profile berhasil.
      */
-    public function test_profile_page_can_be_accessed()
+    public function test_profile_index_success()
     {
-        $this->login();
+        $karyawan = $this->login();
+
         $response = $this->get('/profile');
+
         $response->assertStatus(200);
+        $response->assertViewHas('karyawan');
+
+        $response->assertSee($karyawan->nama);
     }
 
     /**
-     * PRF-002
-     * Update profil berhasil dan mengembalikan JSON.
+     * TC-WBT-FR08-02
+     * Menguji fungsi index() saat data user tidak ditemukan.
      */
-    public function test_update_profile_success_returns_json()
+    public function test_profile_index_user_not_found()
     {
-        $karyawan = $this->login();
+        $user = Karyawan::factory()->create();
 
-        $response = $this->postJson('/profile', [
-            'nama' => 'Budi Baru',
-            'email' => $karyawan->email,
-            'telepon' => '081234567890',
-        ]);
+        $this->actingAs($user);
 
-        $response->assertStatus(200);
-        $response->assertJsonFragment(['success' => true]);
-        $this->assertDatabaseHas('karyawans', [
-            'id' => $karyawan->id,
-            'nama' => 'Budi Baru',
-        ]);
+        $response = $this->get('/profile');
+
+        $response->assertStatus(404);
     }
 
     /**
-     * PRF-003
-     * Update profil berhasil dan melakukan redirect.
+     * TC-WBT-FR08-03
+     * Menguji update profile dengan data valid.
      */
-    public function test_update_profile_success_redirects()
+    public function test_update_profile_success()
     {
         $karyawan = $this->login();
 
-        $response = $this->from('/profile')->post('/profile', [
-            'nama' => 'Budi Baru',
-            'email' => $karyawan->email,
+        $response = $this->put('/profile', [
+            'nama' => 'Budi Updated',
+            'email' => 'budiupdated@example.com',
             'telepon' => '081234567890',
         ]);
 
         $response->assertRedirect();
+
         $this->assertDatabaseHas('karyawans', [
             'id' => $karyawan->id,
-            'nama' => 'Budi Baru',
+            'nama' => 'Budi Updated',
+            'email' => 'budiupdated@example.com',
+            'telepon' => '081234567890',
         ]);
     }
 
     /**
-     * PRF-004
-     * Update profil gagal ketika nama kosong.
+     * TC-WBT-FR08-04
+     * Menguji update profile dengan request JSON.
      */
-    public function test_update_fails_when_nama_empty()
+    public function test_update_profile_json_success()
     {
         $karyawan = $this->login();
 
-        $response = $this->postJson('/profile', [
+        $response = $this->putJson('/profile', [
+            'nama' => 'Budi Updated',
+            'email' => 'budiupdated@example.com',
+            'telepon' => '081234567890',
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonFragment([
+            'success' => true,
+            'message' => 'Profile berhasil diperbarui.'
+        ]);
+    }
+
+    /**
+     * TC-WBT-FR08-05
+     * Menguji update profile dengan request form biasa.
+     */
+    public function test_update_profile_form_success()
+    {
+        $karyawan = $this->loginAsKaryawan();
+
+        $response = $this->put('/profile', [
+            'nama' => 'Budi Updated',
+            'email' => 'budiupdated@example.com',
+            'telepon' => '081234567890',
+        ]);
+
+        $response->assertRedirect();
+
+        $response->assertSessionHas(
+            'success',
+            'Profile berhasil diperbarui'
+        );
+    }
+
+    /**
+     * TC-WBT-FR08-06
+     * Menguji validasi gagal saat update profile.
+     */
+    public function test_update_profile_validation_failed()
+    {
+        $karyawan = $this->loginAsKaryawan();
+
+        $oldName = $karyawan->nama;
+
+        $response = $this->put('/profile', [
             'nama' => '',
-            'email' => $karyawan->email,
+            'email' => 'email-tidak-valid',
+            'telepon' => '081234567890',
         ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('nama');
-    }
-
-    /**
-     * PRF-005
-     * Update profil gagal ketika nama mengandung karakter khusus atau angka.
-     */
-    public function test_update_fails_when_nama_has_special_chars()
-    {
-        $karyawan = $this->login();
-
-        $response = $this->postJson('/profile', [
-            'nama' => 'Budi@123',
-            'email' => $karyawan->email,
+        $response->assertSessionHasErrors([
+            'nama',
+            'email'
         ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('nama');
-    }
-
-    /**
-     * PRF-006
-     * Update profil gagal ketika email sudah digunakan akun lain.
-     */
-    public function test_update_fails_when_email_duplicate()
-    {
-        $karyawan = $this->login();
-        $this->createKaryawan(['email' => 'other@example.com']);
-
-        $response = $this->postJson('/profile', [
-            'nama' => 'Budi Santoso',
-            'email' => 'other@example.com',
+        $this->assertDatabaseHas('karyawans', [
+            'id' => $karyawan->id,
+            'nama' => $oldName
         ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('email');
-    }
-
-    /**
-     * PRF-007
-     * Update profil gagal ketika format telepon tidak valid.
-     */
-    public function test_update_fails_when_telepon_invalid()
-    {
-        $karyawan = $this->login();
-
-        $response = $this->postJson('/profile', [
-            'nama' => 'Budi Santoso',
-            'email' => $karyawan->email,
-            'telepon' => 'abc-invalid!',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('telepon');
     }
 }

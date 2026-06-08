@@ -21,7 +21,17 @@ class Karyawan extends Authenticatable
         'role',
         'status',
         'api_token',
+        'foto'
     ];
+
+    protected $appends = ['foto_url'];
+
+    public function getFotoUrlAttribute()
+    {
+        return $this->foto
+            ? asset('storage/' . $this->foto)
+            : null;
+    }
 
     protected $hidden = ['password', 'api_token'];
 
