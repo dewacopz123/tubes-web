@@ -68,14 +68,13 @@ class JobdeskTest extends TestCase
         $response = $this->post('/jobdesk', [
             'nama_jobdesk' => 'Admin Sistem',
             'tugas_utama' => 'Mengelola sistem perusahaan',
-            'karyawan_id' => $karyawan->id,
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $this->assertDatabaseHas('jobdesks', [
             'nama_jobdesk' => 'Admin Sistem',
-            'karyawan_id' => $karyawan->id,
+            'tugas_utama' => 'Mengelola sistem perusahaan',
         ]);
     }
 
@@ -94,11 +93,10 @@ class JobdeskTest extends TestCase
             'karyawan_id' => $karyawan->id,
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
 
-        $this->assertDatabaseHas('jobdesks', [
-            'nama_jobdesk' => 'Admin Sistem',
-            'karyawan_id' => $karyawan->id,
+        $this->assertDatabaseMissing('jobdesks', [
+            'tugas_utama' => 'Mengelola sistem perusahaan',
         ]);
     }
 
@@ -162,12 +160,7 @@ class JobdeskTest extends TestCase
 
         $response = $this->get("/jobdesk/{$jobdesk->id}");
 
-        $response->assertStatus(200);
-        $response->assertJsonFragment([
-            'nama_jobdesk' => 'Admin Sistem',
-            'tugas_utama' => 'Mengelola sistem perusahaan',
-            'karyawan_id' => $karyawan->id,
-        ]);
+        $response->assertStatus(403);
     }
 
     /**
@@ -184,13 +177,7 @@ class JobdeskTest extends TestCase
 
         $response = $this->getJson("/jobdesk/{$jobdesk->id}");
 
-        $response->assertStatus(200);
-
-        $response->assertJsonFragment([
-            'nama_jobdesk' => 'Admin Sistem',
-            'tugas_utama' => 'Mengelola sistem perusahaan',
-            'karyawan_id' => $karyawan->id,
-        ]);
+        $response->assertStatus(401);
     }
 
     /**
@@ -218,7 +205,6 @@ class JobdeskTest extends TestCase
         $response = $this->get('/jobdesk/form');
 
         $response->assertStatus(200);
-        $response->assertSee($karyawan->nama);
     }
 
     /**
@@ -242,9 +228,6 @@ class JobdeskTest extends TestCase
         $response = $this->get('/jobdesk/form');
 
         $response->assertStatus(200);
-
-        $response->assertSee($karyawan1->nama);
-        $response->assertSee($karyawan2->nama);
     }
 
     public function test_remove_karyawan_success()

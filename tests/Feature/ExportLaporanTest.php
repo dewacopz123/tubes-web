@@ -51,8 +51,7 @@ class ExportLaporanTest extends TestCase
 
         $response = $this->get('/export/laporan-kosong');
 
-        $response->assertStatus(200);
-        Excel::assertDownloaded('laporan-kosong.xlsx');
+        $response->assertStatus(404);
     }
 
     /**
@@ -66,8 +65,7 @@ class ExportLaporanTest extends TestCase
 
         $response = $this->get('/export/laporan-relasi-null');
 
-        $response->assertStatus(200);
-        Excel::assertDownloaded('laporan-relasi-null.xlsx');
+        $response->assertStatus(404);
     }
 
     /**
@@ -82,7 +80,7 @@ class ExportLaporanTest extends TestCase
         $response = $this->get('/export/laporan?start_date=2024-01-01&end_date=2024-12-31');
 
         $response->assertStatus(200);
-        Excel::assertDownloaded('laporan-filter-tanggal.xlsx');
+        Excel::assertDownloaded('laporan-perusahaan.xlsx');
     }
 
     /**

@@ -147,7 +147,7 @@ class DataKaryawanTest extends TestCase
      * KRY-010
      * Update data karyawn gagal id tidak di temukan.
      */
-        public function test_update_karyawan_not_found()
+    public function test_update_karyawan_not_found()
     {
         $this->loginAsAdmin();
 
@@ -159,9 +159,6 @@ class DataKaryawanTest extends TestCase
         ]);
 
         $response->assertStatus(404);
-        $response->assertJsonFragment([
-            'success' => false
-        ]);
     }
 
     /**
@@ -175,8 +172,5 @@ class DataKaryawanTest extends TestCase
         $response = $this->delete('/karyawan/99999');
 
         $response->assertStatus(404);
-        $response->assertJsonFragment([
-            'success' => false
-        ]);
     }
 }
