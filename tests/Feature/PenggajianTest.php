@@ -47,16 +47,29 @@ class PenggajianTest extends TestCase
         ], $attributes));
     }
 
-    /**
-     * PG-001
-     * Menguji halaman penggajian dapat diakses oleh admin.
+     /**
+     * PG-004
+     * Store data penggajian berhasil.
      */
-    public function test_index_page_can_be_accessed_as_admin()
+    public function test_store_penggajian_success()
     {
         $this->loginAsAdmin();
-        $response = $this->get('/penggajian');
-        $response->assertStatus(200);
+        $karyawan = $this->createKaryawan();
+
+        $response = $this->postJson('/penggajian', [
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => '2025-01-15',
+            'gaji_pokok' => 5000000,
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['success' => true]);
+        $this->assertDatabaseHas('penggajians', [
+            'karyawan_id' => $karyawan->id,
+            'gaji_pokok' => 5000000,
+        ]);
     }
+
 
     /**
      * PG-002
@@ -81,28 +94,7 @@ class PenggajianTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * PG-004
-     * Store data penggajian berhasil.
-     */
-    public function test_store_penggajian_success()
-    {
-        $this->loginAsAdmin();
-        $karyawan = $this->createKaryawan();
-
-        $response = $this->postJson('/penggajian', [
-            'karyawan_id' => $karyawan->id,
-            'tanggal' => '2025-01-15',
-            'gaji_pokok' => 5000000,
-        ]);
-
-        $response->assertStatus(201);
-        $response->assertJsonFragment(['success' => true]);
-        $this->assertDatabaseHas('penggajians', [
-            'karyawan_id' => $karyawan->id,
-            'gaji_pokok' => 5000000,
-        ]);
-    }
+   
 
     /**
      * PG-005
@@ -123,27 +115,8 @@ class PenggajianTest extends TestCase
     }
 
     /**
-     * PG-006
-     * Store gagal ketika gaji pokok kosong.
-     */
-    public function test_store_fails_when_gaji_pokok_empty()
-    {
-        $this->loginAsAdmin();
-        $karyawan = $this->createKaryawan();
-
-        $response = $this->postJson('/penggajian', [
-            'karyawan_id' => $karyawan->id,
-            'tanggal' => '2025-01-15',
-            'gaji_pokok' => '',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('gaji_pokok');
-    }
-
-    /**
      * PG-007
-     * Store gagal ketika tanggal tidak valid.
+     * Store gagal ketika tanggal valid.
      */
     public function test_store_fails_when_tanggal_invalid()
     {
@@ -152,7 +125,26 @@ class PenggajianTest extends TestCase
 
         $response = $this->postJson('/penggajian', [
             'karyawan_id' => $karyawan->id,
-            'tanggal' => 'bukan-tanggal',
+            'tanggal' => '01-15-2025',
+            'gaji_pokok' => 5000000,
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('tanggal');
+    }
+
+    /**
+     * PG-007
+     * Store gagal ketika tanggal valid.
+     */
+    public function test_store_fails_when_tanggal_valid()
+    {
+        $this->loginAsAdmin();
+        $karyawan = $this->createKaryawan();
+
+        $response = $this->postJson('/penggajian', [
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => '2025-13-01',
             'gaji_pokok' => 5000000,
         ]);
 

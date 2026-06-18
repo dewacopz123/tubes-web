@@ -24,11 +24,22 @@
 
                 <div class="header">
                     <h2 class="title">Profile</h2>
-                    <img
-                        src="/asset/Icon/profile.png?v=20260521"
-                        alt="User Photo"
-                        class="photo"
-                        id="profilePhoto">
+
+                    <div class="profile-photo-wrapper">
+
+                        <img src="{{ $karyawan->foto
+    ? asset('storage/' . $karyawan->foto)
+    : asset('/asset/Icon/profile.png') }}" alt="Foto Profil" class="photo" id="profilePhoto">
+
+                        <input type="file" id="photoInput" accept=".jpg,.jpeg,.png" hidden>
+
+                        <button type="button" id="btnUploadPhoto" class="btn-primary btn-upload-photo"
+                            style="display:none;">
+                            <i class="fas fa-camera"></i>
+                            Ganti Foto
+                        </button>
+
+                    </div>
                 </div>
 
                 {{-- FORM PROFILE --}}
@@ -43,25 +54,15 @@
                     <div class="row">
                         <div class="group">
                             <label class="label">Nama</label>
-                            <input
-                                id="inputNama"
-                                type="text"
-                                name="nama"
-                                value="{{ old('nama', $karyawan->nama) }}"
-                                required
-                                disabled>
+                            <input id="inputNama" type="text" name="nama" value="{{ old('nama', $karyawan->nama) }}"
+                                required disabled>
                             <span class="input-error" id="error-nama"></span>
                         </div>
 
                         <div class="group">
                             <label class="label">Email</label>
-                            <input
-                                id="inputEmail"
-                                type="email"
-                                name="email"
-                                value="{{ old('email', $karyawan->email) }}"
-                                required
-                                disabled>
+                            <input id="inputEmail" type="email" name="email"
+                                value="{{ old('email', $karyawan->email) }}" required disabled>
                             <span class="input-error" id="error-email"></span>
                         </div>
                     </div>
@@ -69,31 +70,21 @@
                     <div class="row">
                         <div class="group">
                             <label class="label">Telepon</label>
-                            <input
-                                id="inputTelepon"
-                                type="text"
-                                name="telepon"
-                                value="{{ old('telepon', $karyawan->telepon) }}"
-                                disabled>
+                            <input id="inputTelepon" type="text" name="telepon"
+                                value="{{ old('telepon', $karyawan->telepon) }}" disabled>
                             <span class="input-error" id="error-telepon"></span>
                         </div>
 
                         <div class="group">
                             <label class="label">Role</label>
-                            <input
-                                type="text"
-                                value="{{ $karyawan->role }}"
-                                disabled>
+                            <input type="text" value="{{ $karyawan->role }}" disabled>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="group">
                             <label class="label">Status</label>
-                            <input
-                                type="text"
-                                value="{{ $karyawan->status }}"
-                                disabled>
+                            <input type="text" value="{{ $karyawan->status }}" disabled>
                         </div>
                         <div class="group"></div>
                     </div>
@@ -120,4 +111,5 @@
     <script src="/js/profile.js?v=20260521"></script>
 
 </body>
+
 </html>

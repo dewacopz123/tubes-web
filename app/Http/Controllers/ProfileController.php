@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\ValidatesSekData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Karyawan;
 
 class ProfileController extends Controller
@@ -29,8 +30,8 @@ class ProfileController extends Controller
         );
 
         $karyawan->update([
-            'nama'    => $data['nama'],
-            'email'   => $data['email'],
+            'nama' => $data['nama'],
+            'email' => $data['email'],
             'telepon' => $data['telepon'] ?? null,
         ]);
 
@@ -42,5 +43,41 @@ class ProfileController extends Controller
         }
 
         return redirect()->back()->with('success', 'Profile berhasil diperbarui');
+    }
+
+    public function uploadPhoto(Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
+
+        $karyawan = auth()->user();
+
+        if (!$karyawan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 401);
+        }
+
+        if (
+            $karyawan->foto &&
+            Storage::disk('public')->exists($karyawan->foto)
+        ) {
+            Storage::disk('public')->delete($karyawan->foto);
+        }
+
+        $path = $request->file('foto')
+            ->store('profile', 'public');
+
+        $karyawan->update([
+            'foto' => $path
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto berhasil diupload',
+            'foto_url' => asset('storage/' . $path)
+        ]);
     }
 }

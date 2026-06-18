@@ -9,13 +9,13 @@
 @endphp
 
 {{-- Anti-flash script: berjalan sync sebelum render, terapkan class collapsed
-     dari localStorage SEBELUM browser paint frame pertama --}}
+dari localStorage SEBELUM browser paint frame pertama --}}
 <script>
-(function(){
-    if(localStorage.getItem('sidebarState')==='collapsed'){
-        document.documentElement.classList.add('sidebar-will-collapse');
-    }
-})();
+    (function () {
+        if (localStorage.getItem('sidebarState') === 'collapsed') {
+            document.documentElement.classList.add('sidebar-will-collapse');
+        }
+    })();
 </script>
 
 <div id="sidebar" class="sidebar">
@@ -70,8 +70,9 @@
 
     <div class="navbar-right">
         <div class="user-profile">
-            <img src="/asset/Icon/profile.png" class="profile-img">
-            <span>
+            <img src="{{ $karyawan && $karyawan->foto
+    ? asset('storage/' . $karyawan->foto)
+    : asset('/asset/Icon/profile.png') }}" alt="Profile" class="profile-img" id="navbarProfileImage"> <span>
                 {{ $karyawan->nama ?? 'Nama Karyawan' }},
                 {{ ucfirst($karyawan->role ?? auth()->user()->role ?? 'User') }}
             </span>
