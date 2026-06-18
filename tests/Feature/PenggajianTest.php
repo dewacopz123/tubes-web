@@ -283,4 +283,64 @@ class PenggajianTest extends TestCase
         $response = $this->delete('/penggajian/99999');
         $response->assertStatus(404);
     }
+
+    /**
+     * PG-016
+     * Menguji validasi gagal saat tambah penggajian (semua field kosong).
+     */
+    public function test_store_fails_validation_when_all_fields_empty()
+    {
+        $this->loginAsAdmin();
+
+        $response = $this->postJson('/penggajian', []);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['karyawan_id', 'tanggal', 'gaji_pokok']);
+    }
+
+    /**
+     * PG-017
+     * Menguji konversi tanggal dd/mm/yyyy saat tambah penggajian.
+     */
+    public function test_store_converts_date_from_dd_mm_yyyy_format()
+    {
+        $this->loginAsAdmin();
+        $karyawan = $this->createKaryawan();
+
+        $response = $this->postJson('/penggajian', [
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => '05/01/2025',
+            'gaji_pokok' => 5000000,
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['success' => true]);
+        $this->assertDatabaseHas('penggajians', [
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => '2025-01-05',
+        ]);
+    }
+
+    /**
+     * PG-018
+     * Menguji tambah penggajian dengan format tanggal YYYY-MM-DD.
+     */
+    public function test_store_with_date_format_yyyy_mm_dd()
+    {
+        $this->loginAsAdmin();
+        $karyawan = $this->createKaryawan();
+
+        $response = $this->postJson('/penggajian', [
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => '2025-03-20',
+            'gaji_pokok' => 4500000,
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['success' => true]);
+        $this->assertDatabaseHas('penggajians', [
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => '2025-03-20',
+        ]);
+    }
 }

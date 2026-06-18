@@ -154,4 +154,34 @@ class ProfileTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('telepon');
     }
+
+    public function test_profile_index_user_not_found()
+    {
+        $user = Karyawan::factory()->create();
+
+        $this->actingAs($user);
+
+        $user->delete();
+
+        $response = $this->get('/profile');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_profile_update_with_valid_data()
+    {
+        $this->login();
+
+        $response = $this->put('/profile', [
+            'nama' => 'Nama Baru',
+            'email' => 'baru@example.com',
+        ]);
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'baru@example.com',
+        ]);
+    }
+
 }

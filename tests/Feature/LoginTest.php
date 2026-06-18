@@ -118,6 +118,26 @@ class LoginTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
+    public function test_login_fails_when_email_is_empty()
+    {
+        $response = $this->from('/login')->post('/login', [
+            'email' => '',
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    public function test_login_fails_when_password_is_empty()
+    {
+        $response = $this->from('/login')->post('/login', [
+            'email' => 'user@example.com',
+            'password' => '',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+    }
+
     /**
      * LT-007
      * Register berhasil dengan data yang valid.
@@ -149,10 +169,6 @@ class LoginTest extends TestCase
         $response->assertSessionHasErrors('nama');
     }
 
-    /**
-     * LT-009
-     * Register gagal ketika email sudah digunakan.
-     */
     public function test_register_fails_when_email_duplicate()
     {
         $this->createKaryawan(['email' => 'andi@example.com']);
@@ -166,10 +182,6 @@ class LoginTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
-    /**
-     * LT-010
-     * Register gagal ketika password lebih dari 8 karakter.
-     */
     public function test_register_fails_when_password_too_long()
     {
         $response = $this->from('/login')->post('/register', [
@@ -194,5 +206,45 @@ class LoginTest extends TestCase
 
         $response->assertRedirect('/login');
         $this->assertGuest();
+    }
+
+    public function test_logout_success()
+    {
+        $this->login();
+
+        $response = $this->post('/logout');
+
+        $response->assertRedirect('/');
+    }
+
+    public function test_logout_with_expired_session()
+    {
+        $this->login();
+
+        session()->invalidate();
+
+        $response = $this->post('/logout');
+
+        $response->assertStatus(419);
+    }
+
+    public function test_logout_as_guest()
+    {
+        $response = $this->post('/logout');
+
+        $response->assertRedirect('/login');
+    }
+
+    public function test_logout_with_invalid_csrf_token()
+    {
+        $this->withMiddleware();
+
+        $this->login();
+
+        $response = $this->post('/logout', [
+            '_token' => 'invalid-token',
+        ]);
+
+        $response->assertStatus(419);
     }
 }

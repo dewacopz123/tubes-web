@@ -302,4 +302,95 @@ class JobdeskTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_show_jobdesk_as_registered_employee()
+    {
+        $this->login();
+
+        $jobdesk = $this->createJobdesk();
+        $karyawan = $this->createKaryawan();
+
+        $jobdesk->karyawans()->attach($karyawan->id);
+
+        $response = $this->get("/jobdesk/{$jobdesk->id}");
+
+        $response->assertStatus(200);
+    }
+
+    public function test_show_jobdesk_as_unregistered_employee()
+    {
+        $this->login();
+
+        $jobdesk = $this->createJobdesk();
+
+        $response = $this->get("/jobdesk/{$jobdesk->id}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_assign_new_employee_success()
+    {
+        $this->login();
+
+        $jobdesk = $this->createJobdesk();
+        $karyawan = $this->createKaryawan();
+
+        $response = $this->post("/jobdesk/{$jobdesk->id}/assign", [
+            'karyawan_id' => $karyawan->id,
+        ]);
+
+        $response->assertStatus(302);
+
+        $this->assertDatabaseHas('jobdesk_karyawan', [
+            'jobdesk_id' => $jobdesk->id,
+            'karyawan_id' => $karyawan->id,
+        ]);
+    }
+
+    public function test_assign_duplicate_employee_fails()
+    {
+        $this->login();
+
+        $jobdesk = $this->createJobdesk();
+        $karyawan = $this->createKaryawan();
+
+        $jobdesk->karyawans()->attach($karyawan->id);
+
+        $response = $this->post("/jobdesk/{$jobdesk->id}/assign", [
+            'karyawan_id' => $karyawan->id,
+        ]);
+
+        $response->assertSessionHasErrors();
+    }
+
+    public function test_remove_karyawan_success()
+    {
+        $this->login();
+
+        $jobdesk = $this->createJobdesk();
+        $karyawan = $this->createKaryawan();
+
+        $jobdesk->karyawans()->attach($karyawan->id);
+
+        $response = $this->delete("/jobdesk/{$jobdesk->id}/karyawan/{$karyawan->id}");
+
+        $response->assertStatus(302);
+
+        $this->assertDatabaseMissing('jobdesk_karyawan', [
+            'jobdesk_id' => $jobdesk->id,
+            'karyawan_id' => $karyawan->id,
+        ]);
+    }
+
+    public function test_remove_karyawan_jobdesk_not_found()
+    {
+        $this->login();
+
+        $karyawan = $this->createKaryawan();
+
+        $response = $this->delete("/jobdesk/999999/karyawan/{$karyawan->id}");
+
+        $response->assertStatus(404);
+    }
+    
 }
